@@ -1,9 +1,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
-const int cX = 16;
-const int cY = 16;
-const int tX = 16;
-const int tY = 16;
+const int tX = 16 * 16;
+const int tY = 16 * 16;
 
 // x,y - pos of top left
 // size - sizeo of a tile
@@ -14,15 +12,6 @@ typedef struct Camera
     float size;
 } Camera;
 
-typedef struct Tile Tile;
-
-typedef struct Chunk
-{
-    int x;
-    int y;
-    Tile *tiles;
-} Chunk;
-
 typedef struct Tile
 {
     int x;
@@ -30,7 +19,6 @@ typedef struct Tile
     int size_x;
     int size_y;
     SDL_Texture *texture;
-    Chunk *chunk;
     char type;
     char flags;
 } Tile;
@@ -44,7 +32,7 @@ typedef struct KeyStates
 } KeyStates;
 void render_tile(SDL_Renderer *renderer, Camera camera, Tile tile)
 {
-    SDL_Rect rect = {(camera.x + tile.x + tile.chunk->x * cX) * camera.size, (camera.y + tile.y + tile.chunk->y * cY) * camera.size, camera.size * tile.size_x, camera.size * tile.size_y};
+    SDL_Rect rect = {(camera.x + tile.x) * camera.size, (camera.y + tile.y) * camera.size, camera.size * tile.size_x, camera.size * tile.size_y};
     SDL_RenderCopy(renderer, tile.texture, NULL, &rect);
 }
 
@@ -77,35 +65,25 @@ int main(int argc, char *argv[])
     float camera_speed_factor = 0.05;
     float camera_scroll_factor = 1;
     KeyStates keyStates = {0, 0, 0, 0};
-    Chunk *chunks = (Chunk *)(malloc(sizeof(Chunk) * cX * cY));
-    for (int chunkX = 0; chunkX < cX; chunkX++)
+    Tile *tiles = (Tile *)(malloc(sizeof(Tile) * tX * tY));
+    for (int x = 0; x < tX; x += 2)
     {
-        for (int chunkY = 0; chunkY < cY; chunkY++)
+        for (int y = 0; y < tY; y += 2)
         {
-            chunks[chunkY * cY + chunkX].x = chunkX;
-            chunks[chunkY * cY + chunkX].y = chunkY;
-            chunks[chunkY * cY + chunkX].tiles = (Tile *)(malloc(sizeof(Tile) * cX * cY));
-            for (int x = 0; x < tX; x += 2)
+            tiles[y * tY + x].x = x;
+            tiles[y * tY + x].y = y;
+            tiles[y * tY + x].size_x = 2;
+            tiles[y * tY + x].size_y = 2;
+            if ((y + (y % 2) + x) % 4)
             {
-                for (int y = 0; y < tY; y += 2)
-                {
-                    chunks[chunkY * cY + chunkX].tiles[y * cY + x].x = x;
-                    chunks[chunkY * cY + chunkX].tiles[y * cY + x].y = y;
-                    chunks[chunkY * cY + chunkX].tiles[y * cY + x].size_x = 2;
-                    chunks[chunkY * cY + chunkX].tiles[y * cY + x].size_y = 2;
-                    if ((y + (y % 2) + x) % 4)
-                    {
-                        chunks[chunkY * cY + chunkX].tiles[y * cY + x].texture = chessT;
-                    }
-                    else
-                    {
-                        chunks[chunkY * cY + chunkX].tiles[y * cY + x].texture = beaconT;
-                    }
-                    chunks[chunkY * cY + chunkX].tiles[y * cY + x].flags = 0;
-                    chunks[chunkY * cY + chunkX].tiles[y * cY + x].type = 0;
-                    chunks[chunkY * cY + chunkX].tiles[y * cY + x].chunk = &chunks[chunkY * cY + chunkX];
-                }
+                tiles[y * tY + x].texture = chessT;
             }
+            else
+            {
+                tiles[y * tY + x].texture = beaconT;
+            }
+            tiles[y * tY + x].flags = 0;
+            tiles[y * tY + x].type = 0;
         }
     }
 
@@ -180,31 +158,18 @@ int main(int argc, char *argv[])
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderClear(renderer);
         SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);
-        for (int chunkX = 0; chunkX < cX; chunkX++)
+        for (int x = 0; x < tX; x += 2)
         {
-            for (int chunkY = 0; chunkY < cY; chunkY++)
+            for (int y = 0; y < tY; y += 2)
             {
-                for (int x = 0; x < tX; x += 2)
-                {
-                    for (int y = 0; y < tY; y += 2)
-                    {
-                        render_tile(renderer, camera, chunks[chunkY * cY + chunkX].tiles[y * tY + x]);
-                    }
-                }
+                render_tile(renderer, camera, tiles[y * tY + x]);
             }
         }
         SDL_RenderPresent(renderer);
         SDL_Delay(1000 / 60);
     }
 
-    for (int chunkX = 0; chunkX < cX; chunkX++)
-    {
-        for (int chunkY = 0; chunkY < cY; chunkY++)
-        {
-            free(chunks[chunkY * cY + chunkX].tiles);
-        }
-    }
-    free(chunks);
+    free(tiles);
 
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
