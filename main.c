@@ -12,13 +12,18 @@ typedef struct Camera
     float size;
 } Camera;
 
+typedef struct TileType
+{
+    SDL_Texture *texture;
+    char size_x;
+    char size_y;
+} TileType;
+
+typedef struct Tile Tile;
+
 typedef struct Tile
 {
-    int x;
-    int y;
-    int size_x;
-    int size_y;
-    SDL_Texture *texture;
+    Tile *base_tile;
     char type;
     char flags;
 } Tile;
@@ -30,10 +35,13 @@ typedef struct KeyStates
     int left : 1;
     int right : 1;
 } KeyStates;
-void render_tile(SDL_Renderer *renderer, Camera camera, Tile tile)
+void render_tile(SDL_Renderer *renderer, Camera camera, Tile *tile, TileType *types, int x, int y)
 {
-    SDL_Rect rect = {(camera.x + tile.x) * camera.size, (camera.y + tile.y) * camera.size, camera.size * tile.size_x, camera.size * tile.size_y};
-    SDL_RenderCopy(renderer, tile.texture, NULL, &rect);
+    if (tile == tile->base_tile)
+    {
+        SDL_Rect rect = {(camera.x + x) * camera.size, (camera.y + y) * camera.size, camera.size * types[tile->type].size_x, camera.size * types[tile->type].size_y};
+        SDL_RenderCopy(renderer, types[tile->type].texture, NULL, &rect);
+    }
 }
 
 int main(int argc, char *argv[])
@@ -66,24 +74,29 @@ int main(int argc, char *argv[])
     float camera_scroll_factor = 1;
     KeyStates keyStates = {0, 0, 0, 0};
     Tile *tiles = (Tile *)(malloc(sizeof(Tile) * tX * tY));
-    for (int x = 0; x < tX; x += 2)
+    TileType types[] = {{chessT, 2, 2}, {beaconT, 2, 2}};
+    for (int x = 0; x < tX; x++)
     {
-        for (int y = 0; y < tY; y += 2)
+        for (int y = 0; y < tY; y++)
         {
-            tiles[y * tY + x].x = x;
-            tiles[y * tY + x].y = y;
-            tiles[y * tY + x].size_x = 2;
-            tiles[y * tY + x].size_y = 2;
-            if ((y + (y % 2) + x) % 4)
+            Tile *cur_tile = &tiles[y * tY + x];
+            if (x % 2 || y % 2)
             {
-                tiles[y * tY + x].texture = chessT;
+                cur_tile->base_tile = &tiles[(y - y % 2) * tY + (x - x % 2)];
             }
             else
             {
-                tiles[y * tY + x].texture = beaconT;
+                cur_tile->base_tile = cur_tile;
+                if ((y + (y % 2) + x) % 4)
+                {
+                    cur_tile->type = 0;
+                }
+                else
+                {
+                    cur_tile->type = 1;
+                }
             }
-            tiles[y * tY + x].flags = 0;
-            tiles[y * tY + x].type = 0;
+            cur_tile->flags = 0;
         }
     }
 
@@ -162,7 +175,7 @@ int main(int argc, char *argv[])
         {
             for (int y = 0; y < tY; y += 2)
             {
-                render_tile(renderer, camera, tiles[y * tY + x]);
+                render_tile(renderer, camera, tiles + (y * tY + x), types, x, y);
             }
         }
         SDL_RenderPresent(renderer);
