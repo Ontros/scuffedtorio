@@ -1,0 +1,1 @@
+/usr/bin/gcc-12 -g CMakeFiles/scuffedtorio.dir/main.c.o -o scuffedtorio  -lSDL2 -lSDL2_image -lSDL2_ttf 

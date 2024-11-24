@@ -1,0 +1,1 @@
+/usr/bin/gcc-12 -g CMakeFiles/sdlgame.dir/main.c.o -o sdlgame  -lSDL2 -lSDL2_image -lSDL2_ttf 
