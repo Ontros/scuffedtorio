@@ -2,7 +2,6 @@
 #include <SDL2/SDL_image.h>
 const int tX = 16 * 16;
 const int tY = 16 * 16;
-const int hand_tile_size = 32;
 
 // x,y - pos of top left
 // size - sizeo of a tile
@@ -40,7 +39,7 @@ typedef struct KeyStates
 } KeyStates;
 void render_tile(SDL_Renderer *renderer, Camera camera, Tile *tile, TileType *types, int x, int y)
 {
-    if (tile->type)
+    if (tile->type != -1)
     {
         SDL_RenderCopy(renderer, types[tile->type].texture, NULL, &(SDL_Rect){(camera.x + x) * camera.size, (camera.y + y) * camera.size, camera.size * types[tile->type].size_x, camera.size * types[tile->type].size_y});
     }
@@ -79,6 +78,7 @@ int main(int argc, char *argv[])
     TileType types[] = {{chessT, 1, 1}, {beaconT, 3, 3}};
     SDL_SetTextureBlendMode(types[0].texture, SDL_BLENDMODE_BLEND);
     SDL_SetTextureBlendMode(types[1].texture, SDL_BLENDMODE_BLEND);
+    SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
     for (int x = 0; x < tX; x++)
     {
         for (int y = 0; y < tY; y++)
@@ -97,16 +97,16 @@ int main(int argc, char *argv[])
             //     cur_tile->type = 1;
             // }
             cur_tile->base_tile = cur_tile;
-            cur_tile->type = 0;
+            cur_tile->type = -1;
             cur_tile->flags = 0;
             cur_tile->x = x;
             cur_tile->y = y;
         }
+        SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
     }
 
-    int mouseX, mouseY, mouse_x, mouse_y, mouse_id;
+    int mouseX, mouseY, mouse_x, mouse_y, mouse_id, type_in_hand;
     Tile *mouse_tile = NULL;
-    TileType *hand_tile = types + 1;
     while (running)
     {
         // Mouse position
@@ -132,21 +132,35 @@ int main(int argc, char *argv[])
             }
             else if (event.type == SDL_KEYDOWN)
             {
+                // Movement
                 if (event.key.keysym.sym == SDLK_w)
                 {
                     keyStates.up = 1;
                 }
-                if (event.key.keysym.sym == SDLK_s)
+                else if (event.key.keysym.sym == SDLK_s)
                 {
                     keyStates.down = 1;
                 }
-                if (event.key.keysym.sym == SDLK_a)
+                else if (event.key.keysym.sym == SDLK_a)
                 {
                     keyStates.left = 1;
                 }
-                if (event.key.keysym.sym == SDLK_d)
+                else if (event.key.keysym.sym == SDLK_d)
                 {
                     keyStates.right = 1;
+                }
+                // Key picking
+                else if (event.key.keysym.sym == SDLK_1)
+                {
+                    type_in_hand = 0;
+                }
+                else if (event.key.keysym.sym == SDLK_2)
+                {
+                    type_in_hand = 1;
+                }
+                else if (event.key.keysym.sym == SDLK_q)
+                {
+                    type_in_hand = -1;
                 }
             }
             else if (event.type == SDL_KEYUP)
@@ -155,15 +169,15 @@ int main(int argc, char *argv[])
                 {
                     keyStates.up = 0;
                 }
-                if (event.key.keysym.sym == SDLK_s)
+                else if (event.key.keysym.sym == SDLK_s)
                 {
                     keyStates.down = 0;
                 }
-                if (event.key.keysym.sym == SDLK_a)
+                else if (event.key.keysym.sym == SDLK_a)
                 {
                     keyStates.left = 0;
                 }
-                if (event.key.keysym.sym == SDLK_d)
+                else if (event.key.keysym.sym == SDLK_d)
                 {
                     keyStates.right = 0;
                 }
@@ -176,8 +190,7 @@ int main(int argc, char *argv[])
             {
                 if (mouse_tile)
                 {
-                    mouse_tile->type++;
-                    mouse_tile->type %= 2;
+                    mouse_tile->type = type_in_hand;
                 }
             }
         }
@@ -215,16 +228,32 @@ int main(int argc, char *argv[])
         }
 
         // Placing preview
-        if (hand_tile && mouse_tile)
+        if (type_in_hand != -1 && mouse_tile)
         {
-            SDL_SetTextureAlphaMod(hand_tile->texture, 128);
-            SDL_RenderCopy(renderer, hand_tile->texture, NULL, &(SDL_Rect){(camera.x + mouse_tile->x) * camera.size, (camera.y + mouse_tile->y) * camera.size, camera.size * hand_tile->size_x, camera.size * hand_tile->size_y});
-            SDL_SetTextureAlphaMod(hand_tile->texture, 255);
+            // Render preview
+            SDL_SetTextureAlphaMod(types[type_in_hand].texture, 128);
+            SDL_RenderCopy(renderer, types[type_in_hand].texture, NULL, &(SDL_Rect){(camera.x + mouse_tile->x) * camera.size, (camera.y + mouse_tile->y) * camera.size, camera.size * types[type_in_hand].size_x, camera.size * types[type_in_hand].size_y});
+            SDL_SetTextureAlphaMod(types[type_in_hand].texture, 255);
+            // Render blocking tiles
+            for (int x = mouse_tile->x; x < (mouse_tile->x + types[type_in_hand].size_x) && x >= 0 && x < tX; x++)
+            {
+                for (int y = mouse_tile->y; y < (mouse_tile->y + types[type_in_hand].size_y) && y >= 0 && y < tY; y++)
+                {
+                    if (tiles[y * tY + x].base_tile->type != -1)
+                    {
+                        SDL_SetRenderDrawColor(renderer, 255, 0, 0, 196);
+                        SDL_RenderFillRect(renderer, &(SDL_Rect){x * camera.size, y * camera.size, camera.size, camera.size});
+                    }
+                }
+            }
+            // Rectangle around
+            SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
+            SDL_RenderDrawRect(renderer, &(SDL_Rect){(camera.x + mouse_tile->x) * camera.size, (camera.y + mouse_tile->y) * camera.size, camera.size * types[type_in_hand].size_x, camera.size * types[type_in_hand].size_y});
         }
         // Hover over highlight
         else if (mouse_tile)
         {
-            SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);
+            SDL_SetRenderDrawColor(renderer, 255, 255, 224, 255);
             SDL_RenderDrawRect(renderer, &(SDL_Rect){(camera.x + mouse_tile->x) * camera.size, (camera.y + mouse_tile->y) * camera.size, camera.size * types[mouse_tile->type].size_x, camera.size * types[mouse_tile->type].size_y});
         }
 
