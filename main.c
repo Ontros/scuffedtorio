@@ -150,6 +150,20 @@ int main(int argc, char *argv[])
             {
                 camera.size += event.wheel.y * camera_scroll_factor;
             }
+            else if (event.type == SDL_MOUSEBUTTONDOWN)
+            {
+                int mouseX, mouseY;
+                SDL_GetMouseState(&mouseX, &mouseY);
+                // i*s = m - c*s
+                int x = (int)(((float)mouseX - camera.x * camera.size) / camera.size);
+                int y = (int)(((float)mouseY - camera.y * camera.size) / camera.size);
+                int id = y * tY + x;
+                if (id >= 0 && id < tX * tY)
+                {
+                    tiles[id].base_tile->type++;
+                    tiles[id].base_tile->type %= 2;
+                }
+            }
         }
         if (keyStates.up)
         {
