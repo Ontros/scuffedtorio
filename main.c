@@ -69,7 +69,7 @@ char is_room_for_tile(Tile *tiles, Tile *mouse_tile, TileType type)
     {
         for (int y = mouse_tile->y; y < (mouse_tile->y + type.size_y) && y >= 0 && y < tY; y++)
         {
-            if (tile_is_not_empty(&tiles[y * tY + x]))
+            if (tile_is_not_empty(tiles + (y * tY + x)))
             {
                 return 0;
             }
@@ -106,7 +106,7 @@ TileType *tile_destroy(Tile *tiles, Tile *base_tile, TileType *types)
         {
             for (int y = base_tile->y; y < (base_tile->y + types[base_tile->type].size_y) && y >= 0 && y < tY; y++)
             {
-                tiles[y * tY + x].base_tile = &tiles[y * tY + x];
+                tiles[y * tY + x].base_tile = tiles + (y * tY + x);
             }
         }
         base_tile->type = -1;
@@ -156,19 +156,7 @@ int main(int argc, char *argv[])
     {
         for (int y = 0; y < tY; y++)
         {
-            Tile *cur_tile = &tiles[y * tY + x];
-            // if (((int)(x / 2) + (int)(y / 2)) % 2)
-            // {
-            //     if (x % 2 || y % 2)
-            //     {
-            //         cur_tile->base_tile = &tiles[(y - y % 2) * tY + (x - x % 2)];
-            //     }
-            //     else
-            //     {
-            //         cur_tile->base_tile = cur_tile;
-            //     }
-            //     cur_tile->type = 1;
-            // }
+            Tile *cur_tile = tiles + (y * tY + x);
             cur_tile->base_tile = cur_tile;
             cur_tile->type = -1;
             cur_tile->flags = 0;
@@ -195,7 +183,7 @@ int main(int argc, char *argv[])
             }
             else
             {
-                mouse_tile = &tiles[mouse_id];
+                mouse_tile = tiles + mouse_id;
             }
         }
         else
@@ -322,7 +310,7 @@ int main(int argc, char *argv[])
         {
             for (int y = 0; y < tY; y++)
             {
-                render_tile(renderer, camera, &tiles[y * tY + x], types, x, y);
+                render_tile(renderer, camera, tiles + (y * tY + x), types, x, y);
             }
         }
 
@@ -338,7 +326,7 @@ int main(int argc, char *argv[])
             {
                 for (int y = mouse_tile->y; y < (mouse_tile->y + types[type_in_hand].size_y) && y >= 0 && y < tY; y++)
                 {
-                    if (tile_is_not_empty(&tiles[y * tY + x]))
+                    if (tile_is_not_empty(tiles + (y * tY + x)))
                     {
                         SDL_SetRenderDrawColor(renderer, 255, 0, 0, 196);
                         SDL_RenderFillRect(renderer, rect_in_camera_space(camera, x, y, 1, 1));
