@@ -24,6 +24,8 @@ typedef struct Tile Tile;
 typedef struct Tile
 {
     Tile *base_tile;
+    int x;
+    int y;
     char type;
     char flags;
 } Tile;
@@ -39,8 +41,7 @@ void render_tile(SDL_Renderer *renderer, Camera camera, Tile *tile, TileType *ty
 {
     if (tile == tile->base_tile)
     {
-        SDL_Rect rect = {(camera.x + x) * camera.size, (camera.y + y) * camera.size, camera.size * types[tile->type].size_x, camera.size * types[tile->type].size_y};
-        SDL_RenderCopy(renderer, types[tile->type].texture, NULL, &rect);
+        SDL_RenderCopy(renderer, types[tile->type].texture, NULL, &(SDL_Rect){(camera.x + x) * camera.size, (camera.y + y) * camera.size, camera.size * types[tile->type].size_x, camera.size * types[tile->type].size_y});
     }
 }
 
@@ -74,34 +75,51 @@ int main(int argc, char *argv[])
     float camera_scroll_factor = 1;
     KeyStates keyStates = {0, 0, 0, 0};
     Tile *tiles = (Tile *)(malloc(sizeof(Tile) * tX * tY));
-    TileType types[] = {{chessT, 2, 2}, {beaconT, 2, 2}};
+    TileType types[] = {{chessT, 1, 1}, {beaconT, 2, 2}};
     for (int x = 0; x < tX; x++)
     {
         for (int y = 0; y < tY; y++)
         {
             Tile *cur_tile = &tiles[y * tY + x];
-            if (x % 2 || y % 2)
+            if (((int)(x / 2) + (int)(y / 2)) % 2)
             {
-                cur_tile->base_tile = &tiles[(y - y % 2) * tY + (x - x % 2)];
+                if (x % 2 || y % 2)
+                {
+                    cur_tile->base_tile = &tiles[(y - y % 2) * tY + (x - x % 2)];
+                }
+                else
+                {
+                    cur_tile->base_tile = cur_tile;
+                }
+                cur_tile->type = 1;
             }
             else
             {
                 cur_tile->base_tile = cur_tile;
-                if ((y + (y % 2) + x) % 4)
-                {
-                    cur_tile->type = 0;
-                }
-                else
-                {
-                    cur_tile->type = 1;
-                }
+                cur_tile->type = 0;
             }
             cur_tile->flags = 0;
+            cur_tile->x = x;
+            cur_tile->y = y;
         }
     }
 
+    int mouseX, mouseY, mouse_x, mouse_y, mouse_id;
+    Tile *mouse_tile = NULL;
     while (running)
     {
+        SDL_GetMouseState(&mouseX, &mouseY);
+        mouse_x = (int)(((float)mouseX - camera.x * camera.size) / camera.size);
+        mouse_y = (int)(((float)mouseY - camera.y * camera.size) / camera.size);
+        mouse_id = mouse_y * tY + mouse_x;
+        if (mouse_id >= 0 && mouse_id < tX * tY)
+        {
+            mouse_tile = tiles[mouse_id].base_tile;
+        }
+        else
+        {
+            mouse_tile = NULL;
+        }
         while (SDL_PollEvent(&event))
         {
             if (event.type == SDL_QUIT)
@@ -152,16 +170,10 @@ int main(int argc, char *argv[])
             }
             else if (event.type == SDL_MOUSEBUTTONDOWN)
             {
-                int mouseX, mouseY;
-                SDL_GetMouseState(&mouseX, &mouseY);
-                // i*s = m - c*s
-                int x = (int)(((float)mouseX - camera.x * camera.size) / camera.size);
-                int y = (int)(((float)mouseY - camera.y * camera.size) / camera.size);
-                int id = y * tY + x;
-                if (id >= 0 && id < tX * tY)
+                if (mouse_tile)
                 {
-                    tiles[id].base_tile->type++;
-                    tiles[id].base_tile->type %= 2;
+                    mouse_tile->type++;
+                    mouse_tile->type %= 2;
                 }
             }
         }
@@ -191,6 +203,10 @@ int main(int argc, char *argv[])
             {
                 render_tile(renderer, camera, tiles + (y * tY + x), types, x, y);
             }
+        }
+        if (mouse_tile)
+        {
+            SDL_RenderDrawRect(renderer, &(SDL_Rect){(camera.x + mouse_tile->x) * camera.size, (camera.y + mouse_tile->y) * camera.size, camera.size * types[mouse_tile->type].size_x, camera.size * types[mouse_tile->type].size_y});
         }
         SDL_RenderPresent(renderer);
         SDL_Delay(1000 / 60);
