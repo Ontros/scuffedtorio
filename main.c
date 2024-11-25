@@ -118,6 +118,13 @@ TileType *tile_destroy(Tile *tiles, Tile *base_tile, TileType *types)
     }
 }
 
+static inline int get_mouse_id(int x, int y, Camera camera, int type_in_hand, TileType *types)
+{
+    x = (int)(((float)(x) - (camera.x + ((type_in_hand != -1) ? ((float)types[type_in_hand].size_x / 2.0) : 0)) * camera.size) / camera.size);
+    y = (int)(((float)(y) - (camera.y + ((type_in_hand != -1) ? ((float)types[type_in_hand].size_y / 2.0) : 0)) * camera.size) / camera.size);
+    return y * tY + x;
+}
+
 int main(int argc, char *argv[])
 {
     const int width = 1920;
@@ -143,12 +150,12 @@ int main(int argc, char *argv[])
     SDL_Texture *beaconT = IMG_LoadTexture(renderer, "../images/beacon-bottom.png");
     int movement_x = 2;
     int movement_y = 2;
-    Camera camera = {0, 0, 100};
+    Camera camera = {1, 1, 100};
     float camera_speed_factor = 21;
     float camera_scroll_factor = 1;
     KeyStates keyStates = {0, 0, 0, 0};
     Tile *tiles = (Tile *)(malloc(sizeof(Tile) * tX * tY));
-    TileType types[] = {{chessT, 1, 1, 0}, {beaconT, 3, 3, 1}};
+    TileType types[] = {{chessT, 2, 2, 0}, {beaconT, 3, 3, 1}};
     SDL_SetTextureBlendMode(types[0].texture, SDL_BLENDMODE_BLEND);
     SDL_SetTextureBlendMode(types[1].texture, SDL_BLENDMODE_BLEND);
     SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
@@ -166,15 +173,13 @@ int main(int argc, char *argv[])
         SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
     }
 
-    int mouseX, mouseY, mouse_x, mouse_y, mouse_id, type_in_hand;
+    int mouse_id, type_in_hand, mouse_x, mouse_y;
     Tile *mouse_tile = NULL;
     while (running)
     {
         // Mouse position
-        SDL_GetMouseState(&mouseX, &mouseY);
-        mouse_x = (int)(((float)mouseX - (camera.x + ((mouse_tile != NULL) ? (types[type_in_hand].size_x / 2) : 0)) * camera.size) / camera.size);
-        mouse_y = (int)(((float)mouseY - (camera.y + ((mouse_tile != NULL) ? (types[type_in_hand].size_y / 2) : 0)) * camera.size) / camera.size);
-        mouse_id = mouse_y * tY + mouse_x;
+        SDL_GetMouseState(&mouse_x, &mouse_y);
+        mouse_id = get_mouse_id(mouse_x, mouse_y, camera, type_in_hand, types);
         if (mouse_id >= 0 && mouse_id < tX * tY)
         {
             if (type_in_hand == -1)
@@ -266,7 +271,7 @@ int main(int argc, char *argv[])
                 if (event.button.button == SDL_BUTTON_LEFT)
                 {
                     // Place
-                    if (mouse_tile && tile_place(tiles, mouse_tile, types[type_in_hand]))
+                    if (mouse_tile && (type_in_hand != -1) && tile_place(tiles, mouse_tile, types[type_in_hand]))
                     {
                         // Remove resources
                     }
@@ -275,7 +280,7 @@ int main(int argc, char *argv[])
                 {
                     if (mouse_tile)
                     {
-                        TileType *destroyed_type = tile_destroy(tiles, mouse_tile->base_tile, types);
+                        TileType *destroyed_type = tile_destroy(tiles, tiles[get_mouse_id(mouse_x, mouse_y, camera, -1, types)].base_tile, types);
                         // Add resources
                     }
                 }
