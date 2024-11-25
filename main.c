@@ -57,7 +57,7 @@ static inline char tile_is_not_empty(Tile *tile)
 
 void render_tile(SDL_Renderer *renderer, Camera camera, Tile *tile, TileType *types, int x, int y)
 {
-    if (tile_is_not_empty(tile))
+    if (tile->type != -1)
     {
         SDL_RenderCopy(renderer, types[tile->type].texture, NULL, rect_in_camera_space(camera, x, y, types[tile->type].size_x, types[tile->type].size_y));
     }
