@@ -120,8 +120,8 @@ TileType *tile_destroy(Tile *tiles, Tile *base_tile, TileType *types)
 
 static inline int get_mouse_id(int x, int y, Camera camera, int type_in_hand, TileType *types)
 {
-    x = (int)(((float)(x) - (camera.x + ((type_in_hand != -1) ? ((float)types[type_in_hand].size_x / 2.0) : 0)) * camera.size) / camera.size);
-    y = (int)(((float)(y) - (camera.y + ((type_in_hand != -1) ? ((float)types[type_in_hand].size_y / 2.0) : 0)) * camera.size) / camera.size);
+    x = (int)(((float)(x) - (camera.x + ((type_in_hand != -1) ? ((types[type_in_hand].size_x - 1) / 2.0f) : 0)) * camera.size) / camera.size);
+    y = (int)(((float)(y) - (camera.y + ((type_in_hand != -1) ? ((types[type_in_hand].size_y - 1) / 2.0f) : 0)) * camera.size) / camera.size);
     return y * tY + x;
 }
 
@@ -155,7 +155,7 @@ int main(int argc, char *argv[])
     float camera_scroll_factor = 1;
     KeyStates keyStates = {0, 0, 0, 0};
     Tile *tiles = (Tile *)(malloc(sizeof(Tile) * tX * tY));
-    TileType types[] = {{chessT, 2, 2, 0}, {beaconT, 3, 3, 1}};
+    TileType types[] = {{chessT, 1, 1, 0}, {chessT, 2, 2, 1}, {beaconT, 3, 3, 2}, {beaconT, 4, 4, 3}};
     SDL_SetTextureBlendMode(types[0].texture, SDL_BLENDMODE_BLEND);
     SDL_SetTextureBlendMode(types[1].texture, SDL_BLENDMODE_BLEND);
     SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
@@ -230,6 +230,14 @@ int main(int argc, char *argv[])
                 else if (event.key.keysym.sym == SDLK_2)
                 {
                     type_in_hand = 1;
+                }
+                else if (event.key.keysym.sym == SDLK_3)
+                {
+                    type_in_hand = 2;
+                }
+                else if (event.key.keysym.sym == SDLK_4)
+                {
+                    type_in_hand = 3;
                 }
                 else if (event.key.keysym.sym == SDLK_q)
                 {
