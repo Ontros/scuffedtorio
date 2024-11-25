@@ -1,7 +1,0 @@
-[
-{
-  "directory": "/home/ontro/Programovani/towerdef/build",
-  "command": "/usr/bin/gcc-12  -I/usr/include/SDL2 -g -std=gnu11 -o CMakeFiles/scuffedtorio.dir/main.c.o -c /home/ontro/Programovani/towerdef/main.c",
-  "file": "/home/ontro/Programovani/towerdef/main.c"
-}
-]

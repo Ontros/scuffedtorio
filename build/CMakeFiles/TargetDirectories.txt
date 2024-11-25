@@ -1,3 +1,0 @@
-/home/ontro/Programovani/towerdef/build/CMakeFiles/scuffedtorio.dir
-/home/ontro/Programovani/towerdef/build/CMakeFiles/edit_cache.dir
-/home/ontro/Programovani/towerdef/build/CMakeFiles/rebuild_cache.dir
