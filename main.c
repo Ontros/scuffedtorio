@@ -37,11 +37,17 @@ typedef struct KeyStates
     int left : 1;
     int right : 1;
 } KeyStates;
+
+static inline SDL_Rect *rect_in_camera_space(Camera camera, int x, int y, int w, int h)
+{
+    return &(SDL_Rect){(camera.x + x) * camera.size, (camera.y + y) * camera.size, camera.size * w, camera.size * h};
+}
+
 void render_tile(SDL_Renderer *renderer, Camera camera, Tile *tile, TileType *types, int x, int y)
 {
     if (tile->type != -1)
     {
-        SDL_RenderCopy(renderer, types[tile->type].texture, NULL, &(SDL_Rect){(camera.x + x) * camera.size, (camera.y + y) * camera.size, camera.size * types[tile->type].size_x, camera.size * types[tile->type].size_y});
+        SDL_RenderCopy(renderer, types[tile->type].texture, NULL, rect_in_camera_space(camera, x, y, types[tile->type].size_x, types[tile->type].size_y));
     }
 }
 
@@ -216,7 +222,7 @@ int main(int argc, char *argv[])
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderClear(renderer);
         SDL_SetRenderDrawColor(renderer, 19, 133, 16, 255);
-        SDL_RenderFillRect(renderer, &(SDL_Rect){camera.x * camera.size, camera.y * camera.size, tX * camera.size, tY * camera.size});
+        SDL_RenderFillRect(renderer, rect_in_camera_space(camera, 0, 0, tX, tY));
 
         // Tile rendering
         for (int x = 0; x < tX; x++)
@@ -232,7 +238,7 @@ int main(int argc, char *argv[])
         {
             // Render preview
             SDL_SetTextureAlphaMod(types[type_in_hand].texture, 128);
-            SDL_RenderCopy(renderer, types[type_in_hand].texture, NULL, &(SDL_Rect){(camera.x + mouse_tile->x) * camera.size, (camera.y + mouse_tile->y) * camera.size, camera.size * types[type_in_hand].size_x, camera.size * types[type_in_hand].size_y});
+            SDL_RenderCopy(renderer, types[type_in_hand].texture, NULL, rect_in_camera_space(camera, mouse_tile->x, mouse_tile->y, types[type_in_hand].size_x, types[type_in_hand].size_y));
             SDL_SetTextureAlphaMod(types[type_in_hand].texture, 255);
             // Render blocking tiles
             for (int x = mouse_tile->x; x < (mouse_tile->x + types[type_in_hand].size_x) && x >= 0 && x < tX; x++)
@@ -242,19 +248,19 @@ int main(int argc, char *argv[])
                     if (tiles[y * tY + x].base_tile->type != -1)
                     {
                         SDL_SetRenderDrawColor(renderer, 255, 0, 0, 196);
-                        SDL_RenderFillRect(renderer, &(SDL_Rect){x * camera.size, y * camera.size, camera.size, camera.size});
+                        SDL_RenderFillRect(renderer, rect_in_camera_space(camera, x, y, 1, 1));
                     }
                 }
             }
             // Rectangle around
             SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
-            SDL_RenderDrawRect(renderer, &(SDL_Rect){(camera.x + mouse_tile->x) * camera.size, (camera.y + mouse_tile->y) * camera.size, camera.size * types[type_in_hand].size_x, camera.size * types[type_in_hand].size_y});
+            SDL_RenderDrawRect(renderer, rect_in_camera_space(camera, mouse_tile->x, mouse_tile->y, types[type_in_hand].size_x, types[type_in_hand].size_y));
         }
         // Hover over highlight
         else if (mouse_tile)
         {
             SDL_SetRenderDrawColor(renderer, 255, 255, 224, 255);
-            SDL_RenderDrawRect(renderer, &(SDL_Rect){(camera.x + mouse_tile->x) * camera.size, (camera.y + mouse_tile->y) * camera.size, camera.size * types[mouse_tile->type].size_x, camera.size * types[mouse_tile->type].size_y});
+            SDL_RenderDrawRect(renderer, rect_in_camera_space(camera, mouse_tile->x, mouse_tile->y, types[mouse_tile->type].size_x, types[mouse_tile->type].size_y));
         }
 
         SDL_RenderPresent(renderer);
