@@ -38,6 +38,8 @@ typedef struct KeyStates
     int down : 1;
     int left : 1;
     int right : 1;
+    int mouse_left : 1;
+    int mouse_right : 1;
 } KeyStates;
 
 static inline SDL_Rect *rect_in_camera_space(Camera camera, int x, int y, int w, int h)
@@ -153,9 +155,9 @@ int main(int argc, char *argv[])
     Camera camera = {1, 1, 100};
     float camera_speed_factor = 21;
     float camera_scroll_factor = 1;
-    KeyStates keyStates = {0, 0, 0, 0};
+    KeyStates keyStates = {0, 0, 0, 0, 0, 0};
     Tile *tiles = (Tile *)(malloc(sizeof(Tile) * tX * tY));
-    TileType types[] = {{chessT, 1, 1, 0}, {chessT, 2, 2, 1}, {beaconT, 3, 3, 2}, {beaconT, 4, 4, 3}};
+    TileType types[] = {{beaconT, 1, 1, 0}, {chessT, 2, 2, 1}, {beaconT, 3, 3, 2}, {chessT, 4, 4, 3}, {beaconT, 5, 5, 4}};
     SDL_SetTextureBlendMode(types[0].texture, SDL_BLENDMODE_BLEND);
     SDL_SetTextureBlendMode(types[1].texture, SDL_BLENDMODE_BLEND);
     SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
@@ -239,6 +241,10 @@ int main(int argc, char *argv[])
                 {
                     type_in_hand = 3;
                 }
+                else if (event.key.keysym.sym == SDLK_5)
+                {
+                    type_in_hand = 4;
+                }
                 else if (event.key.keysym.sym == SDLK_q)
                 {
                     if (mouse_tile && type_in_hand == -1)
@@ -278,19 +284,24 @@ int main(int argc, char *argv[])
             {
                 if (event.button.button == SDL_BUTTON_LEFT)
                 {
-                    // Place
-                    if (mouse_tile && (type_in_hand != -1) && tile_place(tiles, mouse_tile, types[type_in_hand]))
-                    {
-                        // Remove resources
-                    }
+                    keyStates.mouse_left = 1;
+                    keyStates.mouse_right = 0;
                 }
                 else if (event.button.button == SDL_BUTTON_RIGHT)
                 {
-                    if (mouse_tile)
-                    {
-                        TileType *destroyed_type = tile_destroy(tiles, tiles[get_mouse_id(mouse_x, mouse_y, camera, -1, types)].base_tile, types);
-                        // Add resources
-                    }
+                    keyStates.mouse_left = 0;
+                    keyStates.mouse_right = 1;
+                }
+            }
+            else if (event.type == SDL_MOUSEBUTTONUP)
+            {
+                if (event.button.button == SDL_BUTTON_LEFT)
+                {
+                    keyStates.mouse_left = 0;
+                }
+                else if (event.button.button == SDL_BUTTON_RIGHT)
+                {
+                    keyStates.mouse_right = 0;
                 }
             }
         }
@@ -310,6 +321,23 @@ int main(int argc, char *argv[])
         if (keyStates.right)
         {
             camera.x -= camera_speed_factor / camera.size;
+        }
+        if (keyStates.mouse_left)
+        {
+            // Place
+            if (mouse_tile && (type_in_hand != -1) && tile_place(tiles, mouse_tile, types[type_in_hand]))
+            {
+                // Remove resources
+            }
+        }
+        else if (keyStates.mouse_right)
+        {
+            // Remove
+            if (mouse_tile)
+            {
+                TileType *destroyed_type = tile_destroy(tiles, tiles[get_mouse_id(mouse_x, mouse_y, camera, -1, types)].base_tile, types);
+                // Add resources
+            }
         }
 
         // Background
