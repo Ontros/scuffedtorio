@@ -1,7 +1,8 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
-const int tX = 16 * 16;
-const int tY = 16 * 16;
+#include <SDL2/SDL_ttf.h>
+const int tX = 16 * 16 * 4;
+const int tY = 16 * 16 * 4;
 
 // x,y - pos of top left
 // size - sizeo of a tile
@@ -133,6 +134,7 @@ int main(int argc, char *argv[])
     const int height = 1080;
 
     SDL_Init(SDL_INIT_VIDEO);
+    SDL_Log("lol");
 
     SDL_Window *window = SDL_CreateWindow(
         "Scuffedtorio",
@@ -140,11 +142,12 @@ int main(int argc, char *argv[])
         SDL_WINDOWPOS_CENTERED,
         width,
         height,
-        SDL_WINDOW_SHOWN);
+        SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
     SDL_Renderer *renderer = SDL_CreateRenderer(
         window,
         -1,
-        SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+        // TODO: add VSYNC
+        SDL_RENDERER_ACCELERATED);
 
     SDL_Event event;
     int running = 1;
@@ -153,7 +156,7 @@ int main(int argc, char *argv[])
     int movement_x = 2;
     int movement_y = 2;
     Camera camera = {1, 1, 100};
-    float camera_speed_factor = 21;
+    float camera_speed_factor = 7;
     float camera_scroll_factor = 1;
     KeyStates keyStates = {0, 0, 0, 0, 0, 0};
     Tile *tiles = (Tile *)(malloc(sizeof(Tile) * tX * tY));
@@ -177,8 +180,29 @@ int main(int argc, char *argv[])
 
     int mouse_id, type_in_hand, mouse_x, mouse_y;
     Tile *mouse_tile = NULL;
+
+    // TTF_Font *font = TTF_OpenFont("../data/core/fonts/TitilliumWeb-Regular.ttf", 24);
+    TTF_Init();
+    TTF_Font *font = TTF_OpenFont("../data/core/fonts/TitilliumWeb-SemiBold.ttf", 24);
+    SDL_Color text_color = {255, 255, 255};
+    printf("%d\n", font == NULL);
+
+    char fps_buffer[100];
+    SDL_Texture *fps_texture;
+    SDL_Surface *fps_surface;
+    Uint32 last_frame = SDL_GetTicks();
+    int frames = 0;
+    Uint64 NOW = SDL_GetPerformanceCounter();
+    Uint64 LAST = 0;
+    double deltaTime = 0;
+
     while (running)
     {
+        // delta time
+        LAST = NOW;
+        NOW = SDL_GetPerformanceCounter();
+        deltaTime = (double)((NOW - LAST) * 1000 / (double)SDL_GetPerformanceFrequency());
+
         // Mouse position
         SDL_GetMouseState(&mouse_x, &mouse_y);
         mouse_id = get_mouse_id(mouse_x, mouse_y, camera, type_in_hand, types);
@@ -308,19 +332,19 @@ int main(int argc, char *argv[])
         // Camera movement
         if (keyStates.up)
         {
-            camera.y += camera_speed_factor / camera.size;
+            camera.y += deltaTime * camera_speed_factor / camera.size;
         }
         if (keyStates.down)
         {
-            camera.y -= camera_speed_factor / camera.size;
+            camera.y -= deltaTime * camera_speed_factor / camera.size;
         }
         if (keyStates.left)
         {
-            camera.x += camera_speed_factor / camera.size;
+            camera.x += deltaTime * camera_speed_factor / camera.size;
         }
         if (keyStates.right)
         {
-            camera.x -= camera_speed_factor / camera.size;
+            camera.x -= deltaTime * camera_speed_factor / camera.size;
         }
         if (keyStates.mouse_left)
         {
@@ -385,11 +409,26 @@ int main(int argc, char *argv[])
             SDL_RenderDrawRect(renderer, rect_in_camera_space(camera, mouse_tile->x, mouse_tile->y, types[mouse_tile->type].size_x, types[mouse_tile->type].size_y));
         }
 
+        frames++;
+        if (SDL_GetTicks() - last_frame >= 1000)
+        {
+            SDL_FreeSurface(fps_surface);
+            SDL_DestroyTexture(fps_texture);
+            sprintf(fps_buffer, "FPS: %d", frames);
+            fps_surface = TTF_RenderText_Solid(font, fps_buffer, text_color);
+            fps_texture = SDL_CreateTextureFromSurface(renderer, fps_surface);
+            frames = 0;
+            last_frame += 1000;
+        }
+
+        if (fps_texture)
+            SDL_RenderCopy(renderer, fps_texture, NULL, &(SDL_Rect){0, 0, fps_surface->w, fps_surface->h});
+
         SDL_RenderPresent(renderer);
-        SDL_Delay(1000 / 60);
     }
 
     free(tiles);
+    TTF_CloseFont(font);
 
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
