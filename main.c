@@ -130,8 +130,8 @@ static inline int get_mouse_id(int x, int y, Camera camera, int type_in_hand, Ti
 
 int main(int argc, char *argv[])
 {
-    const int width = 1920;
-    const int height = 1080;
+    int width = 1920;
+    int height = 1080;
 
     SDL_Init(SDL_INIT_VIDEO);
     SDL_Log("lol");
@@ -302,7 +302,11 @@ int main(int argc, char *argv[])
             }
             else if (event.type == SDL_MOUSEWHEEL)
             {
-                camera.size += event.wheel.y * camera_scroll_factor;
+                camera.size += (float)event.wheel.y * camera_scroll_factor;
+                if (camera.size < 1)
+                {
+                    camera.size = 1;
+                }
             }
             else if (event.type == SDL_MOUSEBUTTONDOWN)
             {
@@ -326,6 +330,14 @@ int main(int argc, char *argv[])
                 else if (event.button.button == SDL_BUTTON_RIGHT)
                 {
                     keyStates.mouse_right = 0;
+                }
+            }
+            else if (event.type == SDL_WINDOWEVENT)
+            {
+                if (event.window.type == SDL_WINDOWEVENT_SIZE_CHANGED || event.window.event == SDL_WINDOWEVENT_RESIZED)
+                {
+                    width = event.window.data1;
+                    height = event.window.data2;
                 }
             }
         }
@@ -371,9 +383,11 @@ int main(int argc, char *argv[])
         SDL_RenderFillRect(renderer, rect_in_camera_space(camera, 0, 0, tX, tY));
 
         // Tile rendering
-        for (int x = 0; x < tX; x++)
+        int max_x = fmin(tX, -camera.x + width / camera.size + 1);
+        int max_y = fmin(tY, -camera.y + height / camera.size + 1);
+        for (int x = fmax(0, -camera.x - 3); x < max_x; x++)
         {
-            for (int y = 0; y < tY; y++)
+            for (int y = fmax(0, -camera.y - 3); y < max_y; y++)
             {
                 render_tile(renderer, camera, tiles + (y * tY + x), types, x, y);
             }
@@ -414,7 +428,7 @@ int main(int argc, char *argv[])
         {
             SDL_FreeSurface(fps_surface);
             SDL_DestroyTexture(fps_texture);
-            sprintf(fps_buffer, "FPS: %d", frames);
+            sprintf(fps_buffer, "FPS: %d, x: %d, y: %d, size: %f", frames, width, height, camera.size);
             fps_surface = TTF_RenderText_Solid(font, fps_buffer, text_color);
             fps_texture = SDL_CreateTextureFromSurface(renderer, fps_surface);
             frames = 0;
