@@ -16,10 +16,15 @@ typedef struct Camera
 typedef struct TileType
 {
     SDL_Texture *texture;
-    char size_x;
-    char size_y;
-    // TODO: remove, you can get it by subtract
-    char id;
+    unsigned int anim_tile_x;
+    unsigned int anim_tile_y;
+    unsigned char size_x;
+    unsigned char size_y;
+    unsigned char x_map;
+    unsigned char y_offset;
+    unsigned char animation_modulo;
+    unsigned char animation_mask;
+    unsigned char id;
 } TileType;
 
 typedef struct Tile Tile;
@@ -29,8 +34,8 @@ typedef struct Tile
     Tile *base_tile;
     int x;
     int y;
+    unsigned int flags;
     char type;
-    char flags;
 } Tile;
 
 typedef struct KeyStates
@@ -58,11 +63,21 @@ static inline char tile_is_not_empty(Tile *tile)
     return tile->base_tile->type != -1;
 }
 
-void render_tile(SDL_Renderer *renderer, Camera camera, Tile *tile, TileType *types, int x, int y)
+void render_tile(SDL_Renderer *renderer, Camera camera, Tile *tile, TileType *types, int x, int y, char advance_animation)
 {
-    if (tile->type != -1)
+    if (tile->type != -1 && advance_animation)
     {
-        SDL_RenderCopy(renderer, types[tile->type].texture, NULL, rect_in_camera_space(camera, x, y, types[tile->type].size_x, types[tile->type].size_y));
+        TileType type = types[tile->type];
+        if (advance_animation && types[tile->type].animation_modulo != 1)
+        {
+            printf("%d %d %d\n", type.anim_tile_x, ((tile->flags & type.animation_mask) & type.x_map) * type.anim_tile_x, ((tile->flags & type.animation_mask) >> type.y_offset) * type.anim_tile_y);
+            tile->flags = (tile->flags & ~(types[tile->type].animation_mask))         // clear animanion_frame
+                          | ((tile->flags + 1) % types[tile->type].animation_modulo); // set new animation_frame
+        }
+        // TODO: animation frame lookups?
+        SDL_RenderCopy(renderer, types[tile->type].texture,
+                       types[tile->type].animation_modulo == 1 ? NULL : &(SDL_Rect){((tile->flags & type.animation_mask) & type.x_map) * type.anim_tile_x, ((tile->flags & type.animation_mask) >> type.y_offset) * type.anim_tile_y, type.anim_tile_x, type.anim_tile_y},
+                       rect_in_camera_space(camera, x, y, types[tile->type].size_x, types[tile->type].size_y));
     }
 }
 
@@ -128,6 +143,25 @@ static inline int get_mouse_id(int x, int y, Camera camera, int type_in_hand, Ti
     return y * tY + x;
 }
 
+// For no animation have map_x, map_y, width and height at 0
+TileType create_type(SDL_Renderer *renderer, const char *file, int size_x, int size_y, int tile_map_x_pow, int tile_map_y_pow, int text_width, int text_height)
+{
+    static int texture_type_id;
+    SDL_Texture *texture = IMG_LoadTexture(renderer, file);
+    SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
+    return (TileType){
+        .texture = texture,
+        .anim_tile_x = text_width / pow(2.0, tile_map_x_pow),
+        .anim_tile_y = text_height / pow(2.0, tile_map_y_pow),
+        .size_x = size_x,
+        .size_y = size_y,
+        .x_map = tile_map_x_pow,
+        .y_offset = tile_map_y_pow,
+        .animation_modulo = pow(2.0, (double)(tile_map_x_pow + tile_map_y_pow)),
+        .animation_mask = ((char)pow(2.0, (double)(tile_map_x_pow + tile_map_y_pow)) - 1),
+        .id = texture_type_id++};
+}
+
 int main(int argc, char *argv[])
 {
     int width = 1920;
@@ -147,12 +181,12 @@ int main(int argc, char *argv[])
         window,
         -1,
         // TODO: add VSYNC
-        SDL_RENDERER_ACCELERATED);
+        SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 
     SDL_Event event;
     int running = 1;
-    SDL_Texture *chessT = IMG_LoadTexture(renderer, "../images/sprite.png");
-    SDL_Texture *beaconT = IMG_LoadTexture(renderer, "../images/beacon-bottom.png");
+    // SDL_Texture *chessT = IMG_LoadTexture(renderer, "../images/sprite.png");
+    // SDL_Texture *beaconT = IMG_LoadTexture(renderer, "../images/beacon-bottom.png");
     int movement_x = 2;
     int movement_y = 2;
     Camera camera = {1, 1, 100};
@@ -160,9 +194,14 @@ int main(int argc, char *argv[])
     float camera_scroll_factor = 1;
     KeyStates keyStates = {0, 0, 0, 0, 0, 0};
     Tile *tiles = (Tile *)(malloc(sizeof(Tile) * tX * tY));
-    TileType types[] = {{beaconT, 1, 1, 0}, {chessT, 2, 2, 1}, {beaconT, 3, 3, 2}, {chessT, 4, 4, 3}, {beaconT, 5, 5, 4}};
-    SDL_SetTextureBlendMode(types[0].texture, SDL_BLENDMODE_BLEND);
-    SDL_SetTextureBlendMode(types[1].texture, SDL_BLENDMODE_BLEND);
+    // TileType types[] = {{beaconT, 1, 1, 0}, {chessT, 2, 2, 1}, {beaconT, 3, 3, 2}, {chessT, 4, 4, 3}, {beaconT, 5, 5, 4}};
+    TileType types[] = {
+        create_type(renderer, "../images/beacon-bottom.png", 1, 1, 0, 0, 0, 0),
+        create_type(renderer, "../images/beacon-bottom.png", 2, 2, 0, 0, 0, 0),
+        create_type(renderer, "../data/base/graphics/entity/assembling-machine-1/assembling-machine-1.png", 3, 3, 3, 2, 1712, 904),
+        create_type(renderer, "../images/beacon-bottom.png", 4, 4, 0, 0, 0, 0),
+        create_type(renderer, "../images/sprite.png", 5, 5, 0, 0, 0, 0),
+    };
     SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
     for (int x = 0; x < tX; x++)
     {
@@ -187,7 +226,7 @@ int main(int argc, char *argv[])
     SDL_Color text_color = {255, 255, 255};
     printf("%d\n", font == NULL);
 
-    char fps_buffer[100];
+    char fps_buffer[500];
     SDL_Texture *fps_texture;
     SDL_Surface *fps_surface;
     Uint32 last_frame = SDL_GetTicks();
@@ -195,9 +234,10 @@ int main(int argc, char *argv[])
     Uint64 NOW = SDL_GetPerformanceCounter();
     Uint64 LAST = 0;
     double deltaTime = 0;
-
+    int animate = 0;
     while (running)
     {
+        tile_place(tiles, tiles, types[2]);
         // delta time
         LAST = NOW;
         NOW = SDL_GetPerformanceCounter();
@@ -271,6 +311,7 @@ int main(int argc, char *argv[])
                 }
                 else if (event.key.keysym.sym == SDLK_q)
                 {
+                    animate = !animate;
                     if (mouse_tile && type_in_hand == -1)
                     {
                         type_in_hand = mouse_tile->base_tile->type;
@@ -389,7 +430,7 @@ int main(int argc, char *argv[])
         {
             for (int y = fmax(0, -camera.y - 3); y < max_y; y++)
             {
-                render_tile(renderer, camera, tiles + (y * tY + x), types, x, y);
+                render_tile(renderer, camera, tiles + (y * tY + x), types, x, y, animate);
             }
         }
 
@@ -398,6 +439,7 @@ int main(int argc, char *argv[])
         {
             // Render preview
             SDL_SetTextureAlphaMod(types[type_in_hand].texture, 128);
+            // TODO: add src_rect lookup
             SDL_RenderCopy(renderer, types[type_in_hand].texture, NULL, rect_in_camera_space(camera, mouse_tile->x, mouse_tile->y, types[type_in_hand].size_x, types[type_in_hand].size_y));
             SDL_SetTextureAlphaMod(types[type_in_hand].texture, 255);
             // Render blocking tiles
@@ -428,7 +470,7 @@ int main(int argc, char *argv[])
         {
             SDL_FreeSurface(fps_surface);
             SDL_DestroyTexture(fps_texture);
-            sprintf(fps_buffer, "FPS: %d, x: %d, y: %d, size: %f", frames, width, height, camera.size);
+            sprintf(fps_buffer, "FPS: %d, x: %d, y: %d, size: %f animate: %d", frames, animate, height, camera.size, animate);
             fps_surface = TTF_RenderText_Solid(font, fps_buffer, text_color);
             fps_texture = SDL_CreateTextureFromSurface(renderer, fps_surface);
             frames = 0;
@@ -443,6 +485,7 @@ int main(int argc, char *argv[])
 
     free(tiles);
     TTF_CloseFont(font);
+    // TODO: destroy textures
 
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
