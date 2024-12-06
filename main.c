@@ -65,12 +65,12 @@ static inline char tile_is_not_empty(Tile *tile)
 
 void render_tile(SDL_Renderer *renderer, Camera camera, Tile *tile, TileType *types, int x, int y, char advance_animation)
 {
-    if (tile->type != -1 && advance_animation)
+    if (tile->type != -1)
     {
         TileType type = types[tile->type];
         if (advance_animation && types[tile->type].animation_modulo != 1)
         {
-            printf("%d %d %d\n", type.anim_tile_x, ((tile->flags & type.animation_mask) & type.x_map) * type.anim_tile_x, ((tile->flags & type.animation_mask) >> type.y_offset) * type.anim_tile_y);
+            printf("%d %d %d\n", type.anim_tile_y, ((tile->flags & type.animation_mask) & type.x_map) * type.anim_tile_x, ((tile->flags & type.animation_mask) >> type.y_offset) * type.anim_tile_y);
             tile->flags = (tile->flags & ~(types[tile->type].animation_mask))         // clear animanion_frame
                           | ((tile->flags + 1) % types[tile->type].animation_modulo); // set new animation_frame
         }
@@ -156,7 +156,7 @@ TileType create_type(SDL_Renderer *renderer, const char *file, int size_x, int s
         .size_x = size_x,
         .size_y = size_y,
         .x_map = tile_map_x_pow,
-        .y_offset = tile_map_y_pow,
+        .y_offset = tile_map_y_pow + 1,
         .animation_modulo = pow(2.0, (double)(tile_map_x_pow + tile_map_y_pow)),
         .animation_mask = ((char)pow(2.0, (double)(tile_map_x_pow + tile_map_y_pow)) - 1),
         .id = texture_type_id++};
@@ -226,7 +226,7 @@ int main(int argc, char *argv[])
     SDL_Color text_color = {255, 255, 255};
     printf("%d\n", font == NULL);
 
-    char fps_buffer[500];
+    char fps_buffer[50];
     SDL_Texture *fps_texture;
     SDL_Surface *fps_surface;
     Uint32 last_frame = SDL_GetTicks();
@@ -238,6 +238,7 @@ int main(int argc, char *argv[])
     while (running)
     {
         tile_place(tiles, tiles, types[2]);
+        animate = 1;
         // delta time
         LAST = NOW;
         NOW = SDL_GetPerformanceCounter();
@@ -311,7 +312,7 @@ int main(int argc, char *argv[])
                 }
                 else if (event.key.keysym.sym == SDLK_q)
                 {
-                    animate = !animate;
+                    animate = 1;
                     if (mouse_tile && type_in_hand == -1)
                     {
                         type_in_hand = mouse_tile->base_tile->type;
@@ -470,7 +471,7 @@ int main(int argc, char *argv[])
         {
             SDL_FreeSurface(fps_surface);
             SDL_DestroyTexture(fps_texture);
-            sprintf(fps_buffer, "FPS: %d, x: %d, y: %d, size: %f animate: %d", frames, animate, height, camera.size, animate);
+            sprintf(fps_buffer, "FPS: %d", frames);
             fps_surface = TTF_RenderText_Solid(font, fps_buffer, text_color);
             fps_texture = SDL_CreateTextureFromSurface(renderer, fps_surface);
             frames = 0;
