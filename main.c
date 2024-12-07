@@ -16,6 +16,7 @@ typedef struct Camera
 typedef struct TileType
 {
     SDL_Texture *texture;
+    SDL_Rect *animation_rects;
     unsigned int anim_tile_x;
     unsigned int anim_tile_y;
     unsigned char size_x;
@@ -63,6 +64,11 @@ static inline char tile_is_not_empty(Tile *tile)
     return tile->base_tile->type != -1;
 }
 
+SDL_Rect get_animation_rect_general(unsigned int index, TileType type)
+{
+    return (SDL_Rect){((index & type.animation_mask) & type.x_map) * type.anim_tile_x, ((index & type.animation_mask) >> type.y_offset) * type.anim_tile_y, type.anim_tile_x, type.anim_tile_y};
+}
+
 void render_tile(SDL_Renderer *renderer, Camera camera, Tile *tile, TileType *types, int x, int y, char advance_animation)
 {
     if (tile->type != -1)
@@ -74,9 +80,8 @@ void render_tile(SDL_Renderer *renderer, Camera camera, Tile *tile, TileType *ty
             tile->flags = (tile->flags & ~(types[tile->type].animation_mask))         // clear animanion_frame
                           | ((tile->flags + 1) % types[tile->type].animation_modulo); // set new animation_frame
         }
-        // TODO: animation frame lookups?
         SDL_RenderCopy(renderer, types[tile->type].texture,
-                       types[tile->type].animation_modulo == 1 ? NULL : &(SDL_Rect){((tile->flags & type.animation_mask) & type.x_map) * type.anim_tile_x, ((tile->flags & type.animation_mask) >> type.y_offset) * type.anim_tile_y, type.anim_tile_x, type.anim_tile_y},
+                       types[tile->type].animation_rects + (tile->flags & types[tile->type].animation_mask),
                        rect_in_camera_space(camera, x, y, types[tile->type].size_x, types[tile->type].size_y));
     }
 }
@@ -149,7 +154,7 @@ TileType create_type(SDL_Renderer *renderer, const char *file, int size_x, int s
     static int texture_type_id;
     SDL_Texture *texture = IMG_LoadTexture(renderer, file);
     SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
-    return (TileType){
+    TileType type = {
         .texture = texture,
         .anim_tile_x = text_width / pow(2.0, tile_map_x_pow),
         .anim_tile_y = text_height / pow(2.0, tile_map_y_pow),
@@ -160,6 +165,21 @@ TileType create_type(SDL_Renderer *renderer, const char *file, int size_x, int s
         .animation_modulo = pow(2.0, (double)(tile_map_x_pow + tile_map_y_pow)),
         .animation_mask = ((char)pow(2.0, (double)(tile_map_x_pow + tile_map_y_pow)) - 1),
         .id = texture_type_id++};
+
+    if (type.animation_modulo == 1)
+    {
+        type.animation_rects = NULL;
+    }
+    else
+    {
+        type.animation_rects = (SDL_Rect *)(malloc(sizeof(SDL_Rect) * pow(2.0, (double)(tile_map_x_pow + tile_map_y_pow))));
+        for (int i = 0; i <= type.animation_modulo; i++)
+        {
+            type.animation_rects[i] = get_animation_rect_general(i, type);
+        }
+    }
+
+    return type;
 }
 
 int main(int argc, char *argv[])
@@ -486,7 +506,7 @@ int main(int argc, char *argv[])
 
     free(tiles);
     TTF_CloseFont(font);
-    // TODO: destroy textures
+    // TODO: destroy textures and types
 
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
