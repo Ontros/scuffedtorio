@@ -7,7 +7,7 @@ SET(ADDITIONAL_COMPILER_FLAGS "-lm")
 add_definitions(-DSDL_WAYLAND_LIBDECOR=1)
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${ADDITIONAL_COMPILER_FLAGS}")
 
-add_executable(scuffedtorio main.c)
+add_executable(scuffedtorio src/main.c)
 
 find_package(SDL2 REQUIRED)
 

@@ -1,43 +1,8 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
-const int tX = 16 * 16 * 4;
-const int tY = 16 * 16 * 4;
-
-// x,y - pos of top left
-// size - sizeo of a tile
-typedef struct Camera
-{
-    float x;
-    float y;
-    float size;
-} Camera;
-
-typedef struct TileType
-{
-    SDL_Texture *texture;
-    SDL_Rect *animation_rects;
-    unsigned int anim_tile_x;
-    unsigned int anim_tile_y;
-    unsigned char size_x;
-    unsigned char size_y;
-    unsigned char x_map;
-    unsigned char y_offset;
-    unsigned char animation_modulo;
-    unsigned char animation_mask;
-    unsigned char id;
-} TileType;
-
-typedef struct Tile Tile;
-
-typedef struct Tile
-{
-    Tile *base_tile;
-    int x;
-    int y;
-    unsigned int flags;
-    char type;
-} Tile;
+#include "logic/camera.h"
+#include "tile/tile.h"
 
 typedef struct KeyStates
 {
@@ -141,13 +106,6 @@ TileType *tile_destroy(Tile *tiles, Tile *base_tile, TileType *types)
     }
 }
 
-static inline int get_mouse_id(int x, int y, Camera camera, int type_in_hand, TileType *types)
-{
-    x = (int)(((float)(x) - (camera.x + ((type_in_hand != -1) ? ((types[type_in_hand].size_x - 1) / 2.0f) : 0)) * camera.size) / camera.size);
-    y = (int)(((float)(y) - (camera.y + ((type_in_hand != -1) ? ((types[type_in_hand].size_y - 1) / 2.0f) : 0)) * camera.size) / camera.size);
-    return y * tY + x;
-}
-
 // For no animation have map_x, map_y, width and height at 0
 TileType create_type(SDL_Renderer *renderer, const char *file, int size_x, int size_y, int tile_map_x_pow, int tile_map_y_pow, int text_width, int text_height)
 {
@@ -240,7 +198,6 @@ int main(int argc, char *argv[])
     int mouse_id, type_in_hand, mouse_x, mouse_y;
     Tile *mouse_tile = NULL;
 
-    // TTF_Font *font = TTF_OpenFont("../data/core/fonts/TitilliumWeb-Regular.ttf", 24);
     TTF_Init();
     TTF_Font *font = TTF_OpenFont("../data/core/fonts/TitilliumWeb-SemiBold.ttf", 24);
     SDL_Color text_color = {255, 255, 255};
@@ -460,8 +417,7 @@ int main(int argc, char *argv[])
         {
             // Render preview
             SDL_SetTextureAlphaMod(types[type_in_hand].texture, 128);
-            // TODO: add src_rect lookup
-            SDL_RenderCopy(renderer, types[type_in_hand].texture, NULL, rect_in_camera_space(camera, mouse_tile->x, mouse_tile->y, types[type_in_hand].size_x, types[type_in_hand].size_y));
+            SDL_RenderCopy(renderer, types[type_in_hand].texture, types[type_in_hand].animation_rects, rect_in_camera_space(camera, mouse_tile->x, mouse_tile->y, types[type_in_hand].size_x, types[type_in_hand].size_y));
             SDL_SetTextureAlphaMod(types[type_in_hand].texture, 255);
             // Render blocking tiles
             for (int x = mouse_tile->x; x < (mouse_tile->x + types[type_in_hand].size_x) && x >= 0 && x < tX; x++)
