@@ -1,4 +1,6 @@
 #pragma once
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_ttf.h>
 const int tX = 16 * 16 * 4;
 const int tY = 16 * 16 * 4;
 // x,y - pos of top left
@@ -26,8 +28,6 @@ typedef struct Tile
     unsigned int flags;
     char type;
 } Tile;
-typedef struct SDL_Texture SDL_Texture;
-typedef struct SDL_Rect SDL_Rect;
 
 typedef struct TileType
 {
@@ -53,3 +53,12 @@ typedef struct KeyStates
     int mouse_left : 1;
     int mouse_right : 1;
 } KeyStates;
+
+typedef struct Text
+{
+    char *buffer;
+    TTF_Font *font;
+    SDL_Texture *texture;
+    SDL_Surface *surface;
+    SDL_Rect *rect;
+} Text;

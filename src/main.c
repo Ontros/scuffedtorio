@@ -1,6 +1,7 @@
 #include "rendering/camera.h"
 #include "rendering/sdl_wrapper.h"
 #include "logic/tile.h"
+#include "rendering/ui/text.h"
 
 int main(int argc, char *argv[])
 {
@@ -18,14 +19,8 @@ int main(int argc, char *argv[])
     int mouse_id, type_in_hand, mouse_x, mouse_y;
     Tile *mouse_tile = NULL;
 
-    TTF_Init();
-    TTF_Font *font = TTF_OpenFont("../data/core/fonts/TitilliumWeb-SemiBold.ttf", 24);
-    SDL_Color text_color = {255, 255, 255};
-    printf("%d\n", font == NULL);
+    Text fps_text = text_init("../data/core/fonts/TitilliumWeb-SemiBold.ttf", 24, 50);
 
-    char fps_buffer[50];
-    SDL_Texture *fps_texture;
-    SDL_Surface *fps_surface;
     Uint32 last_frame = SDL_GetTicks();
     int frames = 0;
     Uint64 NOW = SDL_GetPerformanceCounter();
@@ -267,23 +262,18 @@ int main(int argc, char *argv[])
         frames++;
         if (SDL_GetTicks() - last_frame >= 1000)
         {
-            SDL_FreeSurface(fps_surface);
-            SDL_DestroyTexture(fps_texture);
-            sprintf(fps_buffer, "FPS: %d", frames);
-            fps_surface = TTF_RenderText_Solid(font, fps_buffer, text_color);
-            fps_texture = SDL_CreateTextureFromSurface(renderer, fps_surface);
+            sprintf(fps_text.buffer, "FPS: %d", frames);
+            text_create(renderer, &fps_text, 0, 0);
             frames = 0;
             last_frame += 1000;
         }
 
-        if (fps_texture)
-            SDL_RenderCopy(renderer, fps_texture, NULL, &(SDL_Rect){0, 0, fps_surface->w, fps_surface->h});
-
+        text_render(renderer, fps_text);
         SDL_RenderPresent(renderer);
     }
 
     free(tiles);
-    TTF_CloseFont(font);
+    text_free(fps_text);
 
     for (int i = 0; i < type_amount; i++)
     {
@@ -292,6 +282,7 @@ int main(int argc, char *argv[])
 
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
+    TTF_Quit();
     SDL_Quit();
 
     return 0;

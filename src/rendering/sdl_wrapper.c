@@ -17,4 +17,5 @@ int sdl_init(Camera camera, SDL_Window **window, SDL_Renderer **renderer)
         SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 
     SDL_SetRenderDrawBlendMode(*renderer, SDL_BLENDMODE_BLEND);
+    TTF_Init();
 }
