@@ -37,3 +37,13 @@ typedef struct TileType
     unsigned char animation_mask;
     unsigned char id;
 } TileType;
+
+typedef struct KeyStates
+{
+    int up : 1;
+    int down : 1;
+    int left : 1;
+    int right : 1;
+    int mouse_left : 1;
+    int mouse_right : 1;
+} KeyStates;
