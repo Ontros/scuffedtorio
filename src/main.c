@@ -1,37 +1,18 @@
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>
-#include <SDL2/SDL_ttf.h>
-#include "logic/camera.h"
-#include "tile/tile.h"
+#include "rendering/camera.h"
+#include "rendering/sdl_wrapper.h"
+#include "logic/tile.h"
 
 int main(int argc, char *argv[])
 {
-    int width = 1920;
-    int height = 1080;
-
-    SDL_Init(SDL_INIT_VIDEO);
-    SDL_Log("lol");
-
-    SDL_Window *window = SDL_CreateWindow(
-        "Scuffedtorio",
-        SDL_WINDOWPOS_CENTERED,
-        SDL_WINDOWPOS_CENTERED,
-        width,
-        height,
-        SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
-    SDL_Renderer *renderer = SDL_CreateRenderer(
-        window,
-        -1,
-        // TODO: add VSYNC
-        SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+    Camera camera = {1, 1, 100, 1920, 1080};
+    SDL_Window *window = NULL;
+    SDL_Renderer *renderer = NULL;
+    sdl_init(camera, &window, &renderer);
 
     SDL_Event event;
     int running = 1;
-    // SDL_Texture *chessT = IMG_LoadTexture(renderer, "../images/sprite.png");
-    // SDL_Texture *beaconT = IMG_LoadTexture(renderer, "../images/beacon-bottom.png");
     int movement_x = 2;
     int movement_y = 2;
-    Camera camera = {1, 1, 100};
     float camera_speed_factor = 7;
     float camera_scroll_factor = 1;
     KeyStates keyStates = {0, 0, 0, 0, 0, 0};
@@ -219,8 +200,8 @@ int main(int argc, char *argv[])
             {
                 if (event.window.type == SDL_WINDOWEVENT_SIZE_CHANGED || event.window.event == SDL_WINDOWEVENT_RESIZED)
                 {
-                    width = event.window.data1;
-                    height = event.window.data2;
+                    camera.width = event.window.data1;
+                    camera.height = event.window.data2;
                 }
             }
         }
@@ -266,8 +247,8 @@ int main(int argc, char *argv[])
         SDL_RenderFillRect(renderer, rect_in_camera_space(camera, 0, 0, tX, tY));
 
         // Tile rendering
-        int max_x = fmin(tX, -camera.x + width / camera.size + 1);
-        int max_y = fmin(tY, -camera.y + height / camera.size + 1);
+        int max_x = fmin(tX, -camera.x + camera.width / camera.size + 1);
+        int max_y = fmin(tY, -camera.y + camera.height / camera.size + 1);
         for (int x = fmax(0, -camera.x - 3); x < max_x; x++)
         {
             for (int y = fmax(0, -camera.y - 3); y < max_y; y++)
@@ -326,7 +307,7 @@ int main(int argc, char *argv[])
 
     free(tiles);
     TTF_CloseFont(font);
-    // TODO: destroy textures and types
+    // TODO: destroy textures, tiles and types
 
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);

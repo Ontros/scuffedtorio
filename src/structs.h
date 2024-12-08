@@ -8,6 +8,8 @@ typedef struct Camera
     float x;
     float y;
     float size;
+    float width;
+    float height;
 } Camera;
 
 typedef struct Tile Tile;
