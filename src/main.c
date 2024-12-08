@@ -32,6 +32,7 @@ int main(int argc, char *argv[])
     Uint64 LAST = 0;
     double deltaTime = 0;
     int animate = 0;
+
     while (running)
     {
         tile_place(tiles, tiles, types[2]);
@@ -283,7 +284,11 @@ int main(int argc, char *argv[])
 
     free(tiles);
     TTF_CloseFont(font);
-    // TODO: destroy textures, tiles and types
+
+    for (int i = 0; i < type_amount; i++)
+    {
+        type_free(types[i]);
+    }
 
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);

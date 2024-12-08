@@ -1,5 +1,7 @@
 #include "tiletype.h"
 #include "../structs.h"
+// TODO: update
+const int type_amount = 5;
 
 SDL_Rect get_animation_rect_general(unsigned int index, TileType type)
 {
@@ -49,4 +51,10 @@ TileType *types_init(SDL_Renderer *renderer)
     types[3] = create_type(renderer, "../images/beacon-bottom.png", 4, 4, 0, 0, 0, 0);
     types[4] = create_type(renderer, "../images/sprite.png", 5, 5, 0, 0, 0, 0);
     return types;
+}
+
+void type_free(TileType type)
+{
+    SDL_DestroyTexture(type.texture);
+    free(type.animation_rects);
 }
