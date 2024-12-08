@@ -10,6 +10,10 @@ typedef struct Camera
     float size;
     float width;
     float height;
+    int movement_x;
+    int movement_y;
+    float speed_factor;
+    float scroll_factor;
 } Camera;
 
 typedef struct Tile Tile;

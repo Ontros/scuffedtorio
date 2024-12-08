@@ -1,6 +1,5 @@
 #include "tiletype.h"
 #include "../structs.h"
-#include <SDL2/SDL.h>
 
 SDL_Rect get_animation_rect_general(unsigned int index, TileType type)
 {
@@ -39,4 +38,15 @@ TileType create_type(SDL_Renderer *renderer, const char *file, int size_x, int s
     }
 
     return type;
+}
+
+TileType *types_init(SDL_Renderer *renderer)
+{
+    TileType *types = malloc(sizeof(TileType) * 5);
+    types[0] = create_type(renderer, "../images/beacon-bottom.png", 1, 1, 0, 0, 0, 0);
+    types[1] = create_type(renderer, "../images/beacon-bottom.png", 2, 2, 0, 0, 0, 0);
+    types[2] = create_type(renderer, "../data/base/graphics/entity/assembling-machine-1/assembling-machine-1.png", 3, 3, 3, 2, 1712, 904);
+    types[3] = create_type(renderer, "../images/beacon-bottom.png", 4, 4, 0, 0, 0, 0);
+    types[4] = create_type(renderer, "../images/sprite.png", 5, 5, 0, 0, 0, 0);
+    return types;
 }

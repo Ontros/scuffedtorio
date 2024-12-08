@@ -4,41 +4,16 @@
 
 int main(int argc, char *argv[])
 {
-    Camera camera = {1, 1, 100, 1920, 1080};
+    Camera camera = {1, 1, 100, 1920, 1080, 2, 2, 7, 1};
     SDL_Window *window = NULL;
     SDL_Renderer *renderer = NULL;
     sdl_init(camera, &window, &renderer);
 
-    SDL_Event event;
+    Tile *tiles = tiles_malloc();
+    TileType *types = types_init(renderer);
+
     int running = 1;
-    int movement_x = 2;
-    int movement_y = 2;
-    float camera_speed_factor = 7;
-    float camera_scroll_factor = 1;
     KeyStates keyStates = {0, 0, 0, 0, 0, 0};
-    Tile *tiles = (Tile *)(malloc(sizeof(Tile) * tX * tY));
-    // TileType types[] = {{beaconT, 1, 1, 0}, {chessT, 2, 2, 1}, {beaconT, 3, 3, 2}, {chessT, 4, 4, 3}, {beaconT, 5, 5, 4}};
-    TileType types[] = {
-        create_type(renderer, "../images/beacon-bottom.png", 1, 1, 0, 0, 0, 0),
-        create_type(renderer, "../images/beacon-bottom.png", 2, 2, 0, 0, 0, 0),
-        create_type(renderer, "../data/base/graphics/entity/assembling-machine-1/assembling-machine-1.png", 3, 3, 3, 2, 1712, 904),
-        create_type(renderer, "../images/beacon-bottom.png", 4, 4, 0, 0, 0, 0),
-        create_type(renderer, "../images/sprite.png", 5, 5, 0, 0, 0, 0),
-    };
-    SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
-    for (int x = 0; x < tX; x++)
-    {
-        for (int y = 0; y < tY; y++)
-        {
-            Tile *cur_tile = tiles + (y * tY + x);
-            cur_tile->base_tile = cur_tile;
-            cur_tile->type = -1;
-            cur_tile->flags = 0;
-            cur_tile->x = x;
-            cur_tile->y = y;
-        }
-        SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
-    }
 
     int mouse_id, type_in_hand, mouse_x, mouse_y;
     Tile *mouse_tile = NULL;
@@ -86,6 +61,7 @@ int main(int argc, char *argv[])
         }
 
         // Events
+        SDL_Event event;
         while (SDL_PollEvent(&event))
         {
             if (event.type == SDL_QUIT)
@@ -166,7 +142,7 @@ int main(int argc, char *argv[])
             }
             else if (event.type == SDL_MOUSEWHEEL)
             {
-                camera.size += (float)event.wheel.y * camera_scroll_factor;
+                camera.size += (float)event.wheel.y * camera.scroll_factor;
                 if (camera.size < 1)
                 {
                     camera.size = 1;
@@ -208,19 +184,19 @@ int main(int argc, char *argv[])
         // Camera movement
         if (keyStates.up)
         {
-            camera.y += deltaTime * camera_speed_factor / camera.size;
+            camera.y += deltaTime * camera.speed_factor / camera.size;
         }
         if (keyStates.down)
         {
-            camera.y -= deltaTime * camera_speed_factor / camera.size;
+            camera.y -= deltaTime * camera.speed_factor / camera.size;
         }
         if (keyStates.left)
         {
-            camera.x += deltaTime * camera_speed_factor / camera.size;
+            camera.x += deltaTime * camera.speed_factor / camera.size;
         }
         if (keyStates.right)
         {
-            camera.x -= deltaTime * camera_speed_factor / camera.size;
+            camera.x -= deltaTime * camera.speed_factor / camera.size;
         }
         if (keyStates.mouse_left)
         {

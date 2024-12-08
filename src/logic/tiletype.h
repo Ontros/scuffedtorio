@@ -1,5 +1,8 @@
 #pragma once
+#include <SDL2/SDL.h>
 #include "tiletype.c"
+
+TileType *types_init(SDL_Renderer *rederer);
 
 SDL_Rect get_animation_rect_general(unsigned int index, TileType type);
 

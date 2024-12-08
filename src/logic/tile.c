@@ -81,3 +81,21 @@ TileType *tile_destroy(Tile *tiles, Tile *base_tile, TileType *types)
         return NULL;
     }
 }
+
+Tile *tiles_malloc()
+{
+    Tile *tiles = (Tile *)(malloc(sizeof(Tile) * tX * tY));
+    for (int x = 0; x < tX; x++)
+    {
+        for (int y = 0; y < tY; y++)
+        {
+            Tile *cur_tile = tiles + (y * tY + x);
+            cur_tile->base_tile = cur_tile;
+            cur_tile->type = -1;
+            cur_tile->flags = 0;
+            cur_tile->x = x;
+            cur_tile->y = y;
+        }
+    }
+    return tiles;
+}
