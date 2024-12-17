@@ -86,6 +86,10 @@ TileType type_create_static_section(int texture_type_id, SDL_Renderer *renderer,
     return type;
 }
 
+TileType type_create_mining_drill()
+{
+}
+
 TileType *types_init(SDL_Renderer *renderer)
 {
     TileType *types = malloc(sizeof(TileType) * type_amount);

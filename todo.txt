@@ -1,0 +1,6 @@
+Vyresit logic data
+pripravit tily s placeholder texturama
+entity
+ui + logika
+zvuky
+udelat si to hezky
