@@ -27,11 +27,15 @@ int main(int argc, char *argv[])
     Uint64 LAST = 0;
     double deltaTime = 0;
     int animate = 0;
+    // for (int i = 0; i < 64; i++)
+    // {
+    //     tile_place(tiles, tiles + i, types[5]);
+    //     tiles[i].flags = i;
+    // }
 
     while (running)
     {
-        tile_place(tiles, tiles, types[2]);
-        animate = 1;
+        animate = !(frames % 1000);
         // delta time
         LAST = NOW;
         NOW = SDL_GetPerformanceCounter();
@@ -103,6 +107,10 @@ int main(int argc, char *argv[])
                 else if (event.key.keysym.sym == SDLK_5)
                 {
                     type_in_hand = 4;
+                }
+                else if (event.key.keysym.sym == SDLK_6)
+                {
+                    type_in_hand = 5;
                 }
                 else if (event.key.keysym.sym == SDLK_q)
                 {

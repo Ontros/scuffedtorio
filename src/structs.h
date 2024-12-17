@@ -18,6 +18,16 @@ typedef struct Camera
     float scroll_factor;
 } Camera;
 
+typedef struct
+{
+    SDL_Texture *texture;
+    float x_offset;
+    float y_offset;
+    float x_size;
+    float y_size;
+    unsigned char
+} TextureOffset;
+
 typedef struct Tile Tile;
 
 typedef struct Tile
@@ -32,6 +42,7 @@ typedef struct Tile
 typedef struct TileType
 {
     SDL_Texture *texture;
+    TextureOffset *sub_texture;
     SDL_Rect *animation_rects;
     unsigned int anim_tile_x;
     unsigned int anim_tile_y;
@@ -42,6 +53,7 @@ typedef struct TileType
     unsigned char animation_modulo;
     unsigned char animation_mask;
     unsigned char id;
+    unsigned char textures_count;
 } TileType;
 
 typedef struct KeyStates
