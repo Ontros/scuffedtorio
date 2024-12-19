@@ -2,6 +2,7 @@
 #include "rendering/sdl_wrapper.h"
 #include "logic/tile.h"
 #include "rendering/ui/text.h"
+#include "logic/inventory_slot.h"
 
 int main(int argc, char *argv[])
 {
@@ -23,6 +24,7 @@ int main(int argc, char *argv[])
     Tile *mouse_tile = NULL;
 
     Text fps_text = text_init("../data/core/fonts/TitilliumWeb-SemiBold.ttf", 24, 50);
+    InventorySlot *inventory = inventory_init(renderer);
 
     Uint32 last_frame = SDL_GetTicks();
     int frames = 0;
@@ -292,6 +294,7 @@ int main(int argc, char *argv[])
     }
 
     SDL_DestroyRenderer(renderer);
+    inventory_free(inventory);
     SDL_DestroyWindow(window);
     TTF_Quit();
     SDL_Quit();

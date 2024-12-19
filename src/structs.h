@@ -29,8 +29,8 @@ typedef struct
 
 typedef struct
 {
-    unsigned char item;
-    unsigned char cost;
+    int item;
+    int count;
 } Tile_Cost;
 
 typedef struct
