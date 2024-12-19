@@ -93,6 +93,7 @@ Tile *tiles_malloc()
             cur_tile->base_tile = cur_tile;
             cur_tile->type = -1;
             cur_tile->flags = 0;
+            cur_tile->health = -1;
             cur_tile->x = x;
             cur_tile->y = y;
         }

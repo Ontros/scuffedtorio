@@ -4,3 +4,4 @@ entity
 ui + logika
 zvuky
 udelat si to hezky
+free all mallocs

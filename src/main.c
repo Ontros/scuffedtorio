@@ -16,7 +16,10 @@ int main(int argc, char *argv[])
     int running = 1;
     KeyStates keyStates = {0, 0, 0, 0, 0, 0};
 
-    int mouse_id, type_in_hand, mouse_x, mouse_y;
+    int mouse_id = -1;
+    int type_in_hand = -1;
+    int mouse_x = 0;
+    int mouse_y = 0;
     Tile *mouse_tile = NULL;
 
     Text fps_text = text_init("../data/core/fonts/TitilliumWeb-SemiBold.ttf", 24, 50);

@@ -27,6 +27,12 @@ typedef struct
     float y_size;
 } TextureOffset;
 
+typedef struct
+{
+    unsigned char item;
+    unsigned char cost;
+} Tile_Cost;
+
 typedef struct Tile Tile;
 
 typedef struct Tile
@@ -36,12 +42,15 @@ typedef struct Tile
     int y;
     unsigned int flags;
     char type;
+    char health;
 } Tile;
 
 typedef struct TileType
 {
     SDL_Texture *texture;
     SDL_Rect *animation_rects;
+    Tile_Cost *costs;
+    char *name;
     unsigned int anim_tile_x;
     unsigned int anim_tile_y;
     unsigned char size_x;
@@ -52,6 +61,8 @@ typedef struct TileType
     unsigned char animation_mask;
     unsigned char id;
     unsigned char textures_count;
+    unsigned char max_health;
+    unsigned char cost_count;
 } TileType;
 
 typedef struct KeyStates
