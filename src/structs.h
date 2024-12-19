@@ -33,6 +33,15 @@ typedef struct
     unsigned char cost;
 } Tile_Cost;
 
+typedef struct
+{
+    SDL_Texture *texture;
+    SDL_Rect rect;
+    char *name;
+    int count;
+    int id;
+} InventorySlot;
+
 typedef struct Tile Tile;
 
 typedef struct Tile

@@ -1,5 +1,6 @@
 #include "tiletype.h"
 #include "../structs.h"
+#include <string.h>
 // TODO: update
 const int type_amount = 4;
 
@@ -70,7 +71,7 @@ TileType type_add_static_section(TileType *type, SDL_Renderer *renderer, const c
 // {
 // }
 
-TileType type_create_base(char *name, unsigned char size_x, unsigned char size_y)
+TileType type_create_base(const char *name, unsigned char size_x, unsigned char size_y)
 {
     static unsigned char id = 0;
     TileType type = {
@@ -83,7 +84,7 @@ TileType type_create_base(char *name, unsigned char size_x, unsigned char size_y
         .costs = NULL,
         .id = id++,
         .max_health = -1,
-        .name = name,
+        .name = SDL_strdup(name),
         .size_x = size_x,
         .size_y = size_y,
         .texture = NULL,

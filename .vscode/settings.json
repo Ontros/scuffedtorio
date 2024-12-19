@@ -1,6 +1,8 @@
 {
     "files.associations": {
         "sdl.h": "c",
-        "sdl_image.h": "c"
+        "sdl_image.h": "c",
+        "inventory_slot.h": "c",
+        "structs.h": "c"
     }
 }
