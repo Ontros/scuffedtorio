@@ -4,4 +4,6 @@
 
 TileType *types_init(SDL_Renderer *rederer);
 
+TileType *types_ore_init(SDL_Renderer *rederer);
+
 void type_free(TileType type);

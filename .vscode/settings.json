@@ -3,6 +3,8 @@
         "sdl.h": "c",
         "sdl_image.h": "c",
         "inventory_slot.h": "c",
-        "structs.h": "c"
+        "structs.h": "c",
+        "tiletype.h": "c",
+        "string.h": "c"
     }
 }

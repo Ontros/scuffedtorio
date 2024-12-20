@@ -27,6 +27,17 @@ void render_tile(SDL_Renderer *renderer, Camera camera, Tile *tile, TileType *ty
     }
 }
 
+void render_ore(SDL_Renderer *renderer, Camera camera, Tile *tile, TileType *ore_types, int x, int y)
+{
+    if (tile->ore != -1)
+    {
+        TileType type = ore_types[tile->ore];
+        SDL_RenderCopy(renderer, type.texture,
+                       type.animation_rects + (tile->flags & type.animation_mask),
+                       rect_in_camera_space(camera, x, y, type.size_x, type.size_y));
+    }
+}
+
 char is_room_for_tile(Tile *tiles, Tile *mouse_tile, TileType type)
 {
     for (int x = mouse_tile->x; x < (mouse_tile->x + type.size_x) && x >= 0 && x < tX; x++)
@@ -95,9 +106,35 @@ Tile *tiles_malloc()
             cur_tile->type = -1;
             cur_tile->flags = 0;
             cur_tile->health = -1;
+            cur_tile->ore = -1;
             cur_tile->x = x;
             cur_tile->y = y;
         }
     }
     return tiles;
+}
+
+void tile_add_ore_patch(Tile *tiles, int ore_id, int patch_size, int x, int y)
+{
+    int cur_x = x;
+    int cur_y = y;
+    // Clamping to int to make patches higher
+    int side_length = (int)sqrt(patch_size);
+    for (int i = 0; i < patch_size; i++)
+    {
+        // Clamp values
+        cur_x = fmin(tX, fmax(0, cur_x));
+        cur_y = fmin(tY, fmax(0, cur_y));
+        tiles[cur_y * tY + cur_x].ore = ore_id;
+        cur_x++;
+        if (cur_x - x == side_length)
+        {
+            cur_x = x;
+            cur_y++;
+        }
+    }
+}
+
+void tile_add_ore(Tile *tiles, int ore_id, int count)
+{
 }

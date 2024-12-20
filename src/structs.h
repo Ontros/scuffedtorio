@@ -40,7 +40,8 @@ typedef struct Tile
     Tile *base_tile;
     int x;
     int y;
-    unsigned int flags;
+    unsigned char flags;
+    char ore;
     char type;
     char health;
 } Tile;

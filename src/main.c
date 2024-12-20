@@ -13,6 +13,7 @@ int main(int argc, char *argv[])
 
     Tile *tiles = tiles_malloc();
     TileType *types = types_init(renderer);
+    TileType *ore_types = types_ore_init(renderer);
 
     int running = 1;
     KeyStates keyStates = {0, 0, 0, 0, 0, 0};
@@ -32,6 +33,9 @@ int main(int argc, char *argv[])
     Uint64 LAST = 0;
     double deltaTime = 0;
     int animate = 0;
+    tiles[5].ore = 0;
+
+    tile_add_ore_patch(tiles, 0, 10, 10, 10);
     // for (int i = 0; i < 64; i++)
     // {
     //     tile_place(tiles, tiles + i, types[5]);
@@ -242,9 +246,18 @@ int main(int argc, char *argv[])
         SDL_SetRenderDrawColor(renderer, 19, 133, 16, 255);
         SDL_RenderFillRect(renderer, rect_in_camera_space(camera, 0, 0, tX, tY));
 
-        // Tile rendering
         int max_x = fmin(tX, -camera.x + camera.width / camera.size + 1);
         int max_y = fmin(tY, -camera.y + camera.height / camera.size + 1);
+        // Ore rendering
+        for (int x = fmax(0, -camera.x - 3); x < max_x; x++)
+        {
+            for (int y = fmax(0, -camera.y - 3); y < max_y; y++)
+            {
+                render_ore(renderer, camera, tiles + (y * tY + x), ore_types, x, y);
+            }
+        }
+
+        // Tile rendering
         for (int x = fmax(0, -camera.x - 3); x < max_x; x++)
         {
             for (int y = fmax(0, -camera.y - 3); y < max_y; y++)

@@ -3,6 +3,7 @@
 #include <string.h>
 // TODO: update
 const int type_amount = 4;
+const int ore_amount = 1;
 
 SDL_Rect get_animation_rect_general(unsigned int index, TileType type)
 {
@@ -116,6 +117,14 @@ TileType *types_init(SDL_Renderer *renderer)
     types[3] = type_create_base("Laser turret", 2, 2);
     type_add_static_section(types + 3, renderer, "../data/base/graphics/entity/laser-turret/laser-turret-shooting.png", 3, 3, 1008, 960);
     type_add_costs(types + 3, 2, (Tile_Cost[]){{0, 10}, {1, 10}});
+    return types;
+}
+
+TileType *types_ore_init(SDL_Renderer *renderer)
+{
+    TileType *types = malloc(sizeof(TileType) * type_amount);
+    types[0] = type_create_base("Iron Ore", 1, 1);
+    type_add_static_section(types, renderer, "../data/base/graphics/entity/iron-ore/iron-ore.png", 3, 3, 1024, 1024);
     return types;
 }
 
