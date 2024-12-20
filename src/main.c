@@ -276,12 +276,13 @@ int main(int argc, char *argv[])
         if (SDL_GetTicks() - last_frame >= 1000)
         {
             sprintf(fps_text.buffer, "FPS: %d", frames);
-            text_create(renderer, &fps_text, 0, 0);
+            text_create_with_pos(renderer, &fps_text, 0, 0);
             frames = 0;
             last_frame += 1000;
         }
 
         text_render(renderer, fps_text);
+        inventory_render(renderer, inventory);
         SDL_RenderPresent(renderer);
     }
 

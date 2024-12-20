@@ -10,7 +10,7 @@ Text text_init(char *font_name, int font_size, int buffer_size)
         .texture = NULL};
 }
 
-void text_create(SDL_Renderer *renderer, Text *text, int x, int y)
+void text_create(SDL_Renderer *renderer, Text *text)
 {
     if (text->texture)
     {
@@ -19,6 +19,11 @@ void text_create(SDL_Renderer *renderer, Text *text, int x, int y)
     }
     text->surface = TTF_RenderText_Solid(text->font, text->buffer, (SDL_Color){255, 255, 255, 255});
     text->texture = SDL_CreateTextureFromSurface(renderer, text->surface);
+}
+
+void text_create_with_pos(SDL_Renderer *renderer, Text *text, int x, int y)
+{
+    text_create(renderer, text);
     text->rect = (SDL_Rect){x, y, text->surface->w, text->surface->h};
 }
 

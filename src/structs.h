@@ -33,15 +33,6 @@ typedef struct
     int count;
 } Tile_Cost;
 
-typedef struct
-{
-    SDL_Texture *texture;
-    SDL_Rect rect;
-    char *name;
-    int count;
-    int id;
-} InventorySlot;
-
 typedef struct Tile Tile;
 
 typedef struct Tile
@@ -92,3 +83,12 @@ typedef struct Text
     SDL_Surface *surface;
     SDL_Rect rect;
 } Text;
+typedef struct
+{
+    Text text;
+    SDL_Texture *texture;
+    SDL_Rect rect;
+    char *name;
+    int count;
+    int id;
+} InventorySlot;
