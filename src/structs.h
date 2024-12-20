@@ -90,5 +90,5 @@ typedef struct Text
     TTF_Font *font;
     SDL_Texture *texture;
     SDL_Surface *surface;
-    SDL_Rect *rect;
+    SDL_Rect rect;
 } Text;
