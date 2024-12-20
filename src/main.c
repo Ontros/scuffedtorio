@@ -213,6 +213,10 @@ int main(int argc, char *argv[])
             if (mouse_tile && (type_in_hand != -1) && tile_place(tiles, mouse_tile, types[type_in_hand]))
             {
                 // Remove resources
+                for (int i = 0; i < types[type_in_hand].cost_count; i++)
+                {
+                    inventory_slot_update(renderer, inventory, types[type_in_hand].costs[i].item, -types[type_in_hand].costs[i].count);
+                }
             }
         }
         else if (keyStates.mouse_right)
@@ -222,6 +226,13 @@ int main(int argc, char *argv[])
             {
                 TileType *destroyed_type = tile_destroy(tiles, tiles[get_mouse_id(mouse_x, mouse_y, camera, -1, types)].base_tile, types);
                 // Add resources
+                if (destroyed_type != NULL)
+                {
+                    for (int i = 0; i < destroyed_type->cost_count; i++)
+                    {
+                        inventory_slot_update(renderer, inventory, destroyed_type->costs[i].item, destroyed_type->costs[i].count);
+                    }
+                }
             }
         }
 

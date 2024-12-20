@@ -44,8 +44,9 @@ void inventory_free(InventorySlot *inventory)
     free(inventory);
 }
 
-void inventory_slot_update(SDL_Renderer *renderer, InventorySlot *inventory, int id, int count)
+void inventory_slot_update(SDL_Renderer *renderer, InventorySlot *inventory, int id, int count_delta)
 {
+    inventory[id].count += count_delta;
     sprintf(inventory[id].text.buffer, "%s: %d", inventory[id].name, inventory[id].count);
     text_create(renderer, &inventory[id].text);
 }

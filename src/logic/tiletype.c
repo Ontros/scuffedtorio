@@ -97,7 +97,7 @@ TileType type_create_base(const char *name, unsigned char size_x, unsigned char 
 void type_add_costs(TileType *type, int costs_count, Tile_Cost *costs)
 {
     type->costs = (Tile_Cost *)(malloc(sizeof(Tile_Cost) * costs_count));
-    memcpy(type->costs, &costs, sizeof(Tile_Cost) * costs_count);
+    memcpy(type->costs, costs, sizeof(Tile_Cost) * costs_count);
     type->cost_count = costs_count;
 }
 
@@ -112,10 +112,10 @@ TileType *types_init(SDL_Renderer *renderer)
     type_add_costs(types + 1, 2, (Tile_Cost[]){{0, 10}, {1, 10}});
     types[2] = type_create_base("Gun Turret", 2, 2);
     type_add_static_section(types + 2, renderer, "../data/base/graphics/entity/gun-turret/gun-turret-shooting-1.png", 1, 4, 264, 2080);
-    type_add_costs(types + 2, 3, (Tile_Cost[]){{0, 10}, {1, 10}});
+    type_add_costs(types + 2, 2, (Tile_Cost[]){{0, 10}, {1, 10}});
     types[3] = type_create_base("Laser turret", 2, 2);
     type_add_static_section(types + 3, renderer, "../data/base/graphics/entity/laser-turret/laser-turret-shooting.png", 3, 3, 1008, 960);
-    type_add_costs(types + 2, 3, (Tile_Cost[]){{0, 10}, {1, 10}});
+    type_add_costs(types + 3, 2, (Tile_Cost[]){{0, 10}, {1, 10}});
     return types;
 }
 

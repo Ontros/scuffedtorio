@@ -1,7 +1,9 @@
-Vyresit logic data
-pripravit tily s placeholder texturama
+Vyresit logic data OK
+pripravit tily s placeholder texturama OK
+inventar OK
+vyresit klikani mimo herni pole 
 entity
 ui + logika
 zvuky
-udelat si to hezky
 free all mallocs
+udelat si to hezky

@@ -66,6 +66,7 @@ TileType *tile_destroy(Tile *tiles, Tile *base_tile, TileType *types)
 {
     if (tile_is_not_empty(base_tile))
     {
+        int og_type = base_tile->type;
         for (int x = base_tile->x; x < (base_tile->x + types[base_tile->type].size_x) && x >= 0 && x < tX; x++)
         {
             for (int y = base_tile->y; y < (base_tile->y + types[base_tile->type].size_y) && y >= 0 && y < tY; y++)
@@ -74,7 +75,7 @@ TileType *tile_destroy(Tile *tiles, Tile *base_tile, TileType *types)
             }
         }
         base_tile->type = -1;
-        return types + base_tile->type;
+        return types + og_type;
     }
     else
     {
