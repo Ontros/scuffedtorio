@@ -3,6 +3,7 @@
 #include "logic/tile.h"
 #include "rendering/ui/text.h"
 #include "logic/inventory_slot.h"
+#include <time.h>
 
 int main(int argc, char *argv[])
 {
@@ -27,15 +28,23 @@ int main(int argc, char *argv[])
     Text fps_text = text_init("../data/core/fonts/TitilliumWeb-SemiBold.ttf", 24, 50);
     InventorySlot *inventory = inventory_init(renderer);
 
-    Uint32 last_frame = SDL_GetTicks();
     int frames = 0;
+    int updates = 0;
     Uint64 NOW = SDL_GetPerformanceCounter();
     Uint64 LAST = 0;
     double deltaTime = 0;
     int animate = 0;
-    tiles[5].ore = 0;
 
-    tile_add_ore_patch(tiles, 0, 10, 10, 10);
+    srand(time(NULL));
+    tile_add_ore(tiles, 4, 100);
+    tile_add_ore(tiles, 3, 100);
+    tile_add_ore(tiles, 2, 100);
+    tile_add_ore(tiles, 1, 100);
+    tile_add_ore(tiles, 0, 100);
+    uint64_t UPDATE_TIME = SDL_GetPerformanceFrequency() / 60;
+    uint64_t NEXT_UPDATE_TIME = SDL_GetPerformanceCounter() + UPDATE_TIME;
+    uint64_t SECOND_TIME = SDL_GetPerformanceFrequency();
+    uint64_t NEXT_SECOND_TIME = SDL_GetPerformanceCounter() + SECOND_TIME;
     // for (int i = 0; i < 64; i++)
     // {
     //     tile_place(tiles, tiles + i, types[5]);
@@ -49,6 +58,50 @@ int main(int argc, char *argv[])
         LAST = NOW;
         NOW = SDL_GetPerformanceCounter();
         deltaTime = (double)((NOW - LAST) * 1000 / (double)SDL_GetPerformanceFrequency());
+
+        // Every update
+        frames++;
+        if (NOW > NEXT_UPDATE_TIME)
+        {
+
+            if (updates < 60)
+            {
+                // Add mined resources
+                if (!updates)
+                {
+                    for (int i = 0; i < tX * tY; i++)
+                    {
+                        if (tiles[i].base_tile->type == 1)
+                        {
+                            if (tiles[i].ore != -1)
+                            {
+                                inventory[tiles[i].ore].count++;
+                            }
+                        }
+                    }
+                    for (int i = 0; i < inventory_slots; i++)
+                    {
+                        inventory_slot_update(renderer, inventory, i, 0);
+                    }
+                }
+            }
+
+            updates++;
+            NEXT_UPDATE_TIME += UPDATE_TIME;
+
+            // FPS update
+            if (NOW > NEXT_SECOND_TIME)
+            {
+                sprintf(fps_text.buffer, "FPS/UPS: %d/%d", frames, updates);
+                text_create_with_pos(renderer, &fps_text, 0, 0);
+                frames = 0;
+                NEXT_SECOND_TIME += SECOND_TIME;
+            }
+            if (updates == 60)
+            {
+                updates = 0;
+            }
+        }
 
         // Mouse position
         SDL_GetMouseState(&mouse_x, &mouse_y);
@@ -294,15 +347,6 @@ int main(int argc, char *argv[])
         {
             SDL_SetRenderDrawColor(renderer, 255, 255, 224, 255);
             SDL_RenderDrawRect(renderer, rect_in_camera_space(camera, mouse_tile->x, mouse_tile->y, types[mouse_tile->type].size_x, types[mouse_tile->type].size_y));
-        }
-
-        frames++;
-        if (SDL_GetTicks() - last_frame >= 1000)
-        {
-            sprintf(fps_text.buffer, "FPS: %d", frames);
-            text_create_with_pos(renderer, &fps_text, 0, 0);
-            frames = 0;
-            last_frame += 1000;
         }
 
         text_render(renderer, fps_text);

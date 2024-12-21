@@ -3,7 +3,7 @@
 #include <string.h>
 // TODO: update
 const int type_amount = 4;
-const int ore_amount = 1;
+const int ore_amount = 5;
 
 SDL_Rect get_animation_rect_general(unsigned int index, TileType type)
 {
@@ -122,9 +122,17 @@ TileType *types_init(SDL_Renderer *renderer)
 
 TileType *types_ore_init(SDL_Renderer *renderer)
 {
-    TileType *types = malloc(sizeof(TileType) * type_amount);
+    TileType *types = malloc(sizeof(TileType) * ore_amount);
     types[0] = type_create_base("Iron Ore", 1, 1);
     type_add_static_section(types, renderer, "../data/base/graphics/entity/iron-ore/iron-ore.png", 3, 3, 1024, 1024);
+    types[1] = type_create_base("Copper Ore", 1, 1);
+    type_add_static_section(types + 1, renderer, "../data/base/graphics/entity/copper-ore/copper-ore.png", 3, 3, 1024, 1024);
+    types[2] = type_create_base("Coal Ore", 1, 1);
+    type_add_static_section(types + 2, renderer, "../data/base/graphics/entity/coal/coal.png", 3, 3, 1024, 1024);
+    types[3] = type_create_base("Stone Ore", 1, 1);
+    type_add_static_section(types + 3, renderer, "../data/base/graphics/entity/stone/stone.png", 3, 3, 1024, 1024);
+    types[4] = type_create_base("Uranium Ore", 1, 1);
+    type_add_static_section(types + 4, renderer, "../data/base/graphics/entity/uranium-ore/uranium.png", 3, 3, 1024, 1024);
     return types;
 }
 

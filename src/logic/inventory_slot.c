@@ -1,7 +1,7 @@
 #include "inventory_slot.h"
 #include "../structs.h"
 #include "../rendering/ui/text.h"
-const int inventory_slots = 5;
+const int inventory_slots = 6;
 
 InventorySlot inventory_slot_create(SDL_Renderer *renderer, const char *file, const char *name, int starting_count)
 {
@@ -29,7 +29,8 @@ InventorySlot *inventory_init(SDL_Renderer *renderer)
     inventory[1] = inventory_slot_create(renderer, "../data/base/graphics/icons/copper-plate.png", "Copper", 20);
     inventory[2] = inventory_slot_create(renderer, "../data/base/graphics/icons/coal.png", "Coal", 0);
     inventory[3] = inventory_slot_create(renderer, "../data/base/graphics/icons/stone.png", "Stone", 0);
-    inventory[4] = inventory_slot_create(renderer, "../data/base/graphics/icons/fluid/crude-oil.png", "Oil", 0);
+    inventory[4] = inventory_slot_create(renderer, "../data/base/graphics/icons/uranium-235.png", "Uranium", 0);
+    inventory[5] = inventory_slot_create(renderer, "../data/base/graphics/icons/fluid/crude-oil.png", "Oil", 0);
     return inventory;
 }
 

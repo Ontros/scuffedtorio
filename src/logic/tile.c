@@ -137,4 +137,11 @@ void tile_add_ore_patch(Tile *tiles, int ore_id, int patch_size, int x, int y)
 
 void tile_add_ore(Tile *tiles, int ore_id, int count)
 {
+    for (int i = 0; i < count; i++)
+    {
+        int x = rand() % tX;
+        int y = rand() % tY;
+
+        tile_add_ore_patch(tiles, ore_id, 9, x, y);
+    }
 }
