@@ -12,6 +12,8 @@ void render_tile(SDL_Renderer *renderer, Camera camera, Tile *tile, TileType *ty
 
 void render_ore(SDL_Renderer *renderer, Camera camera, Tile *tile, TileType *types, int x, int y);
 
+void render_terrain(SDL_Renderer *renderer, Camera camera, Tile *tile, TileType *terrain_types, int x, int y);
+
 char is_room_for_tile(Tile *tiles, Tile *mouse_tile, TileType type);
 
 char tile_place(Tile *tiles, Tile *mouse_tile, TileType type);
@@ -23,3 +25,7 @@ Tile *tiles_malloc();
 void tile_add_ore(Tile *tiles, int ore_id, int count);
 
 void tile_add_ore_patch(Tile *tiles, int ore_id, int patch_size, int x, int y);
+
+// char tile_is_spawner_blocked(Tile *tiles, int spawner_x, int spawner_y);
+
+// char tile_is_blocking_spawner(int tile_x, int tile_y, int spawner_x, int spawner_y);

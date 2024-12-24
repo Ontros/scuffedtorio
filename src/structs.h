@@ -44,6 +44,7 @@ typedef struct Tile
     int y;
     unsigned char flags;
     char ore;
+    char terrain;
     char type;
     char health;
 } Tile;

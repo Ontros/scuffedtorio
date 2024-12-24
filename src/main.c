@@ -15,6 +15,7 @@ int main(int argc, char *argv[])
     Tile *tiles = tiles_malloc();
     TileType *types = types_init(renderer);
     TileType *ore_types = types_ore_init(renderer);
+    TileType *terrain_types = types_terrain_init(renderer);
 
     int running = 1;
     KeyStates keyStates = {0, 0, 0, 0, 0, 0};
@@ -67,7 +68,6 @@ int main(int argc, char *argv[])
         frames++;
         if (NOW > NEXT_UPDATE_TIME)
         {
-
             if (updates < 60)
             {
                 // Add mined resources
@@ -305,11 +305,12 @@ int main(int argc, char *argv[])
 
         int max_x = fmin(tX, -camera.x + camera.width / camera.size + 1);
         int max_y = fmin(tY, -camera.y + camera.height / camera.size + 1);
-        // Ore rendering
-        for (int x = fmax(0, -camera.x - 9); x < max_x; x++)
+        // Tile+Ore rendering
+        for (int x = fmax(0, -camera.x - 1); x < max_x; x++)
         {
-            for (int y = fmax(0, -camera.y - 9); y < max_y; y++)
+            for (int y = fmax(0, -camera.y - 1); y < max_y; y++)
             {
+                render_terrain(renderer, camera, tiles + (y * tY + x), terrain_types, x, y);
                 render_ore(renderer, camera, tiles + (y * tY + x), ore_types, x, y);
             }
         }

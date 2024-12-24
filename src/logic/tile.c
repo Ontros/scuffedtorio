@@ -38,6 +38,14 @@ void render_ore(SDL_Renderer *renderer, Camera camera, Tile *tile, TileType *ore
     }
 }
 
+void render_terrain(SDL_Renderer *renderer, Camera camera, Tile *tile, TileType *terrain_types, int x, int y)
+{
+    TileType type = terrain_types[tile->terrain];
+    SDL_RenderCopy(renderer, type.texture,
+                   type.animation_rects + (tile->flags & type.animation_mask),
+                   rect_in_camera_space(camera, x, y, type.size_x, type.size_y));
+}
+
 char is_room_for_tile(Tile *tiles, Tile *mouse_tile, TileType type)
 {
     for (int x = mouse_tile->x; x < (mouse_tile->x + type.size_x) && x >= 0 && x < tX; x++)
@@ -106,6 +114,7 @@ Tile *tiles_malloc()
             cur_tile->type = -1;
             cur_tile->flags = 0;
             cur_tile->health = -1;
+            cur_tile->terrain = 0;
             cur_tile->ore = -1;
             cur_tile->x = x;
             cur_tile->y = y;

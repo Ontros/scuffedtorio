@@ -4,6 +4,7 @@
 // TODO: update
 const int type_amount = 6;
 const int ore_amount = 5;
+const int terrain_amount = 1;
 
 SDL_Rect get_animation_rect_general(unsigned int index, TileType type)
 {
@@ -137,6 +138,19 @@ TileType *types_ore_init(SDL_Renderer *renderer)
     type_add_static_section(types + 3, renderer, "../data/base/graphics/entity/stone/stone.png", 3, 3, 1024, 1024);
     types[4] = type_create_base("Uranium Ore", 1, 1);
     type_add_static_section(types + 4, renderer, "../data/base/graphics/entity/uranium-ore/uranium.png", 3, 3, 1024, 1024);
+    return types;
+}
+
+TileType *types_terrain_init(SDL_Renderer *renderer)
+{
+    TileType *types = malloc(sizeof(TileType) * terrain_amount);
+    types[0] = type_create_base("Grass", 1, 1);
+    type_add_full_texture(types, renderer, "../data/base/graphics/terrain/grass-1.png");
+    types[0].animation_rects = (SDL_Rect *)(malloc(sizeof(SDL_Rect)));
+    types[0].animation_rects->x = 0;
+    types[0].animation_rects->y = 0;
+    types[0].animation_rects->w = 64;
+    types[0].animation_rects->h = 64;
     return types;
 }
 
