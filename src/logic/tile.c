@@ -2,12 +2,12 @@
 
 static inline char tile_is_empty(Tile *tile)
 {
-    return tile->base_tile->type == -1;
+    return tile->base_tile->type == -1 && tile->terrain != 1;
 }
 
 static inline char tile_is_not_empty(Tile *tile)
 {
-    return tile->base_tile->type != -1;
+    return tile->base_tile->type != -1 || tile->terrain == 1;
 }
 
 void render_tile(SDL_Renderer *renderer, Camera camera, Tile *tile, TileType *types, int x, int y, char advance_animation)
@@ -140,6 +140,22 @@ void tile_add_ore_patch(Tile *tiles, int ore_id, int patch_size, int x, int y)
         {
             cur_x = x;
             cur_y++;
+        }
+    }
+}
+
+void tile_create_lake(Tile *tiles, double xS, double yS, double d)
+{
+    double r = (double)d / 2.0;
+    double r_sqrd = pow(r, 2.0);
+    for (int x = xS; x < fmin(xS + d, tX); x++)
+    {
+        for (int y = yS; y < fmin(yS + d, tY); y++)
+        {
+            if (pow(xS + r - (double)x, 2.0) + pow((double)yS + r - (double)y, 2.0) < r_sqrd)
+            {
+                tiles[y * tY + x].terrain = 1;
+            }
         }
     }
 }

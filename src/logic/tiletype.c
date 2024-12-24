@@ -4,7 +4,7 @@
 // TODO: update
 const int type_amount = 6;
 const int ore_amount = 5;
-const int terrain_amount = 1;
+const int terrain_amount = 4;
 
 SDL_Rect get_animation_rect_general(unsigned int index, TileType type)
 {
@@ -144,13 +144,27 @@ TileType *types_ore_init(SDL_Renderer *renderer)
 TileType *types_terrain_init(SDL_Renderer *renderer)
 {
     TileType *types = malloc(sizeof(TileType) * terrain_amount);
+    SDL_Rect top_left_rect = {0, 0, 64, 64};
     types[0] = type_create_base("Grass", 1, 1);
     type_add_full_texture(types, renderer, "../data/base/graphics/terrain/grass-1.png");
     types[0].animation_rects = (SDL_Rect *)(malloc(sizeof(SDL_Rect)));
-    types[0].animation_rects->x = 0;
-    types[0].animation_rects->y = 0;
-    types[0].animation_rects->w = 64;
-    types[0].animation_rects->h = 64;
+    memcpy(types[0].animation_rects, &top_left_rect, sizeof(SDL_Rect));
+
+    types[1] = type_create_base("Water", 1, 1);
+    type_add_full_texture(types + 1, renderer, "../data/base/graphics/terrain/water/water1.png");
+    types[1].animation_rects = (SDL_Rect *)(malloc(sizeof(SDL_Rect)));
+    memcpy(types[1].animation_rects, &top_left_rect, sizeof(SDL_Rect));
+
+    types[2] = type_create_base("Concrete", 1, 1);
+    type_add_full_texture(types + 2, renderer, "../data/base/graphics/terrain/concrete/refined-concrete.png");
+    types[2].animation_rects = (SDL_Rect *)(malloc(sizeof(SDL_Rect)));
+    memcpy(types[2].animation_rects, &top_left_rect, sizeof(SDL_Rect));
+
+    types[3] = type_create_base("Hazard Concrete", 1, 1);
+    type_add_full_texture(types + 3, renderer, "../data/base/graphics/terrain/hazard-concrete-left/refined-hazard-concrete-left.png");
+    types[3].animation_rects = (SDL_Rect *)(malloc(sizeof(SDL_Rect)));
+    memcpy(types[3].animation_rects, &top_left_rect, sizeof(SDL_Rect));
+
     return types;
 }
 

@@ -37,6 +37,7 @@ int main(int argc, char *argv[])
     int animate = 0;
 
     srand(time(NULL));
+    tile_create_lake(tiles, 10, 10, 30);
     tile_add_ore(tiles, 4, 25);
     tile_add_ore(tiles, 3, 25);
     tile_add_ore(tiles, 2, 25);
@@ -271,7 +272,7 @@ int main(int argc, char *argv[])
         if (keyStates.mouse_left)
         {
             // Place
-            if (mouse_tile && (type_in_hand != -1) && tile_place(tiles, mouse_tile, types[type_in_hand]))
+            if (mouse_tile && types[type_in_hand].cost_count && (type_in_hand != -1) && tile_place(tiles, mouse_tile, types[type_in_hand]))
             {
                 // Remove resources
                 for (int i = 0; i < types[type_in_hand].cost_count; i++)
@@ -283,7 +284,7 @@ int main(int argc, char *argv[])
         else if (keyStates.mouse_right)
         {
             // Remove
-            if (mouse_tile)
+            if (mouse_tile && types[mouse_tile->type].cost_count)
             {
                 TileType *destroyed_type = tile_destroy(tiles, tiles[get_mouse_id(mouse_x, mouse_y, camera, -1, types)].base_tile, types);
                 // Add resources
@@ -300,8 +301,6 @@ int main(int argc, char *argv[])
         // Background
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderClear(renderer);
-        SDL_SetRenderDrawColor(renderer, 19, 133, 16, 255);
-        SDL_RenderFillRect(renderer, rect_in_camera_space(camera, 0, 0, tX, tY));
 
         int max_x = fmin(tX, -camera.x + camera.width / camera.size + 1);
         int max_y = fmin(tY, -camera.y + camera.height / camera.size + 1);
