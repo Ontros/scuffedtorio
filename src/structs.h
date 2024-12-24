@@ -1,8 +1,8 @@
 #pragma once
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
-const int tX = 16 * 16 * 4;
-const int tY = 16 * 16 * 4;
+const int tX = 16 * 16 * 2;
+const int tY = 16 * 16 * 2;
 // x,y - pos of top left
 // size - sizeo of a tile
 typedef struct Camera
@@ -93,3 +93,18 @@ typedef struct
     int count;
     int id;
 } InventorySlot;
+
+typedef struct
+{
+    SDL_Texture *texture;
+    SDL_Rect *animation_rects;
+    float size_x;
+    float size_y;
+} EntityType;
+
+typedef struct
+{
+    float x;
+    float y;
+    char type;
+} Entity;

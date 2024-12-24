@@ -2,7 +2,7 @@
 #include "../structs.h"
 #include <string.h>
 // TODO: update
-const int type_amount = 4;
+const int type_amount = 5;
 const int ore_amount = 5;
 
 SDL_Rect get_animation_rect_general(unsigned int index, TileType type)
@@ -117,6 +117,8 @@ TileType *types_init(SDL_Renderer *renderer)
     types[3] = type_create_base("Laser turret", 2, 2);
     type_add_static_section(types + 3, renderer, "../data/base/graphics/entity/laser-turret/laser-turret-shooting.png", 3, 3, 1008, 960);
     type_add_costs(types + 3, 2, (Tile_Cost[]){{0, 10}, {1, 10}});
+    types[4] = type_create_base("Biter spawner", 5, 5);
+    type_add_static_section(types + 4, renderer, "../data/base/graphics/entity/spawner/spawner-idle.png", 2, 3, 2080, 3008);
     return types;
 }
 

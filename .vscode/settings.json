@@ -6,5 +6,6 @@
         "structs.h": "c",
         "tiletype.h": "c",
         "string.h": "c"
-    }
+    },
+    "C_Cpp.default.configurationProvider": "ms-vscode.makefile-tools"
 }
