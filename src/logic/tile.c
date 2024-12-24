@@ -142,6 +142,13 @@ void tile_add_ore(Tile *tiles, int ore_id, int count)
         int x = rand() % tX;
         int y = rand() % tY;
 
+        // Prevent ores from spawning in spawn area
+        if (x > cX - 8 && x < cX + 8 && y > cY - 8 && y < cY + 8)
+        {
+            x += 16;
+            y += 16;
+        }
+
         tile_add_ore_patch(tiles, ore_id, 9, x, y);
     }
 }
