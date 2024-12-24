@@ -3,6 +3,8 @@
 #include <SDL2/SDL_ttf.h>
 const int tX = 16 * 16 * 2;
 const int tY = 16 * 16 * 2;
+const int cX = 16 * 16;
+const int cY = 16 * 16;
 // x,y - pos of top left
 // size - sizeo of a tile
 typedef struct Camera

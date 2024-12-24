@@ -7,7 +7,7 @@
 
 int main(int argc, char *argv[])
 {
-    Camera camera = {1, 1, 100, 1920, 1080, 2, 2, 7, 1};
+    Camera camera = {-cX + 4, -cY + 4, 100, 1920, 1080, 2, 2, 7, 1};
     SDL_Window *window = NULL;
     SDL_Renderer *renderer = NULL;
     sdl_init(camera, &window, &renderer);
@@ -36,11 +36,15 @@ int main(int argc, char *argv[])
     int animate = 0;
 
     srand(time(NULL));
-    tile_add_ore(tiles, 4, 100);
-    tile_add_ore(tiles, 3, 100);
-    tile_add_ore(tiles, 2, 100);
-    tile_add_ore(tiles, 1, 100);
-    tile_add_ore(tiles, 0, 100);
+    tile_add_ore(tiles, 4, 25);
+    tile_add_ore(tiles, 3, 25);
+    tile_add_ore(tiles, 2, 25);
+    tile_add_ore(tiles, 1, 25);
+    tile_add_ore(tiles, 0, 25);
+    tile_place(tiles, tiles + ((cY - 4) * tY + cX - 4), types[4]);
+    tile_add_ore_patch(tiles, 0, 9, cX + 5, cY - 4);
+    tile_add_ore_patch(tiles, 1, 9, cX + 5, cY - 1);
+    tile_add_ore_patch(tiles, 2, 9, cX + 5, cY + 2);
     uint64_t UPDATE_TIME = SDL_GetPerformanceFrequency() / 60;
     uint64_t NEXT_UPDATE_TIME = SDL_GetPerformanceCounter() + UPDATE_TIME;
     uint64_t SECOND_TIME = SDL_GetPerformanceFrequency();
@@ -302,18 +306,18 @@ int main(int argc, char *argv[])
         int max_x = fmin(tX, -camera.x + camera.width / camera.size + 1);
         int max_y = fmin(tY, -camera.y + camera.height / camera.size + 1);
         // Ore rendering
-        for (int x = fmax(0, -camera.x - 3); x < max_x; x++)
+        for (int x = fmax(0, -camera.x - 9); x < max_x; x++)
         {
-            for (int y = fmax(0, -camera.y - 3); y < max_y; y++)
+            for (int y = fmax(0, -camera.y - 9); y < max_y; y++)
             {
                 render_ore(renderer, camera, tiles + (y * tY + x), ore_types, x, y);
             }
         }
 
         // Tile rendering
-        for (int x = fmax(0, -camera.x - 3); x < max_x; x++)
+        for (int x = fmax(0, -camera.x - 9); x < max_x; x++)
         {
-            for (int y = fmax(0, -camera.y - 3); y < max_y; y++)
+            for (int y = fmax(0, -camera.y - 9); y < max_y; y++)
             {
                 render_tile(renderer, camera, tiles + (y * tY + x), types, x, y, animate);
             }
