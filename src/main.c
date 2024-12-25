@@ -37,7 +37,12 @@ int main(int argc, char *argv[])
     int animate = 0;
 
     srand(time(NULL));
-    tile_create_lake(tiles, 10, 10, 30);
+    tile_create_lake(tiles, 150, 85, 32);
+    tile_create_lake(tiles, 300, 450, 16);
+    tile_create_lake(tiles, 50, 311, 48);
+    tile_create_lake(tiles, 345, 100, 22);
+    tile_create_lake(tiles, 200, 200, 32);
+    tile_update_concrete(tiles, 16);
     tile_add_ore(tiles, 4, 25);
     tile_add_ore(tiles, 3, 25);
     tile_add_ore(tiles, 2, 25);

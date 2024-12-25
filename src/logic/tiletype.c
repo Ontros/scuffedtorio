@@ -160,6 +160,7 @@ TileType *types_terrain_init(SDL_Renderer *renderer)
     types[2].animation_rects = (SDL_Rect *)(malloc(sizeof(SDL_Rect)));
     memcpy(types[2].animation_rects, &top_left_rect, sizeof(SDL_Rect));
 
+    top_left_rect = (SDL_Rect){0, 0, 86, 86};
     types[3] = type_create_base("Hazard Concrete", 1, 1);
     type_add_full_texture(types + 3, renderer, "../data/base/graphics/terrain/hazard-concrete-left/refined-hazard-concrete-left.png");
     types[3].animation_rects = (SDL_Rect *)(malloc(sizeof(SDL_Rect)));

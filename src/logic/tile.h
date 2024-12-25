@@ -28,6 +28,8 @@ void tile_add_ore_patch(Tile *tiles, int ore_id, int patch_size, int x, int y);
 
 void tile_create_lake(Tile *tiles, double xS, double yS, double d);
 
+void tile_update_concrete(Tile *tiles, int concrete_radius);
+
 // char tile_is_spawner_blocked(Tile *tiles, int spawner_x, int spawner_y);
 
 // char tile_is_blocking_spawner(int tile_x, int tile_y, int spawner_x, int spawner_y);

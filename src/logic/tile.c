@@ -2,12 +2,12 @@
 
 static inline char tile_is_empty(Tile *tile)
 {
-    return tile->base_tile->type == -1 && tile->terrain != 1;
+    return tile->base_tile->type == -1 && tile->terrain > 1;
 }
 
 static inline char tile_is_not_empty(Tile *tile)
 {
-    return tile->base_tile->type != -1 || tile->terrain == 1;
+    return tile->base_tile->type != -1 || tile->terrain != 2;
 }
 
 void render_tile(SDL_Renderer *renderer, Camera camera, Tile *tile, TileType *types, int x, int y, char advance_animation)
@@ -83,7 +83,7 @@ char tile_place(Tile *tiles, Tile *mouse_tile, TileType type)
 
 TileType *tile_destroy(Tile *tiles, Tile *base_tile, TileType *types)
 {
-    if (tile_is_not_empty(base_tile))
+    if (tile_is_not_empty(base_tile) && base_tile->type != -1)
     {
         int og_type = base_tile->type;
         for (int x = base_tile->x; x < (base_tile->x + types[base_tile->type].size_x) && x >= 0 && x < tX; x++)
@@ -131,10 +131,11 @@ void tile_add_ore_patch(Tile *tiles, int ore_id, int patch_size, int x, int y)
     int side_length = (int)sqrt(patch_size);
     for (int i = 0; i < patch_size; i++)
     {
-        // Clamp values
-        cur_x = fmin(tX, fmax(0, cur_x));
-        cur_y = fmin(tY, fmax(0, cur_y));
-        tiles[cur_y * tY + cur_x].ore = ore_id;
+        int index = fmin(tY, cur_y) * tY + fmin(tX, cur_x);
+        if (tiles[index].terrain != 1)
+        {
+            tiles[index].ore = ore_id;
+        }
         cur_x++;
         if (cur_x - x == side_length)
         {
@@ -155,6 +156,27 @@ void tile_create_lake(Tile *tiles, double xS, double yS, double d)
             if (pow(xS + r - (double)x, 2.0) + pow((double)yS + r - (double)y, 2.0) < r_sqrd)
             {
                 tiles[y * tY + x].terrain = 1;
+            }
+        }
+    }
+}
+
+void tile_update_concrete(Tile *tiles, int concrete_radius)
+{
+    for (int x = cX - concrete_radius - 16; x < cX + concrete_radius + 16; x++)
+    {
+        for (int y = cY - concrete_radius - 16; y < cY + concrete_radius + 16; y++)
+        {
+            if (tiles[y * tY + x].terrain != 1)
+            {
+                if (x < cX - concrete_radius || x > cX + concrete_radius || y < cY - concrete_radius || y > cY + concrete_radius)
+                {
+                    tiles[y * tY + x].terrain = 3;
+                }
+                else
+                {
+                    tiles[y * tY + x].terrain = 2;
+                }
             }
         }
     }

@@ -6,4 +6,5 @@ entity
 ui + logika
 zvuky
 free all mallocs
+optimalizace terenu pro odzoomovane (replacni rectem)
 udelat si to hezky
