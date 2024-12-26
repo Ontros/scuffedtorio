@@ -1,9 +1,14 @@
 #include "rendering/camera.h"
 #include "rendering/sdl_wrapper.h"
+#include "rendering/ui/button.h"
 #include "logic/tile.h"
 #include "rendering/ui/text.h"
 #include "logic/inventory_slot.h"
 #include <time.h>
+
+void test_func()
+{
+}
 
 int main(int argc, char *argv[])
 {
@@ -51,16 +56,13 @@ int main(int argc, char *argv[])
     tile_place(tiles, tiles + ((cY - 4) * tY + cX - 4), types[4]);
     tile_add_ore_patch(tiles, 0, 9, cX + 5, cY - 4);
     tile_add_ore_patch(tiles, 1, 9, cX + 5, cY - 1);
-    tile_add_ore_patch(tiles, 2, 9, cX + 5, cY + 2);
+    tile_add_ore_patch(tiles, 3, 9, cX + 5, cY + 2);
     uint64_t UPDATE_TIME = SDL_GetPerformanceFrequency() / 60;
     uint64_t NEXT_UPDATE_TIME = SDL_GetPerformanceCounter() + UPDATE_TIME;
     uint64_t SECOND_TIME = SDL_GetPerformanceFrequency();
     uint64_t NEXT_SECOND_TIME = SDL_GetPerformanceCounter() + SECOND_TIME;
-    // for (int i = 0; i < 64; i++)
-    // {
-    //     tile_place(tiles, tiles + i, types[5]);
-    //     tiles[i].flags = i;
-    // }
+
+    Button expand_button = button_init(renderer, "Expand", 24, (SDL_Rect){200, 0, 200, 50}, test_func);
 
     while (running)
     {
@@ -360,6 +362,7 @@ int main(int argc, char *argv[])
 
         text_render(renderer, fps_text);
         inventory_render(renderer, inventory);
+        button_render(renderer, &expand_button, mouse_x, mouse_y);
         SDL_RenderPresent(renderer);
     }
 

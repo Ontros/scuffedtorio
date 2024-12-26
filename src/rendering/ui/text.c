@@ -17,9 +17,16 @@ void text_create(SDL_Renderer *renderer, Text *text)
         SDL_FreeSurface(text->surface);
         SDL_DestroyTexture(text->texture);
     }
-    text->surface = TTF_RenderText_Solid(text->font, text->buffer, (SDL_Color){255, 255, 255, 255});
-    text->texture = SDL_CreateTextureFromSurface(renderer, text->surface);
-    text->rect = (SDL_Rect){text->rect.x, text->rect.y, text->surface->w, text->surface->h};
+    if (text->font)
+    {
+        text->surface = TTF_RenderText_Solid(text->font, text->buffer, (SDL_Color){255, 255, 255, 255});
+        text->texture = SDL_CreateTextureFromSurface(renderer, text->surface);
+        text->rect = (SDL_Rect){text->rect.x, text->rect.y, text->surface->w, text->surface->h};
+    }
+    else
+    {
+        printf("No font\n");
+    }
 }
 
 void text_create_with_pos(SDL_Renderer *renderer, Text *text, int x, int y)

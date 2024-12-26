@@ -87,6 +87,16 @@ typedef struct Text
     SDL_Surface *surface;
     SDL_Rect rect;
 } Text;
+
+typedef struct Button
+{
+    void (*on_click)(void);
+    Text text;
+    SDL_Rect rect;
+    SDL_Color base_color;
+    SDL_Color hover_color;
+} Button;
+
 typedef struct
 {
     Text text;
@@ -103,11 +113,17 @@ typedef struct
     SDL_Rect *animation_rects;
     float size_x;
     float size_y;
+    float damage;
+    float max_health;
 } EntityType;
 
 typedef struct
 {
     float x;
     float y;
+    float target_x;
+    float target_y;
     char type;
+    char animation;
+    char health;
 } Entity;
