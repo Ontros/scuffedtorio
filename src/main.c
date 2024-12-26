@@ -6,10 +6,6 @@
 #include "logic/inventory_slot.h"
 #include <time.h>
 
-void test_func()
-{
-}
-
 int main(int argc, char *argv[])
 {
     Camera camera = {-cX + 4, -cY + 4, 100, 1920, 1080, 2, 2, 7, 1};
@@ -41,6 +37,12 @@ int main(int argc, char *argv[])
     double deltaTime = 0;
     int animate = 0;
 
+    GameState state = {
+        .concrete_radius = 6,
+        .concrete_upgrade_cost = 100,
+        .inventory = inventory,
+        .tiles = tiles};
+
     srand(time(NULL));
     tile_create_lake(tiles, 150, 85, 32);
     tile_create_lake(tiles, 300, 450, 16);
@@ -62,7 +64,7 @@ int main(int argc, char *argv[])
     uint64_t SECOND_TIME = SDL_GetPerformanceFrequency();
     uint64_t NEXT_SECOND_TIME = SDL_GetPerformanceCounter() + SECOND_TIME;
 
-    Button expand_button = button_init(renderer, "Expand", 24, (SDL_Rect){200, 0, 200, 50}, test_func);
+    ButtonContainer buttons = button_container_in_game_create(renderer, state);
 
     while (running)
     {
@@ -230,8 +232,16 @@ int main(int argc, char *argv[])
             {
                 if (event.button.button == SDL_BUTTON_LEFT)
                 {
-                    keyStates.mouse_left = 1;
-                    keyStates.mouse_right = 0;
+                    if (button_container_click(renderer, &state, buttons, mouse_x, mouse_y))
+                    {
+                        keyStates.mouse_left = 0;
+                        keyStates.mouse_right = 0;
+                    }
+                    else
+                    {
+                        keyStates.mouse_left = 1;
+                        keyStates.mouse_right = 0;
+                    }
                 }
                 else if (event.button.button == SDL_BUTTON_RIGHT)
                 {
@@ -362,7 +372,7 @@ int main(int argc, char *argv[])
 
         text_render(renderer, fps_text);
         inventory_render(renderer, inventory);
-        button_render(renderer, &expand_button, mouse_x, mouse_y);
+        button_container_render(renderer, buttons, mouse_x, mouse_y);
         SDL_RenderPresent(renderer);
     }
 

@@ -30,7 +30,7 @@ InventorySlot *inventory_init(SDL_Renderer *renderer)
     inventory[2] = inventory_slot_create(renderer, "../data/base/graphics/icons/coal.png", "Coal", 0);
     inventory[3] = inventory_slot_create(renderer, "../data/base/graphics/icons/stone.png", "Stone", 0);
     inventory[4] = inventory_slot_create(renderer, "../data/base/graphics/icons/uranium-235.png", "Uranium", 0);
-    inventory[5] = inventory_slot_create(renderer, "../data/base/graphics/icons/fluid/crude-oil.png", "Oil", 0);
+    inventory[5] = inventory_slot_create(renderer, "../data/base/graphics/icons/fluid/crude-oil.png", "Coins", 1000);
     return inventory;
 }
 

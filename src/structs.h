@@ -88,15 +88,6 @@ typedef struct Text
     SDL_Rect rect;
 } Text;
 
-typedef struct Button
-{
-    void (*on_click)(void);
-    Text text;
-    SDL_Rect rect;
-    SDL_Color base_color;
-    SDL_Color hover_color;
-} Button;
-
 typedef struct
 {
     Text text;
@@ -106,6 +97,31 @@ typedef struct
     int count;
     int id;
 } InventorySlot;
+
+typedef struct
+{
+    InventorySlot *inventory;
+    Tile *tiles;
+    int concrete_radius;
+    int concrete_upgrade_cost;
+} GameState;
+
+typedef struct Button Button;
+
+typedef struct Button
+{
+    void (*on_click)(struct SDL_Renderer *, Button *, GameState *);
+    Text text;
+    SDL_Rect rect;
+    SDL_Color base_color;
+    SDL_Color hover_color;
+} Button;
+
+typedef struct ButtonContainer
+{
+    Button *buttons;
+    int count;
+} ButtonContainer;
 
 typedef struct
 {
