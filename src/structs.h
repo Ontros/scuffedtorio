@@ -98,12 +98,22 @@ typedef struct
     int id;
 } InventorySlot;
 
+typedef struct Wave
+{
+    int enemies_count;
+    float evolution_factor;
+    int spawner_count;
+} Wave;
+
 typedef struct
 {
+    Wave *waves;
     InventorySlot *inventory;
     Tile *tiles;
     int concrete_radius;
     int concrete_upgrade_cost;
+    int wave_current;
+    int wave_count;
 } GameState;
 
 typedef struct Button Button;

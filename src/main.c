@@ -4,6 +4,7 @@
 #include "logic/tile.h"
 #include "rendering/ui/text.h"
 #include "logic/inventory_slot.h"
+#include "logic/spawner.h"
 #include <time.h>
 
 int main(int argc, char *argv[])
@@ -41,7 +42,10 @@ int main(int argc, char *argv[])
         .concrete_radius = 6,
         .concrete_upgrade_cost = 100,
         .inventory = inventory,
-        .tiles = tiles};
+        .tiles = tiles,
+        .wave_count = 1,
+        .wave_current = 0,
+        .waves = &(Wave){.enemies_count = 100, .evolution_factor = 10, .spawner_count = 10000}};
 
     srand(time(NULL));
     tile_create_lake(tiles, 150, 85, 32);
@@ -65,6 +69,8 @@ int main(int argc, char *argv[])
     uint64_t NEXT_SECOND_TIME = SDL_GetPerformanceCounter() + SECOND_TIME;
 
     ButtonContainer buttons = button_container_in_game_create(renderer, state);
+
+    spawner_spawn(tiles, state, types[5]);
 
     while (running)
     {

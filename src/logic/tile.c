@@ -48,6 +48,11 @@ void render_terrain(SDL_Renderer *renderer, Camera camera, Tile *tile, TileType 
 
 char is_room_for_tile(Tile *tiles, Tile *mouse_tile, TileType type)
 {
+    // OOB check
+    if (mouse_tile->x < 0 || mouse_tile->x + type.size_x >= tX || mouse_tile->y < 0 || mouse_tile->y + type.size_y >= tY)
+    {
+        return 0;
+    }
     for (int x = mouse_tile->x; x < (mouse_tile->x + type.size_x) && x >= 0 && x < tX; x++)
     {
         for (int y = mouse_tile->y; y < (mouse_tile->y + type.size_y) && y >= 0 && y < tY; y++)
