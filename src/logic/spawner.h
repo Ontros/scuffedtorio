@@ -3,4 +3,4 @@
 #include "tile.h"
 #include "spawner.c"
 
-void spawner_spawn(Tile *tiles, GameState state, TileType spawner_type);
+SpawnerContainer spawner_spawn(Tile *tiles, GameState state, TileType spawner_type);

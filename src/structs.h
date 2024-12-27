@@ -135,21 +135,40 @@ typedef struct ButtonContainer
 
 typedef struct
 {
-    SDL_Texture *texture;
+    SDL_Texture *texture[4];
     SDL_Rect *animation_rects;
+    char animation_modulo;
+    char animation_mask;
+} EntityTexture;
+
+typedef struct
+{
+    EntityTexture *texture_running;
+    EntityTexture *texture_attack;
     float size_x;
     float size_y;
     float damage;
     float max_health;
 } EntityType;
 
+// animation - TRRAAAA
+// T - type (0 - running)
+// R - rotation 0 - up, 1 - right, 2 - down, 3 - left
+// A - animation(run 0-15; attack 0-10)
 typedef struct
 {
     float x;
     float y;
     float target_x;
     float target_y;
+    float health;
     char type;
-    char animation;
-    char health;
+    unsigned char animation;
+    char is_dead;
 } Entity;
+
+typedef struct
+{
+    int *spawner_indecies;
+    int amount;
+} SpawnerContainer;

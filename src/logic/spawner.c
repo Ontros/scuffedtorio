@@ -29,9 +29,13 @@ char spawner_place(Tile *tiles, Tile *mouse_tile, TileType type)
     }
 }
 
-void spawner_spawn(Tile *tiles, GameState state, TileType spawner_type)
+SpawnerContainer spawner_spawn(Tile *tiles, GameState state, TileType spawner_type)
 {
-    for (int i = 0; i < state.waves[state.wave_current].spawner_count; i++)
+    SpawnerContainer container = (SpawnerContainer){
+        .amount = state.waves[state.wave_current].spawner_count,
+        .spawner_indecies = (int *)(malloc(sizeof(int) * state.waves[state.wave_current].spawner_count))};
+    int real_count = 0;
+    for (int i = 0; i < container.amount; i++)
     {
         for (int n = 0; n < 100; n++)
         {
@@ -40,8 +44,12 @@ void spawner_spawn(Tile *tiles, GameState state, TileType spawner_type)
             if (spawner_is_spot_valid(tiles, x, y))
             {
                 spawner_place(tiles, tiles + (y * tY + x), spawner_type);
+                container.spawner_indecies[real_count] = y * tY * x;
+                real_count++;
                 break;
             }
         }
     }
+    container.amount = real_count;
+    return container;
 }

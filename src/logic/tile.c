@@ -10,14 +10,15 @@ static inline char tile_is_not_empty(Tile *tile)
     return tile->base_tile->type != -1 || tile->terrain != 2;
 }
 
+// TODO: use type
 void render_tile(SDL_Renderer *renderer, Camera camera, Tile *tile, TileType *types, int x, int y, char advance_animation)
 {
     if (tile->type != -1)
     {
-        TileType type = types[tile->type];
+        TileType *type = types + tile->type;
         if (advance_animation && types[tile->type].animation_modulo != 1)
         {
-            printf("%d %d %d\n", type.anim_tile_y, ((tile->flags & type.animation_mask) & type.x_map) * type.anim_tile_x, ((tile->flags & type.animation_mask) >> type.y_offset) * type.anim_tile_y);
+            printf("%d %d %d\n", type->anim_tile_y, ((tile->flags & type->animation_mask) & type->x_map) * type->anim_tile_x, ((tile->flags & type->animation_mask) >> type->y_offset) * type->anim_tile_y);
             tile->flags = (tile->flags & ~(types[tile->type].animation_mask))         // clear animanion_frame
                           | ((tile->flags + 1) % types[tile->type].animation_modulo); // set new animation_frame
         }

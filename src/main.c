@@ -5,6 +5,7 @@
 #include "rendering/ui/text.h"
 #include "logic/inventory_slot.h"
 #include "logic/spawner.h"
+#include "logic/entity.h"
 #include <time.h>
 
 int main(int argc, char *argv[])
@@ -30,13 +31,6 @@ int main(int argc, char *argv[])
 
     Text fps_text = text_init("../data/core/fonts/TitilliumWeb-SemiBold.ttf", 24, 50);
     InventorySlot *inventory = inventory_init(renderer);
-
-    int frames = 0;
-    int updates = 0;
-    Uint64 NOW = SDL_GetPerformanceCounter();
-    Uint64 LAST = 0;
-    double deltaTime = 0;
-    int animate = 0;
 
     GameState state = {
         .concrete_radius = 6,
@@ -70,7 +64,21 @@ int main(int argc, char *argv[])
 
     ButtonContainer buttons = button_container_in_game_create(renderer, state);
 
-    spawner_spawn(tiles, state, types[5]);
+    SpawnerContainer container = spawner_spawn(tiles, state, types[5]);
+    for (int i = 0; i < state.waves[state.wave_current].enemies_count; i++)
+    {
+    }
+
+    // TODO: error ve vytvareni typu
+    EntityType *entity_types = entity_types_init(renderer);
+    Entity entity = entity_spawn(256, 256, 0, entity_types);
+
+    int frames = 0;
+    int updates = 0;
+    Uint64 NOW = SDL_GetPerformanceCounter();
+    Uint64 LAST = 0;
+    double deltaTime = 0;
+    int animate = 0;
 
     while (running)
     {
@@ -345,6 +353,8 @@ int main(int argc, char *argv[])
                 render_tile(renderer, camera, tiles + (y * tY + x), types, x, y, animate);
             }
         }
+
+        entity_render(renderer, camera, &entity, entity_types);
 
         // Placing preview
         if (type_in_hand != -1 && mouse_tile)

@@ -5,6 +5,7 @@ vyresit klikani mimo herni pole
 entity
 ui + logika
 zvuky
+move from mallocing everything
 free all mallocs
 optimalizace terenu pro odzoomovane (replacni rectem)
 udelat si to hezky

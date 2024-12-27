@@ -11,3 +11,8 @@ static inline SDL_Rect *rect_in_camera_space(Camera camera, int x, int y, int w,
 {
     return &(SDL_Rect){(camera.x + x) * camera.size, (camera.y + y) * camera.size, camera.size * w, camera.size * h};
 }
+
+static inline SDL_Rect *rect_in_camera_space_f(Camera camera, float x, float y, float w, float h)
+{
+    return &(SDL_Rect){(camera.x + x) * camera.size, (camera.y + y) * camera.size, camera.size * w, camera.size * h};
+}

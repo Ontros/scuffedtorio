@@ -5,7 +5,9 @@
         "inventory_slot.h": "c",
         "structs.h": "c",
         "tiletype.h": "c",
-        "string.h": "c"
+        "string.h": "c",
+        "camera.h": "c",
+        "tile.h": "c"
     },
     "C_Cpp.default.configurationProvider": "ms-vscode.makefile-tools"
 }
