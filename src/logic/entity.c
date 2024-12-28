@@ -1,15 +1,15 @@
 #include "entity.h"
 const float mS = 0.1f; // move speed
 
-EntityType entity_type_init(EntityTexture *run, EntityTexture *attack, float damage, float hp, float size_x, float size_y)
+EntityType entity_type_init(EntityTexture *run, EntityTexture *attack, float damage, float hp, float size, float offset)
 {
     return (EntityType){
         .texture_running = run,
         .texture_attack = attack,
         .damage = damage,
         .max_health = hp,
-        .size_x = size_x,
-        .size_y = size_y,
+        .size = size,
+        .offset = offset,
     };
 }
 
@@ -59,12 +59,16 @@ EntityTexture *entity_texture_create_attack(SDL_Renderer *renderer)
     return output;
 }
 
+// Offsets:
+//  1: 0
+//  2: 0.5
+//  3: 1
 EntityType *entity_types_init(SDL_Renderer *renderer)
 {
     EntityType *types = (EntityType *)(malloc(sizeof(EntityType) * 1));
     EntityTexture *run = entity_texture_create_run(renderer);
     EntityTexture *attack = entity_texture_create_attack(renderer);
-    types[0] = entity_type_init(run, attack, 10, 100, 2.0f, 2.0f);
+    types[0] = entity_type_init(run, attack, 10, 100, 3.0f, 1.0f);
     return types;
 }
 
@@ -133,7 +137,7 @@ void entity_render(SDL_Renderer *renderer, Camera camera, Entity *entity, Entity
         SDL_RenderCopy(renderer,
                        entity_texture->texture[(entity->animation >> 4) & 0b11],
                        entity_texture->animation_rects + (entity->animation & entity_texture->animation_mask),
-                       rect_in_camera_space_f(camera, entity->x, entity->y, type->size_x, type->size_y));
+                       rect_in_camera_space_f(camera, entity->x, entity->y, type->size, type->offset));
     }
 }
 

@@ -40,7 +40,7 @@ int main(int argc, char *argv[])
         .tiles = tiles,
         .wave_count = 1,
         .wave_current = 0,
-        .waves = &(Wave){.enemies_count = 100, .evolution_factor = 10, .spawner_count = 10}};
+        .waves = &(Wave){.enemies_count = 100, .evolution_factor = 10, .spawner_count = 100}};
 
     srand(time(NULL));
     tile_create_lake(tiles, 150, 85, 32);
@@ -113,7 +113,7 @@ int main(int argc, char *argv[])
                     }
                 }
 
-                if (1)
+                if (updates % 2)
                 {
                     // Reset occupations
                     for (int i = 0; i < tX * tY; i++)

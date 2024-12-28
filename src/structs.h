@@ -146,8 +146,8 @@ typedef struct
 {
     EntityTexture *texture_running;
     EntityTexture *texture_attack;
-    float size_x;
-    float size_y;
+    float size;
+    float offset;
     float damage;
     float max_health;
 } EntityType;
