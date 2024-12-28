@@ -46,6 +46,10 @@ void render_ore(SDL_Renderer *renderer, Camera camera, Tile *tile, TileType *ore
 
 void render_terrain(SDL_Renderer *renderer, Camera camera, Tile *tile, TileType *terrain_types, int x, int y)
 {
+    if (tile->entity_occupied)
+    {
+        return;
+    }
     TileType type = terrain_types[tile->terrain];
     SDL_RenderCopy(renderer, type.texture,
                    type.animation_rects + (tile->flags & type.animation_mask),

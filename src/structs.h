@@ -160,8 +160,8 @@ typedef struct
 {
     float x;
     float y;
-    float target_x;
-    float target_y;
+    int target_x;
+    int target_y;
     int moving_to_x;
     int moving_to_y;
     float health;

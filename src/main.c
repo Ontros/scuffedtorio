@@ -10,6 +10,7 @@
 
 int main(int argc, char *argv[])
 {
+    printf("%d\n", 1 == 1.1f);
     Camera camera = {-cX + 4, -cY + 4, 100, 1920, 1080, 2, 2, 7, 1};
     SDL_Window *window = NULL;
     SDL_Renderer *renderer = NULL;
@@ -39,7 +40,7 @@ int main(int argc, char *argv[])
         .tiles = tiles,
         .wave_count = 1,
         .wave_current = 0,
-        .waves = &(Wave){.enemies_count = 1000, .evolution_factor = 10, .spawner_count = 10}};
+        .waves = &(Wave){.enemies_count = 100, .evolution_factor = 10, .spawner_count = 10}};
 
     srand(time(NULL));
     tile_create_lake(tiles, 150, 85, 32);
@@ -112,20 +113,24 @@ int main(int argc, char *argv[])
                     }
                 }
 
-                // Reset occupations
-                for (int i = 0; i < tX * tY; i++)
+                if (1)
                 {
-                    tiles[i].entity_occupied = 0;
-                }
-                // Move entities
-                for (int i = 0; i < entity_container.amount; i++)
-                {
-                    if (entity_container.entities[i].is_dead == 0)
+                    // Reset occupations
+                    for (int i = 0; i < tX * tY; i++)
                     {
-                        // entity_container.entities[i].animation++;
-                        // entity_container.entities[i].animation %= 16;
-                        // Reset moving state
-                        entity_move(entity_container.entities + i, entity_types, tiles);
+                        if (tiles[i].entity_occupied)
+                            tiles[i].entity_occupied--;
+                    }
+                    // Move entities
+                    for (int i = 0; i < entity_container.amount; i++)
+                    {
+                        if (entity_container.entities[i].is_dead == 0)
+                        {
+                            // entity_container.entities[i].animation++;
+                            // entity_container.entities[i].animation %= 16;
+                            // Reset moving state
+                            entity_move(entity_container.entities + i, entity_types, tiles);
+                        }
                     }
                 }
             }

@@ -82,8 +82,6 @@ void entity_spawn(Entity *entity, Tile *tiles, SpawnerContainer container, char 
     // {
     //     y_offset += 5.0f;
     // }
-    // entity->x = spawner->x - 2 + x_offset;
-    // entity->y = spawner->y - 2 + y_offset;
     entity->x = spawner->x - 2;
     entity->y = spawner->y - 2;
     entity->type = type;
@@ -141,14 +139,15 @@ void entity_render(SDL_Renderer *renderer, Camera camera, Entity *entity, Entity
 
 void entity_move(Entity *entity, EntityType *types, Tile *tiles)
 {
-    if ((int)entity->x == entity->moving_to_x && (int)entity->y == entity->moving_to_y)
+    if (entity->x == (float)entity->moving_to_x && entity->y == (float)entity->moving_to_y)
     {
         // There is room for me
         if (tiles[entity->moving_to_y * tY + entity->moving_to_x].entity_occupied == 0)
         {
+            tiles[entity->moving_to_y * tY + entity->moving_to_x].entity_occupied = 10;
             int dir = 0;
-            int x_dif = entity->target_x - entity->x;
-            int y_dif = entity->target_y - entity->y;
+            int x_dif = entity->target_x - (int)entity->x;
+            int y_dif = entity->target_y - (int)entity->y;
             // Horizontal
             if (abs(x_dif) > abs(y_dif))
             {
@@ -181,27 +180,34 @@ void entity_move(Entity *entity, EntityType *types, Tile *tiles)
                     entity->moving_to_y--;
                 }
             }
-            tiles[entity->moving_to_y * tY + entity->moving_to_x].entity_occupied = 1;
-            entity->animation = dir << 4;
+            entity->animation = (dir << 4) | (entity->animation & 0b1111);
+        }
+        else
+        {
+            // No room for me, skip
+            return;
         }
     }
-    switch (entity->animation & 0b11000)
+    switch (entity->animation & 0b110000)
     {
     // Up
     case 0b000000:
         entity->y = fmax(entity->moving_to_y, entity->y - mS);
         break;
-    // Down
-    case 0b100000:
-        entity->y = fmin(entity->moving_to_y, entity->y + mS);
-        break;
     // Right
     case 0b010000:
         entity->x = fmin(entity->moving_to_x, entity->x + mS);
+        break;
+    // Down
+    case 0b100000:
+        entity->y = fmin(entity->moving_to_y, entity->y + mS);
         break;
     // Left
     case 0b110000:
         entity->x = fmax(entity->moving_to_x, entity->x - mS);
         break;
     }
+    char anim = ((entity->animation & 0b1111) + 1) % 16;
+    entity->animation &= 0b1110000;
+    entity->animation |= anim;
 }
