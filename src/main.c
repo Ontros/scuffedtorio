@@ -10,7 +10,6 @@
 
 int main(int argc, char *argv[])
 {
-    printf("%d\n", sizeof(Tile));
     Camera camera = {-cX + 4, -cY + 4, 100, 1920, 1080, 2, 2, 7, 1};
     SDL_Window *window = NULL;
     SDL_Renderer *renderer = NULL;
@@ -40,7 +39,7 @@ int main(int argc, char *argv[])
         .tiles = tiles,
         .wave_count = 1,
         .wave_current = 0,
-        .waves = &(Wave){.enemies_count = 100, .evolution_factor = 10, .spawner_count = 10}};
+        .waves = &(Wave){.enemies_count = 1000, .evolution_factor = 10, .spawner_count = 10}};
 
     srand(time(NULL));
     tile_create_lake(tiles, 150, 85, 32);
@@ -66,13 +65,9 @@ int main(int argc, char *argv[])
     ButtonContainer buttons = button_container_in_game_create(renderer, state);
 
     SpawnerContainer spawner_container = spawner_spawn(tiles, state, types[5]);
-    for (int i = 0; i < state.waves[state.wave_current].enemies_count; i++)
-    {
-    }
-
     EntityType *entity_types = entity_types_init(renderer);
-    EntityContainer entity_container = entity_container_create(100);
-    for (int i = 0; i < 100; i++)
+    EntityContainer entity_container = entity_container_create(state.waves[state.wave_current].enemies_count);
+    for (int i = 0; i < state.waves[state.wave_current].enemies_count; i++)
     {
         entity_spawn(entity_container.entities + i, tiles, spawner_container, 0, entity_types, state);
     }

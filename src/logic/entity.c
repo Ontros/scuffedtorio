@@ -91,6 +91,8 @@ void entity_spawn(Entity *entity, Tile *tiles, SpawnerContainer container, char 
     // TODO: Find target
     entity->target_x = cX;
     entity->target_y = cY;
+    entity->moving_to_x = entity->x;
+    entity->moving_to_y = entity->y;
 }
 
 Entity entity_create()
@@ -100,6 +102,8 @@ Entity entity_create()
         .health = 0,
         .target_x = -1,
         .target_y = -1,
+        .moving_to_x = -1,
+        .moving_to_y = -1,
         .type = 0,
         .x = -1,
         .y = -1,
@@ -137,20 +141,67 @@ void entity_render(SDL_Renderer *renderer, Camera camera, Entity *entity, Entity
 
 void entity_move(Entity *entity, EntityType *types, Tile *tiles)
 {
-    if ((int)entity->x > entity->target_x)
+    if ((int)entity->x == entity->moving_to_x && (int)entity->y == entity->moving_to_y)
     {
-        entity->x -= 0.1f;
+        // There is room for me
+        if (tiles[entity->moving_to_y * tY + entity->moving_to_x].entity_occupied == 0)
+        {
+            int dir = 0;
+            int x_dif = entity->target_x - entity->x;
+            int y_dif = entity->target_y - entity->y;
+            // Horizontal
+            if (abs(x_dif) > abs(y_dif))
+            {
+                // Right
+                if (x_dif > 0)
+                {
+                    dir = 1;
+                    entity->moving_to_x++;
+                }
+                // Left
+                else
+                {
+                    dir = 3;
+                    entity->moving_to_x--;
+                }
+            }
+            // Vertical
+            else
+            {
+                // Down
+                if (y_dif > 0)
+                {
+                    dir = 2;
+                    entity->moving_to_y++;
+                }
+                // Up
+                else
+                {
+                    dir = 0;
+                    entity->moving_to_y--;
+                }
+            }
+            tiles[entity->moving_to_y * tY + entity->moving_to_x].entity_occupied = 1;
+            entity->animation = dir << 4;
+        }
     }
-    else if ((int)entity->x < entity->target_x)
+    switch (entity->animation & 0b11000)
     {
-        entity->x += 0.1f;
-    }
-    else if ((int)entity->y > entity->target_y)
-    {
-        entity->y -= 0.1f;
-    }
-    else if ((int)entity->y < entity->target_y)
-    {
-        entity->y += 0.1f;
+    // Up
+    case 0b000000:
+        entity->y = fmax(entity->moving_to_y, entity->y - mS);
+        break;
+    // Down
+    case 0b100000:
+        entity->y = fmin(entity->moving_to_y, entity->y + mS);
+        break;
+    // Right
+    case 0b010000:
+        entity->x = fmin(entity->moving_to_x, entity->x + mS);
+        break;
+    // Left
+    case 0b110000:
+        entity->x = fmax(entity->moving_to_x, entity->x - mS);
+        break;
     }
 }

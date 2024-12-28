@@ -163,7 +163,7 @@ typedef struct
     float target_x;
     float target_y;
     int moving_to_x;
-    int movint_to_y;
+    int moving_to_y;
     float health;
     char type;
     unsigned char animation;
