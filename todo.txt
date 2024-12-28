@@ -7,5 +7,5 @@ ui + logika
 zvuky
 move from mallocing everything
 free all mallocs
-optimalizace terenu pro odzoomovane (replacni rectem)
+renderGeometry / optimalizace terenu pro odzoomovane (replacni rectem)
 udelat si to hezky

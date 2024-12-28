@@ -39,7 +39,7 @@ int main(int argc, char *argv[])
         .tiles = tiles,
         .wave_count = 1,
         .wave_current = 0,
-        .waves = &(Wave){.enemies_count = 100, .evolution_factor = 10, .spawner_count = 10000}};
+        .waves = &(Wave){.enemies_count = 100, .evolution_factor = 10, .spawner_count = 10}};
 
     srand(time(NULL));
     tile_create_lake(tiles, 150, 85, 32);
@@ -64,14 +64,17 @@ int main(int argc, char *argv[])
 
     ButtonContainer buttons = button_container_in_game_create(renderer, state);
 
-    SpawnerContainer container = spawner_spawn(tiles, state, types[5]);
+    SpawnerContainer spawner_container = spawner_spawn(tiles, state, types[5]);
     for (int i = 0; i < state.waves[state.wave_current].enemies_count; i++)
     {
     }
 
-    // TODO: error ve vytvareni typu
     EntityType *entity_types = entity_types_init(renderer);
-    Entity entity = entity_spawn(256, 256, 0, entity_types);
+    EntityContainer entity_container = entity_container_create(100);
+    for (int i = 0; i < 100; i++)
+    {
+        entity_spawn(entity_container.entities + i, tiles, spawner_container, 0, entity_types);
+    }
 
     int frames = 0;
     int updates = 0;
@@ -112,6 +115,10 @@ int main(int argc, char *argv[])
                         inventory_slot_update(renderer, inventory, i, 0);
                     }
                 }
+
+                // Move entities
+                // entity.animation++;
+                // entity.animation %= 128;
             }
 
             updates++;
@@ -354,7 +361,10 @@ int main(int argc, char *argv[])
             }
         }
 
-        entity_render(renderer, camera, &entity, entity_types);
+        for (int i = 0; i < entity_container.amount; i++)
+        {
+            entity_render(renderer, camera, entity_container.entities + i, entity_types);
+        }
 
         // Placing preview
         if (type_in_hand != -1 && mouse_tile)

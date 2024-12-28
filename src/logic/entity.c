@@ -28,7 +28,7 @@ EntityTexture *entity_texture_create_run(SDL_Renderer *renderer)
     output->texture[1] = texture_load(renderer, "../data/base/graphics/entity/biter/biter-run-2.png");
     output->texture[2] = texture_load(renderer, "../data/base/graphics/entity/biter/biter-run-3.png");
     output->texture[3] = texture_load(renderer, "../data/base/graphics/entity/biter/biter-run-4.png");
-    output->animation_rects = (SDL_Rect *)(malloc(sizeof(SDL_Rect)));
+    output->animation_rects = (SDL_Rect *)(malloc(sizeof(SDL_Rect) * 16));
     const int tile_w = 398;
     const int tile_h = 310;
     for (int i = 0; i < 8; i++)
@@ -48,7 +48,7 @@ EntityTexture *entity_texture_create_attack(SDL_Renderer *renderer)
     output->texture[1] = texture_load(renderer, "../data/base/graphics/entity/biter/biter-attack-2.png");
     output->texture[2] = texture_load(renderer, "../data/base/graphics/entity/biter/biter-attack-3.png");
     output->texture[3] = texture_load(renderer, "../data/base/graphics/entity/biter/biter-attack-4.png");
-    output->animation_rects = (SDL_Rect *)(malloc(sizeof(SDL_Rect)));
+    output->animation_rects = (SDL_Rect *)(malloc(sizeof(SDL_Rect) * 12));
     const int tile_w = 356;
     const int tile_h = 348;
     for (int i = 0; i < 12; i++)
@@ -63,29 +63,65 @@ EntityType *entity_types_init(SDL_Renderer *renderer)
     EntityType *types = (EntityType *)(malloc(sizeof(EntityType) * 1));
     EntityTexture *run = entity_texture_create_run(renderer);
     EntityTexture *attack = entity_texture_create_attack(renderer);
-    types[0] = entity_type_init(run, attack, 10, 100, 2, 2);
+    types[0] = entity_type_init(run, attack, 10, 100, 2.0f, 2.0f);
     return types;
 }
 
-Entity entity_spawn(float x, float y, char type, EntityType *types)
+void entity_spawn(Entity *entity, Tile *tiles, SpawnerContainer container, char type, EntityType *types)
+{
+    Tile *spawner = tiles + container.spawner_indecies[rand() % container.amount];
+    entity->health = types[type].max_health;
+    float x_offset = (float)(rand() % 400) / 100.0f;
+    if (x_offset > 2.0f)
+    {
+        x_offset += 5.0f;
+    }
+    float y_offset = (float)(rand() % 400) / 100.0f;
+    if (y_offset > 2.0f)
+    {
+        y_offset += 5.0f;
+    }
+    entity->x = spawner->x - 2 + x_offset;
+    entity->y = spawner->y - 2 + y_offset;
+    entity->type = type;
+    entity->is_dead = 0;
+    // Find target
+}
+
+Entity entity_create()
 {
     return (Entity){
         .animation = 0,
-        .health = types[type].max_health,
+        .health = 0,
         .target_x = -1,
         .target_y = -1,
-        .type = type,
-        .x = x,
-        .y = y,
-        .is_dead = 0};
+        .type = 0,
+        .x = -1,
+        .y = -1,
+        .is_dead = 1};
+}
+
+EntityContainer entity_container_create(int amount)
+{
+    EntityContainer container = (EntityContainer){
+        .amount = amount,
+        .entities = (Entity *)(malloc(sizeof(Entity) * amount)),
+        .spawned = 0,
+    };
+    for (int i = 0; i < amount; i++)
+    {
+        container.entities[i] = entity_create();
+    }
+    return container;
 }
 
 // All types have the same texture so we can directly acces types
 void entity_render(SDL_Renderer *renderer, Camera camera, Entity *entity, EntityType *types)
 {
+    EntityType *type = types + entity->type;
+    // TODO: entity culling
     if (entity->is_dead == 0)
     {
-        EntityType *type = types + entity->type;
         EntityTexture *entity_texture = (entity->animation & 0b1000000) ? types->texture_attack : types->texture_running;
         SDL_RenderCopy(renderer,
                        entity_texture->texture[(entity->animation >> 4) & 0b11],

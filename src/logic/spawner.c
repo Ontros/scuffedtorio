@@ -44,9 +44,9 @@ SpawnerContainer spawner_spawn(Tile *tiles, GameState state, TileType spawner_ty
             if (spawner_is_spot_valid(tiles, x, y))
             {
                 spawner_place(tiles, tiles + (y * tY + x), spawner_type);
-                container.spawner_indecies[real_count] = y * tY * x;
+                container.spawner_indecies[real_count] = y * tY + x;
                 real_count++;
-                break;
+                n = 100;
             }
         }
     }

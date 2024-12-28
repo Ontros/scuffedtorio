@@ -169,6 +169,13 @@ typedef struct
 
 typedef struct
 {
+    Entity *entities;
+    int amount;
+    int spawned;
+} EntityContainer;
+
+typedef struct
+{
     int *spawner_indecies;
     int amount;
 } SpawnerContainer;
