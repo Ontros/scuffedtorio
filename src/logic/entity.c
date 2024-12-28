@@ -1,4 +1,5 @@
 #include "entity.h"
+const float mS = 0.1f; // move speed
 
 EntityType entity_type_init(EntityTexture *run, EntityTexture *attack, float damage, float hp, float size_x, float size_y)
 {
@@ -67,25 +68,29 @@ EntityType *entity_types_init(SDL_Renderer *renderer)
     return types;
 }
 
-void entity_spawn(Entity *entity, Tile *tiles, SpawnerContainer container, char type, EntityType *types)
+void entity_spawn(Entity *entity, Tile *tiles, SpawnerContainer container, char type, EntityType *types, GameState state)
 {
     Tile *spawner = tiles + container.spawner_indecies[rand() % container.amount];
     entity->health = types[type].max_health;
-    float x_offset = (float)(rand() % 400) / 100.0f;
-    if (x_offset > 2.0f)
-    {
-        x_offset += 5.0f;
-    }
-    float y_offset = (float)(rand() % 400) / 100.0f;
-    if (y_offset > 2.0f)
-    {
-        y_offset += 5.0f;
-    }
-    entity->x = spawner->x - 2 + x_offset;
-    entity->y = spawner->y - 2 + y_offset;
+    // float x_offset = (float)(rand() % 400) / 100.0f;
+    // if (x_offset > 2.0f)
+    // {
+    //     x_offset += 5.0f;
+    // }
+    // float y_offset = (float)(rand() % 400) / 100.0f;
+    // if (y_offset > 2.0f)
+    // {
+    //     y_offset += 5.0f;
+    // }
+    // entity->x = spawner->x - 2 + x_offset;
+    // entity->y = spawner->y - 2 + y_offset;
+    entity->x = spawner->x - 2;
+    entity->y = spawner->y - 2;
     entity->type = type;
     entity->is_dead = 0;
-    // Find target
+    // TODO: Find target
+    entity->target_x = cX;
+    entity->target_y = cY;
 }
 
 Entity entity_create()
@@ -127,5 +132,25 @@ void entity_render(SDL_Renderer *renderer, Camera camera, Entity *entity, Entity
                        entity_texture->texture[(entity->animation >> 4) & 0b11],
                        entity_texture->animation_rects + (entity->animation & entity_texture->animation_mask),
                        rect_in_camera_space_f(camera, entity->x, entity->y, type->size_x, type->size_y));
+    }
+}
+
+void entity_move(Entity *entity, EntityType *types, Tile *tiles)
+{
+    if ((int)entity->x > entity->target_x)
+    {
+        entity->x -= 0.1f;
+    }
+    else if ((int)entity->x < entity->target_x)
+    {
+        entity->x += 0.1f;
+    }
+    else if ((int)entity->y > entity->target_y)
+    {
+        entity->y -= 0.1f;
+    }
+    else if ((int)entity->y < entity->target_y)
+    {
+        entity->y += 0.1f;
     }
 }

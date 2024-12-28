@@ -10,6 +10,11 @@ static inline char tile_is_not_empty(Tile *tile)
     return tile->base_tile->type != -1 || tile->terrain != 2;
 }
 
+inline char tile_is_pathfindable(Tile *tile)
+{
+    return tile->base_tile->type == -1 && tile->terrain != 1;
+}
+
 // TODO: use type
 void render_tile(SDL_Renderer *renderer, Camera camera, Tile *tile, TileType *types, int x, int y, char advance_animation)
 {

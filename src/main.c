@@ -10,6 +10,7 @@
 
 int main(int argc, char *argv[])
 {
+    printf("%d\n", sizeof(Tile));
     Camera camera = {-cX + 4, -cY + 4, 100, 1920, 1080, 2, 2, 7, 1};
     SDL_Window *window = NULL;
     SDL_Renderer *renderer = NULL;
@@ -73,7 +74,7 @@ int main(int argc, char *argv[])
     EntityContainer entity_container = entity_container_create(100);
     for (int i = 0; i < 100; i++)
     {
-        entity_spawn(entity_container.entities + i, tiles, spawner_container, 0, entity_types);
+        entity_spawn(entity_container.entities + i, tiles, spawner_container, 0, entity_types, state);
     }
 
     int frames = 0;
@@ -116,9 +117,22 @@ int main(int argc, char *argv[])
                     }
                 }
 
+                // Reset occupations
+                for (int i = 0; i < tX * tY; i++)
+                {
+                    tiles[i].entity_occupied = 0;
+                }
                 // Move entities
-                // entity.animation++;
-                // entity.animation %= 128;
+                for (int i = 0; i < entity_container.amount; i++)
+                {
+                    if (entity_container.entities[i].is_dead == 0)
+                    {
+                        // entity_container.entities[i].animation++;
+                        // entity_container.entities[i].animation %= 16;
+                        // Reset moving state
+                        entity_move(entity_container.entities + i, entity_types, tiles);
+                    }
+                }
             }
 
             updates++;

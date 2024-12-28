@@ -47,6 +47,7 @@ typedef struct Tile
     char terrain;
     char type;
     char health;
+    char entity_occupied;
 } Tile;
 
 typedef struct TileType
@@ -161,6 +162,8 @@ typedef struct
     float y;
     float target_x;
     float target_y;
+    int moving_to_x;
+    int movint_to_y;
     float health;
     char type;
     unsigned char animation;
