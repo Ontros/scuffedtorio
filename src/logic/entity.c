@@ -1,5 +1,11 @@
 #include "entity.h"
-const float mS = 0.1f; // move speed
+const float ticks_to_cross_tile = 5.0f;
+const float distance_per_tick = 1.0 / ticks_to_cross_tile; // move speed
+
+static inline char tile_is_pathfindable(Tile *tile)
+{
+    return tile->base_tile->type == -1 && tile->terrain != 1;
+}
 
 EntityType entity_type_init(EntityTexture *run, EntityTexture *attack, float damage, float hp, float size, float offset)
 {
@@ -148,7 +154,7 @@ void entity_move(Entity *entity, EntityType *types, Tile *tiles)
         // There is room for me
         if (tiles[entity->moving_to_y * tY + entity->moving_to_x].entity_occupied == 0)
         {
-            tiles[entity->moving_to_y * tY + entity->moving_to_x].entity_occupied = 10;
+            tiles[entity->moving_to_y * tY + entity->moving_to_x].entity_occupied = (int)ticks_to_cross_tile;
             int dir = 0;
             int x_dif = entity->target_x - (int)entity->x;
             int y_dif = entity->target_y - (int)entity->y;
@@ -158,14 +164,50 @@ void entity_move(Entity *entity, EntityType *types, Tile *tiles)
                 // Right
                 if (x_dif > 0)
                 {
-                    dir = 1;
-                    entity->moving_to_x++;
+                    if (tile_is_pathfindable(tiles + (entity->moving_to_y * tY + entity->moving_to_x + 1)))
+                    {
+                        dir = 1;
+                        entity->moving_to_x++;
+                    }
+                    else
+                    {
+                        // Down
+                        if (tile_is_pathfindable(tiles + ((entity->moving_to_y + 1) * tY + entity->moving_to_x)))
+                        {
+                            dir = 2;
+                            entity->moving_to_y++;
+                        }
+                        // Up
+                        else
+                        {
+                            dir = 0;
+                            entity->moving_to_y--;
+                        }
+                    }
                 }
                 // Left
                 else
                 {
-                    dir = 3;
-                    entity->moving_to_x--;
+                    if (tile_is_pathfindable(tiles + (entity->moving_to_y * tY + entity->moving_to_x - 1)))
+                    {
+                        dir = 3;
+                        entity->moving_to_x--;
+                    }
+                    else
+                    {
+                        // Down
+                        if (tile_is_pathfindable(tiles + ((entity->moving_to_y + 1) * tY + entity->moving_to_x)))
+                        {
+                            dir = 2;
+                            entity->moving_to_y++;
+                        }
+                        // Up
+                        else
+                        {
+                            dir = 0;
+                            entity->moving_to_y--;
+                        }
+                    }
                 }
             }
             // Vertical
@@ -174,14 +216,46 @@ void entity_move(Entity *entity, EntityType *types, Tile *tiles)
                 // Down
                 if (y_dif > 0)
                 {
-                    dir = 2;
-                    entity->moving_to_y++;
+                    if (tile_is_pathfindable(tiles + ((entity->moving_to_y + 1) * tY + entity->moving_to_x)))
+                    {
+                        dir = 2;
+                        entity->moving_to_y++;
+                    }
+                    else
+                    {
+                        if (tile_is_pathfindable(tiles + (entity->moving_to_y * tY + entity->moving_to_x + 1)))
+                        {
+                            dir = 1;
+                            entity->moving_to_x++;
+                        }
+                        else
+                        {
+                            dir = 3;
+                            entity->moving_to_x--;
+                        }
+                    }
                 }
                 // Up
                 else
                 {
-                    dir = 0;
-                    entity->moving_to_y--;
+                    if (tile_is_pathfindable(tiles + ((entity->moving_to_y - 1) * tY + entity->moving_to_x)))
+                    {
+                        dir = 0;
+                        entity->moving_to_y--;
+                    }
+                    else
+                    {
+                        if (tile_is_pathfindable(tiles + (entity->moving_to_y * tY + entity->moving_to_x + 1)))
+                        {
+                            dir = 1;
+                            entity->moving_to_x++;
+                        }
+                        else
+                        {
+                            dir = 3;
+                            entity->moving_to_x--;
+                        }
+                    }
                 }
             }
             entity->animation = (dir << 4) | (entity->animation & 0b1111);
@@ -196,19 +270,19 @@ void entity_move(Entity *entity, EntityType *types, Tile *tiles)
     {
     // Up
     case 0b000000:
-        entity->y = fmax(entity->moving_to_y, entity->y - mS);
+        entity->y = fmax(entity->moving_to_y, entity->y - distance_per_tick);
         break;
     // Right
     case 0b010000:
-        entity->x = fmin(entity->moving_to_x, entity->x + mS);
+        entity->x = fmin(entity->moving_to_x, entity->x + distance_per_tick);
         break;
     // Down
     case 0b100000:
-        entity->y = fmin(entity->moving_to_y, entity->y + mS);
+        entity->y = fmin(entity->moving_to_y, entity->y + distance_per_tick);
         break;
     // Left
     case 0b110000:
-        entity->x = fmax(entity->moving_to_x, entity->x - mS);
+        entity->x = fmax(entity->moving_to_x, entity->x - distance_per_tick);
         break;
     }
     char anim = ((entity->animation & 0b1111) + 1) % 16;

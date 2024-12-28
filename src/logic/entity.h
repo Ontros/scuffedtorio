@@ -1,6 +1,5 @@
 #pragma once
 #include "../structs.h"
-// #include "../rendering/camera.h"
 #include "entity.c"
 
 EntityType *entity_types_init(SDL_Renderer *renderer);
