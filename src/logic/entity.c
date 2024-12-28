@@ -125,7 +125,6 @@ void entity_set_target(Entity *entity, int target_x, int target_y)
             entity->main_dir = 0;
         }
     }
-    entity->main_dir = 0;
 }
 
 void entity_spawn(Entity *entity, Tile *tiles, SpawnerContainer container, char type, EntityType *types, GameState state)
@@ -148,7 +147,7 @@ void entity_spawn(Entity *entity, Tile *tiles, SpawnerContainer container, char 
     entity->is_dead = 0;
     entity->moving_to_x = entity->x;
     entity->moving_to_y = entity->y;
-    entity_set_target(entity, tX, tY);
+    entity_set_target(entity, cX, cY);
 }
 
 Entity entity_create()
@@ -186,11 +185,12 @@ void entity_render(SDL_Renderer *renderer, Camera camera, Entity *entity, Entity
 {
     EntityType *type = types + entity->type;
     // TODO: entity culling
-    if (entity->is_dead == 0 && entity->main_dir == 0)
+    if (entity->is_dead == 0)
     {
         EntityTexture *entity_texture = (entity->animation & 0b1000000) ? types->texture_attack : types->texture_running;
         SDL_RenderCopy(renderer,
-                       entity_texture->texture[(entity->animation >> 4) & 0b11],
+                       entity_texture->texture[entity->main_dir],
+                       //    entity_texture->texture[(entity->animation >> 4) & 0b11],
                        entity_texture->animation_rects + (entity->animation & entity_texture->animation_mask),
                        rect_in_camera_space_f(camera, entity->x, entity->y, type->size, type->offset));
     }
@@ -212,7 +212,6 @@ void entity_move(Entity *entity, EntityType *types, Tile *tiles)
             char lP = tile_left_pathfindable(tiles, entity->moving_to_x, entity->moving_to_y);
             char rP = tile_right_pathfindable(tiles, entity->moving_to_x, entity->moving_to_y);
             char uP = tile_up_pathfindable(tiles, entity->moving_to_x, entity->moving_to_y);
-            uP = 1;
             char dP = tile_down_pathfindable(tiles, entity->moving_to_x, entity->moving_to_y);
             switch (entity->main_dir)
             {
@@ -239,13 +238,13 @@ void entity_move(Entity *entity, EntityType *types, Tile *tiles)
                 break;
             // Right
             case 1:
-                if ((-y_dif > x_dif || !rP) && uP)
+                if (((-y_dif > x_dif) || !rP) && uP)
                 {
                     // Move up
                     dir = 0;
                     entity->moving_to_y--;
                 }
-                else if ((y_dif > x_dif || !rP) && dP)
+                else if (((y_dif > x_dif) || !rP) && dP)
                 {
                     // Move down
                     dir = 2;
@@ -260,13 +259,13 @@ void entity_move(Entity *entity, EntityType *types, Tile *tiles)
                 break;
             // Down
             case 2:
-                if ((x_dif > y_dif || !dP) && lP)
+                if (((x_dif > y_dif) || !dP) && lP)
                 {
                     // Move left
                     dir = 3;
                     entity->moving_to_x--;
                 }
-                else if ((-x_dif > y_dif || !dP) && rP)
+                else if (((-x_dif > y_dif) || !dP) && rP)
                 {
                     // Move right
                     dir = 1;
@@ -281,13 +280,13 @@ void entity_move(Entity *entity, EntityType *types, Tile *tiles)
                 break;
             // Left
             case 3:
-                if ((-y_dif > -x_dif || !lP) && uP)
+                if (((-y_dif > -x_dif) || !lP) && uP)
                 {
                     // Move up
                     dir = 0;
                     entity->moving_to_y--;
                 }
-                else if ((y_dif > -x_dif || !lP) && dP)
+                else if (((y_dif > -x_dif) || !lP) && dP)
                 {
                     // Move down
                     dir = 2;
