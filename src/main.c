@@ -42,18 +42,19 @@ int main(int argc, char *argv[])
         .wave_current = 0,
         .waves = &(Wave){.enemies_count = 100, .evolution_factor = 10, .spawner_count = 10000}};
 
-    srand(time(NULL));
+    // srand(time(NULL));
+    srand(69420);
     tile_create_lake(tiles, 150, 85, 32);
     tile_create_lake(tiles, 300, 450, 16);
     tile_create_lake(tiles, 50, 311, 48);
     tile_create_lake(tiles, 345, 100, 22);
     tile_create_lake(tiles, 200, 200, 32);
     tile_update_concrete(tiles, 16);
-    tile_add_ore(tiles, 4, 25);
-    tile_add_ore(tiles, 3, 25);
-    tile_add_ore(tiles, 2, 25);
-    tile_add_ore(tiles, 1, 25);
-    tile_add_ore(tiles, 0, 25);
+    tile_add_ore(tiles, 4, 50);
+    tile_add_ore(tiles, 3, 50);
+    tile_add_ore(tiles, 2, 50);
+    tile_add_ore(tiles, 1, 50);
+    tile_add_ore(tiles, 0, 50);
     tile_place(tiles, tiles + ((cY - 4) * tY + cX - 4), types[4]);
     tile_add_ore_patch(tiles, 0, 9, cX + 5, cY - 4);
     tile_add_ore_patch(tiles, 1, 9, cX + 5, cY - 1);
@@ -336,7 +337,7 @@ int main(int argc, char *argv[])
         else if (keyStates.mouse_right)
         {
             // Remove
-            if (mouse_tile && types[mouse_tile->type].cost_count)
+            if (mouse_tile && types[tiles[get_mouse_id(mouse_x, mouse_y, camera, -1, types)].base_tile->type].cost_count)
             {
                 TileType *destroyed_type = tile_destroy(tiles, tiles[get_mouse_id(mouse_x, mouse_y, camera, -1, types)].base_tile, types);
                 // Add resources

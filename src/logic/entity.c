@@ -7,6 +7,23 @@ static inline char tile_is_pathfindable(Tile *tile)
     return tile->base_tile->type == -1 && tile->terrain != 1;
 }
 
+static inline char tile_left_pathfindable(Tile *tiles, int x, int y)
+{
+    return tile_is_pathfindable(tiles + (y * tY + x - 1));
+}
+static inline char tile_right_pathfindable(Tile *tiles, int x, int y)
+{
+    return tile_is_pathfindable(tiles + (y * tY + x + 1));
+}
+static inline char tile_up_pathfindable(Tile *tiles, int x, int y)
+{
+    return tile_is_pathfindable(tiles + ((y - 1) * tY + x));
+}
+static inline char tile_down_pathfindable(Tile *tiles, int x, int y)
+{
+    return tile_is_pathfindable(tiles + ((y + 1) * tY + x));
+}
+
 EntityType entity_type_init(EntityTexture *run, EntityTexture *attack, float damage, float hp, float size, float offset)
 {
     return (EntityType){
@@ -78,6 +95,39 @@ EntityType *entity_types_init(SDL_Renderer *renderer)
     return types;
 }
 
+void entity_set_target(Entity *entity, int target_x, int target_y)
+{
+    entity->target_x = target_x;
+    entity->target_y = target_y;
+    int x_dif = entity->target_x - (int)entity->x;
+    int y_dif = entity->target_y - (int)entity->y;
+    // Horizontal
+    if (abs(x_dif) > abs(y_dif))
+    {
+        if (x_dif > 0)
+        {
+            entity->main_dir = 1;
+        }
+        else
+        {
+            entity->main_dir = 3;
+        }
+    }
+    // Vertical
+    else
+    {
+        if (y_dif > 0)
+        {
+            entity->main_dir = 2;
+        }
+        else
+        {
+            entity->main_dir = 0;
+        }
+    }
+    entity->main_dir = 0;
+}
+
 void entity_spawn(Entity *entity, Tile *tiles, SpawnerContainer container, char type, EntityType *types, GameState state)
 {
     Tile *spawner = tiles + container.spawner_indecies[rand() % container.amount];
@@ -96,11 +146,9 @@ void entity_spawn(Entity *entity, Tile *tiles, SpawnerContainer container, char 
     entity->y = spawner->y - 2;
     entity->type = type;
     entity->is_dead = 0;
-    // TODO: Find target
-    entity->target_x = cX;
-    entity->target_y = cY;
     entity->moving_to_x = entity->x;
     entity->moving_to_y = entity->y;
+    entity_set_target(entity, tX, tY);
 }
 
 Entity entity_create()
@@ -115,7 +163,8 @@ Entity entity_create()
         .type = 0,
         .x = -1,
         .y = -1,
-        .is_dead = 1};
+        .is_dead = 1,
+        .main_dir = 0};
 }
 
 EntityContainer entity_container_create(int amount)
@@ -137,7 +186,7 @@ void entity_render(SDL_Renderer *renderer, Camera camera, Entity *entity, Entity
 {
     EntityType *type = types + entity->type;
     // TODO: entity culling
-    if (entity->is_dead == 0)
+    if (entity->is_dead == 0 && entity->main_dir == 0)
     {
         EntityTexture *entity_texture = (entity->animation & 0b1000000) ? types->texture_attack : types->texture_running;
         SDL_RenderCopy(renderer,
@@ -156,107 +205,104 @@ void entity_move(Entity *entity, EntityType *types, Tile *tiles)
         {
             tiles[entity->moving_to_y * tY + entity->moving_to_x].entity_occupied = (int)ticks_to_cross_tile;
             int dir = 0;
+            // - -> Left, + -> Right
             int x_dif = entity->target_x - (int)entity->x;
+            // - -> Up, + -> Down
             int y_dif = entity->target_y - (int)entity->y;
-            // Horizontal
-            if (abs(x_dif) > abs(y_dif))
+            char lP = tile_left_pathfindable(tiles, entity->moving_to_x, entity->moving_to_y);
+            char rP = tile_right_pathfindable(tiles, entity->moving_to_x, entity->moving_to_y);
+            char uP = tile_up_pathfindable(tiles, entity->moving_to_x, entity->moving_to_y);
+            uP = 1;
+            char dP = tile_down_pathfindable(tiles, entity->moving_to_x, entity->moving_to_y);
+            switch (entity->main_dir)
             {
-                // Right
-                if (x_dif > 0)
+            // Up
+            case 0:
+                if (((x_dif > -y_dif) || !uP) && lP)
                 {
-                    if (tile_is_pathfindable(tiles + (entity->moving_to_y * tY + entity->moving_to_x + 1)))
-                    {
-                        dir = 1;
-                        entity->moving_to_x++;
-                    }
-                    else
-                    {
-                        // Down
-                        if (tile_is_pathfindable(tiles + ((entity->moving_to_y + 1) * tY + entity->moving_to_x)))
-                        {
-                            dir = 2;
-                            entity->moving_to_y++;
-                        }
-                        // Up
-                        else
-                        {
-                            dir = 0;
-                            entity->moving_to_y--;
-                        }
-                    }
+                    // Move left
+                    dir = 3;
+                    entity->moving_to_x--;
                 }
-                // Left
-                else
+                else if (((-x_dif > -y_dif) || !uP) && rP)
                 {
-                    if (tile_is_pathfindable(tiles + (entity->moving_to_y * tY + entity->moving_to_x - 1)))
-                    {
-                        dir = 3;
-                        entity->moving_to_x--;
-                    }
-                    else
-                    {
-                        // Down
-                        if (tile_is_pathfindable(tiles + ((entity->moving_to_y + 1) * tY + entity->moving_to_x)))
-                        {
-                            dir = 2;
-                            entity->moving_to_y++;
-                        }
-                        // Up
-                        else
-                        {
-                            dir = 0;
-                            entity->moving_to_y--;
-                        }
-                    }
+                    // Move right
+                    dir = 1;
+                    entity->moving_to_x++;
                 }
-            }
-            // Vertical
-            else
-            {
-                // Down
-                if (y_dif > 0)
+                else if (uP)
                 {
-                    if (tile_is_pathfindable(tiles + ((entity->moving_to_y + 1) * tY + entity->moving_to_x)))
-                    {
-                        dir = 2;
-                        entity->moving_to_y++;
-                    }
-                    else
-                    {
-                        if (tile_is_pathfindable(tiles + (entity->moving_to_y * tY + entity->moving_to_x + 1)))
-                        {
-                            dir = 1;
-                            entity->moving_to_x++;
-                        }
-                        else
-                        {
-                            dir = 3;
-                            entity->moving_to_x--;
-                        }
-                    }
+                    // Move up
+                    dir = 0;
+                    entity->moving_to_y--;
                 }
-                // Up
-                else
+                break;
+            // Right
+            case 1:
+                if ((-y_dif > x_dif || !rP) && uP)
                 {
-                    if (tile_is_pathfindable(tiles + ((entity->moving_to_y - 1) * tY + entity->moving_to_x)))
-                    {
-                        dir = 0;
-                        entity->moving_to_y--;
-                    }
-                    else
-                    {
-                        if (tile_is_pathfindable(tiles + (entity->moving_to_y * tY + entity->moving_to_x + 1)))
-                        {
-                            dir = 1;
-                            entity->moving_to_x++;
-                        }
-                        else
-                        {
-                            dir = 3;
-                            entity->moving_to_x--;
-                        }
-                    }
+                    // Move up
+                    dir = 0;
+                    entity->moving_to_y--;
                 }
+                else if ((y_dif > x_dif || !rP) && dP)
+                {
+                    // Move down
+                    dir = 2;
+                    entity->moving_to_y++;
+                }
+                else if (rP)
+                {
+                    // Move right
+                    dir = 1;
+                    entity->moving_to_x++;
+                }
+                break;
+            // Down
+            case 2:
+                if ((x_dif > y_dif || !dP) && lP)
+                {
+                    // Move left
+                    dir = 3;
+                    entity->moving_to_x--;
+                }
+                else if ((-x_dif > y_dif || !dP) && rP)
+                {
+                    // Move right
+                    dir = 1;
+                    entity->moving_to_x++;
+                }
+                else if (dP)
+                {
+                    // Move down
+                    dir = 2;
+                    entity->moving_to_y++;
+                }
+                break;
+            // Left
+            case 3:
+                if ((-y_dif > -x_dif || !lP) && uP)
+                {
+                    // Move up
+                    dir = 0;
+                    entity->moving_to_y--;
+                }
+                else if ((y_dif > -x_dif || !lP) && dP)
+                {
+                    // Move down
+                    dir = 2;
+                    entity->moving_to_y++;
+                }
+                else if (lP)
+                {
+                    // Move left
+                    dir = 3;
+                    entity->moving_to_x--;
+                }
+                break;
+
+            default:
+                break;
             }
             entity->animation = (dir << 4) | (entity->animation & 0b1111);
         }

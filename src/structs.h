@@ -168,6 +168,7 @@ typedef struct
     char type;
     unsigned char animation;
     char is_dead;
+    char main_dir;
 } Entity;
 
 typedef struct
