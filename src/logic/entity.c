@@ -206,24 +206,28 @@ void entity_move(Entity *entity, EntityType *types, Tile *tiles)
             tiles[entity->moving_to_y * tY + entity->moving_to_x].entity_occupied = (int)ticks_to_cross_tile;
             int dir = 0;
             // - -> Left, + -> Right
-            int x_dif = entity->target_x - (int)entity->x;
+            int x_dif = (entity->target_x - (int)entity->x);
             // - -> Up, + -> Down
-            int y_dif = entity->target_y - (int)entity->y;
+            int y_dif = (entity->target_y - (int)entity->y);
             char lP = tile_left_pathfindable(tiles, entity->moving_to_x, entity->moving_to_y);
+            char luP = tile_left_pathfindable(tiles, entity->moving_to_x, entity->moving_to_y - 1);
+            char ldP = tile_left_pathfindable(tiles, entity->moving_to_x, entity->moving_to_y + 1);
             char rP = tile_right_pathfindable(tiles, entity->moving_to_x, entity->moving_to_y);
+            char ruP = tile_right_pathfindable(tiles, entity->moving_to_x, entity->moving_to_y - 1);
+            char rdP = tile_right_pathfindable(tiles, entity->moving_to_x, entity->moving_to_y + 1);
             char uP = tile_up_pathfindable(tiles, entity->moving_to_x, entity->moving_to_y);
             char dP = tile_down_pathfindable(tiles, entity->moving_to_x, entity->moving_to_y);
             switch (entity->main_dir)
             {
             // Up
             case 0:
-                if (((x_dif > -y_dif) || !uP) && lP)
+                if (((-x_dif > -y_dif) || !uP) && lP)
                 {
                     // Move left
                     dir = 3;
                     entity->moving_to_x--;
                 }
-                else if (((-x_dif > -y_dif) || !uP) && rP)
+                else if (((x_dif > -y_dif) || !uP) && rP)
                 {
                     // Move right
                     dir = 1;
@@ -238,13 +242,15 @@ void entity_move(Entity *entity, EntityType *types, Tile *tiles)
                 break;
             // Right
             case 1:
-                if (((-y_dif > x_dif) || !rP) && uP)
+                if (((-y_dif > x_dif) && ruP && uP) || // Too far on one side
+                    (!rP && ruP && uP))                // Cant move
                 {
                     // Move up
                     dir = 0;
                     entity->moving_to_y--;
                 }
-                else if (((y_dif > x_dif) || !rP) && dP)
+                else if (((y_dif > x_dif) && rdP && dP) // Too far on one side
+                         || (!rP && dP))                // Cant move
                 {
                     // Move down
                     dir = 2;
@@ -259,13 +265,13 @@ void entity_move(Entity *entity, EntityType *types, Tile *tiles)
                 break;
             // Down
             case 2:
-                if (((x_dif > y_dif) || !dP) && lP)
+                if (((-x_dif > y_dif) || !dP) && lP)
                 {
                     // Move left
                     dir = 3;
                     entity->moving_to_x--;
                 }
-                else if (((-x_dif > y_dif) || !dP) && rP)
+                else if (((x_dif > y_dif) || !dP) && rP)
                 {
                     // Move right
                     dir = 1;
@@ -280,13 +286,16 @@ void entity_move(Entity *entity, EntityType *types, Tile *tiles)
                 break;
             // Left
             case 3:
-                if (((-y_dif > -x_dif) || !lP) && uP)
+                if (((-y_dif > -x_dif) && luP && uP) || // Too far on one side
+                    (!lP && luP && uP))                 // Cant move
                 {
                     // Move up
                     dir = 0;
                     entity->moving_to_y--;
                 }
-                else if (((y_dif > -x_dif) || !lP) && dP)
+                // else if (((y_dif > -x_dif) || !lP) && dP)
+                else if (((y_dif > -x_dif) && ldP && dP) // Too far on one side
+                         || (!lP && dP))                 // Cant move
                 {
                     // Move down
                     dir = 2;
