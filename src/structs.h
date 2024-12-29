@@ -37,9 +37,14 @@ typedef struct
 
 typedef struct Tile Tile;
 
+typedef struct BuiltTile
+{
+    Tile *tile;
+} BuiltTile;
+
 typedef struct Tile
 {
-    Tile *base_tile;
+    BuiltTile *base_tile;
     int x;
     int y;
     unsigned char flags;
@@ -60,8 +65,7 @@ typedef struct TileType
     unsigned int anim_tile_y;
     unsigned char size_x;
     unsigned char size_y;
-    unsigned char x_map;
-    unsigned char y_offset;
+    unsigned char x_count;
     unsigned char animation_modulo;
     unsigned char animation_mask;
     unsigned char id;

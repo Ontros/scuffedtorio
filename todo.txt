@@ -2,7 +2,7 @@ Vyresit logic data OK
 pripravit tily s placeholder texturama OK
 inventar OK
 vyresit klikani mimo herni pole 
-entity
+entity OK
 ui + logika
 zvuky
 move from mallocing everything

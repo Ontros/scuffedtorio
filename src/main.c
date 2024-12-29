@@ -10,7 +10,6 @@
 
 int main(int argc, char *argv[])
 {
-    printf("%d\n", 1 == 1.1f);
     Camera camera = {-cX + 4, -cY + 4, 100, 1920, 1080, 2, 2, 7, 1};
     SDL_Window *window = NULL;
     SDL_Renderer *renderer = NULL;
@@ -43,7 +42,7 @@ int main(int argc, char *argv[])
         .tiles = tiles,
         .wave_count = 1,
         .wave_current = 0,
-        .waves = &(Wave){.enemies_count = 1000, .evolution_factor = 10, .spawner_count = 10000}};
+        .waves = &(Wave){.enemies_count = 0, .evolution_factor = 10, .spawner_count = 10000}};
 
     // srand(time(NULL));
     srand(69420);
