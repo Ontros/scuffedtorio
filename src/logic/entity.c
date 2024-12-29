@@ -24,6 +24,24 @@ static inline char tile_down_pathfindable(Tile *tiles, int x, int y)
     return tile_is_pathfindable(tiles + ((y + 1) * tY + x));
 }
 
+char tile_found_path(int move_x, int move_y, int check_x, int check_y, Tile *tiles, int x, int y)
+{
+    for (int i = 1; i < 50; i++)
+    {
+        // Found wall
+        if (!tile_is_pathfindable(tiles + ((y + i * move_y) * tY + x + i * move_x)))
+        {
+            return 0;
+        }
+        // Can go down
+        if (tile_is_pathfindable(tiles + ((y + i * move_y + check_y) * tY + x + i * move_x + check_x)))
+        {
+            return i;
+        }
+    }
+    return 1;
+}
+
 EntityType entity_type_init(EntityTexture *run, EntityTexture *attack, float damage, float hp, float size, float offset)
 {
     return (EntityType){
@@ -189,8 +207,7 @@ void entity_render(SDL_Renderer *renderer, Camera camera, Entity *entity, Entity
     {
         EntityTexture *entity_texture = (entity->animation & 0b1000000) ? types->texture_attack : types->texture_running;
         SDL_RenderCopy(renderer,
-                       entity_texture->texture[entity->main_dir],
-                       //    entity_texture->texture[(entity->animation >> 4) & 0b11],
+                       entity_texture->texture[(entity->animation >> 4) & 0b11],
                        entity_texture->animation_rects + (entity->animation & entity_texture->animation_mask),
                        rect_in_camera_space_f(camera, entity->x, entity->y, type->size, type->offset));
     }
@@ -221,15 +238,13 @@ void entity_move(Entity *entity, EntityType *types, Tile *tiles)
             {
             // Up
             case 0:
-                if (((-x_dif > -y_dif) && luP && lP) || // Too far on one side
-                    (!uP && luP && lP))                 // Cant move
+                if ((-x_dif > -y_dif) && luP && lP) // Too far on one side
                 {
                     // Move left
                     dir = 3;
                     entity->moving_to_x--;
                 }
-                else if (((x_dif > -y_dif) && ruP && rP) // Too far on one side
-                         || (!uP && rP))                 // Cant move
+                else if ((x_dif > -y_dif) && ruP && rP) // Too far on one side
                 {
                     // Move right
                     dir = 1;
@@ -241,18 +256,50 @@ void entity_move(Entity *entity, EntityType *types, Tile *tiles)
                     dir = 0;
                     entity->moving_to_y--;
                 }
+                else if (x_dif > 0)
+                {
+                    int dist = tile_found_path(1, 0, 0, -1, tiles, entity->moving_to_x, entity->moving_to_y);
+                    // Try to go right
+                    if (dist)
+                    {
+                        // Move right
+                        dir = 1;
+                        entity->moving_to_x += dist;
+                    }
+                    else
+                    {
+                        // Move left
+                        dir = 3;
+                        entity->moving_to_x--;
+                    }
+                }
+                else
+                {
+                    int dist = tile_found_path(-1, 0, 0, -1, tiles, entity->moving_to_x, entity->moving_to_y);
+                    // Try to go left
+                    if (dist)
+                    {
+                        // Move left
+                        dir = 3;
+                        entity->moving_to_x -= dist;
+                    }
+                    else
+                    {
+                        // Move right
+                        dir = 1;
+                        entity->moving_to_x++;
+                    }
+                }
                 break;
             // Right
             case 1:
-                if (((-y_dif > x_dif) && ruP && uP) || // Too far on one side
-                    (!rP && ruP && uP))                // Cant move
+                if ((-y_dif > x_dif) && ruP && uP) // Too far on one side
                 {
                     // Move up
                     dir = 0;
                     entity->moving_to_y--;
                 }
-                else if (((y_dif > x_dif) && rdP && dP) // Too far on one side
-                         || (!rP && dP))                // Cant move
+                else if ((y_dif > x_dif) && rdP && dP) // Too far on one side
                 {
                     // Move down
                     dir = 2;
@@ -264,18 +311,50 @@ void entity_move(Entity *entity, EntityType *types, Tile *tiles)
                     dir = 1;
                     entity->moving_to_x++;
                 }
+                else if (y_dif < 0)
+                {
+                    int dist = tile_found_path(0, -1, 1, 0, tiles, entity->moving_to_x, entity->moving_to_y);
+                    // Try to go up
+                    if (dist)
+                    {
+                        // Move up
+                        dir = 0;
+                        entity->moving_to_y -= dist;
+                    }
+                    else
+                    {
+                        // Move down
+                        dir = 2;
+                        entity->moving_to_y++;
+                    }
+                }
+                else
+                {
+                    int dist = tile_found_path(0, 1, 1, 0, tiles, entity->moving_to_x, entity->moving_to_y);
+                    // Try to go down
+                    if (dist)
+                    {
+                        // Move down
+                        dir = 2;
+                        entity->moving_to_y += dist;
+                    }
+                    else
+                    {
+                        // Move up
+                        dir = 0;
+                        entity->moving_to_y--;
+                    }
+                }
                 break;
             // Down
             case 2:
-                if (((-x_dif > y_dif) && ldP && lP) || // Too far on one side
-                    (!dP && ldP && lP))                // Cant move
+                if ((-x_dif > y_dif) && ldP && lP) // Too far on one side
                 {
                     // Move left
                     dir = 3;
                     entity->moving_to_x--;
                 }
-                else if (((x_dif > y_dif) && rdP && rP) // Too far on one side
-                         || (!dP && rP))                // Cant move
+                else if ((x_dif > y_dif) && rdP && rP) // Too far on one side
                 {
                     // Move right
                     dir = 1;
@@ -287,19 +366,50 @@ void entity_move(Entity *entity, EntityType *types, Tile *tiles)
                     dir = 2;
                     entity->moving_to_y++;
                 }
+                else if (x_dif > 0)
+                {
+                    int dist = tile_found_path(1, 0, 0, 1, tiles, entity->moving_to_x, entity->moving_to_y);
+                    // Try to go right
+                    if (dist)
+                    {
+                        // Move right
+                        dir = 1;
+                        entity->moving_to_x += dist;
+                    }
+                    else
+                    {
+                        // Move left
+                        dir = 3;
+                        entity->moving_to_x--;
+                    }
+                }
+                else
+                {
+                    int dist = tile_found_path(-1, 0, 0, 1, tiles, entity->moving_to_x, entity->moving_to_y);
+                    // Try to go left
+                    if (dist)
+                    {
+                        // Move left
+                        dir = 3;
+                        entity->moving_to_x -= dist;
+                    }
+                    else
+                    {
+                        // Move right
+                        dir = 1;
+                        entity->moving_to_x++;
+                    }
+                }
                 break;
             // Left
             case 3:
-                if (((-y_dif > -x_dif) && luP && uP) || // Too far on one side
-                    (!lP && luP && uP))                 // Cant move
+                if ((-y_dif > -x_dif) && luP && uP) // Too far on one side
                 {
                     // Move up
                     dir = 0;
                     entity->moving_to_y--;
                 }
-                // else if (((y_dif > -x_dif) || !lP) && dP)
-                else if (((y_dif > -x_dif) && ldP && dP) // Too far on one side
-                         || (!lP && dP))                 // Cant move
+                else if ((y_dif > -x_dif) && ldP && dP) // Too far on one side
                 {
                     // Move down
                     dir = 2;
@@ -310,6 +420,40 @@ void entity_move(Entity *entity, EntityType *types, Tile *tiles)
                     // Move left
                     dir = 3;
                     entity->moving_to_x--;
+                }
+                else if (y_dif < 0)
+                {
+                    int dist = tile_found_path(0, -1, -1, 0, tiles, entity->moving_to_x, entity->moving_to_y);
+                    // Try to go up
+                    if (dist)
+                    {
+                        // Move up
+                        dir = 0;
+                        entity->moving_to_y -= dist;
+                    }
+                    else
+                    {
+                        // Move down
+                        dir = 2;
+                        entity->moving_to_y++;
+                    }
+                }
+                else
+                {
+                    int dist = tile_found_path(0, 1, -1, 0, tiles, entity->moving_to_x, entity->moving_to_y);
+                    // Try to go down
+                    if (dist)
+                    {
+                        // Move down
+                        dir = 2;
+                        entity->moving_to_y += dist;
+                    }
+                    else
+                    {
+                        // Move up
+                        dir = 0;
+                        entity->moving_to_y--;
+                    }
                 }
                 break;
 
