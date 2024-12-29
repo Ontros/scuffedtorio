@@ -3,8 +3,9 @@ project(sdlapp C)
 
 set(CMAKE_C_STANDARD 11)
 
-SET(ADDITIONAL_COMPILER_FLAGS "-lm")
-add_definitions(-DSDL_WAYLAND_LIBDECOR=1)
+SET(ADDITIONAL_COMPILER_FLAGS "-lm -lX11")
+
+add_definitions(-DSDL_VIDEO_DRIVER_X11=ON)
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${ADDITIONAL_COMPILER_FLAGS}")
 
 add_executable(scuffedtorio src/main.c)

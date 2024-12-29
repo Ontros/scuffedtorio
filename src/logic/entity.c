@@ -24,6 +24,11 @@ static inline char tile_down_pathfindable(Tile *tiles, int x, int y)
     return tile_is_pathfindable(tiles + ((y + 1) * tY + x));
 }
 
+static inline char tile_is_attackable(Tile *tile)
+{
+    return !(tile->base_tile->type == -1 || tile->base_tile->type == 5);
+}
+
 char tile_found_path(int move_x, int move_y, int check_x, int check_y, Tile *tiles, int x, int y)
 {
     for (int i = 1; i < 10; i++)
@@ -446,11 +451,12 @@ void entity_move(Entity *entity, EntityType *types, Tile *tiles)
                     }
                 }
                 break;
-
-            default:
-                break;
             }
             entity->animation = (dir << 4) | (entity->animation & 0b1111);
+            if (tile_is_attackable(tiles + (entity->moving_to_y * tY + entity->moving_to_x)))
+            {
+                entity->animation |= 0b1000000;
+            }
         }
         else
         {
@@ -458,26 +464,33 @@ void entity_move(Entity *entity, EntityType *types, Tile *tiles)
             return;
         }
     }
-    switch (entity->animation & 0b110000)
+    // Attacking
+    if (entity->animation & 0b1000000)
     {
-    // Up
-    case 0b000000:
-        entity->y = fmax(entity->moving_to_y, entity->y - distance_per_tick);
-        break;
-    // Right
-    case 0b010000:
-        entity->x = fmin(entity->moving_to_x, entity->x + distance_per_tick);
-        break;
-    // Down
-    case 0b100000:
-        entity->y = fmin(entity->moving_to_y, entity->y + distance_per_tick);
-        break;
-    // Left
-    case 0b110000:
-        entity->x = fmax(entity->moving_to_x, entity->x - distance_per_tick);
-        break;
     }
-    char anim = ((entity->animation & 0b1111) + 1) % 16;
-    entity->animation &= 0b1110000;
-    entity->animation |= anim;
+    else
+    {
+        switch (entity->animation & 0b1110000)
+        {
+        // Up
+        case 0b000000:
+            entity->y = fmax(entity->moving_to_y, entity->y - distance_per_tick);
+            break;
+        // Right
+        case 0b010000:
+            entity->x = fmin(entity->moving_to_x, entity->x + distance_per_tick);
+            break;
+        // Down
+        case 0b100000:
+            entity->y = fmin(entity->moving_to_y, entity->y + distance_per_tick);
+            break;
+        // Left
+        case 0b110000:
+            entity->x = fmax(entity->moving_to_x, entity->x - distance_per_tick);
+            break;
+        }
+        char anim = ((entity->animation & 0b1111) + 1) % 16;
+        entity->animation &= 0b1110000;
+        entity->animation |= anim;
+    }
 }
