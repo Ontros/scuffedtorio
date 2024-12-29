@@ -4,7 +4,7 @@ const float distance_per_tick = 1.0 / 5.0f; // move speed
 
 static inline char tile_is_pathfindable(Tile *tile)
 {
-    return tile->base_tile->type != 5 && tile->terrain != 1;
+    return tile->terrain != 1 && (!tile->base_tile || tile->base_tile->type != 5);
 }
 
 static inline char tile_left_pathfindable(Tile *tiles, int x, int y)
@@ -26,7 +26,7 @@ static inline char tile_down_pathfindable(Tile *tiles, int x, int y)
 
 static inline char tile_is_attackable(Tile *tile)
 {
-    return !(tile->base_tile->type == -1 || tile->base_tile->type == 5);
+    return !(!tile->base_tile || tile->base_tile->type == 5);
 }
 
 char tile_found_path(int move_x, int move_y, int check_x, int check_y, Tile *tiles, int x, int y)

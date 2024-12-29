@@ -7,7 +7,7 @@ char spawner_is_spot_valid(Tile *tiles, int xS, int yS)
     {
         for (int y = yS - 2; y < yS + 7; y++)
         {
-            if (x < 0 || x >= tX || y < 0 || y >= tY || tiles[y * tY + x].terrain != 0 || tiles[y * tY + x].base_tile->type != -1)
+            if (x < 0 || x >= tX || y < 0 || y >= tY || tiles[y * tY + x].terrain != 0 || tiles[y * tY + x].base_tile)
             {
                 return 0;
             }
@@ -18,13 +18,16 @@ char spawner_is_spot_valid(Tile *tiles, int xS, int yS)
 
 char spawner_place(Tile *tiles, Tile *mouse_tile, TileType type)
 {
-
+    BuiltTile *built = (BuiltTile *)(malloc(sizeof(BuiltTile)));
     mouse_tile->type = type.id;
+    built->health = type.max_health;
+    built->type = type.id;
+    built->tile = mouse_tile;
     for (int x = mouse_tile->x; x < (mouse_tile->x + type.size_x) && x >= 0 && x < tX; x++)
     {
         for (int y = mouse_tile->y; y < (mouse_tile->y + type.size_y) && y >= 0 && y < tY; y++)
         {
-            tiles[y * tY + x].base_tile = mouse_tile;
+            tiles[y * tY + x].base_tile = built;
         }
     }
 }

@@ -40,6 +40,8 @@ typedef struct Tile Tile;
 typedef struct BuiltTile
 {
     Tile *tile;
+    unsigned char health;
+    char type;
 } BuiltTile;
 
 typedef struct Tile
@@ -48,11 +50,10 @@ typedef struct Tile
     int x;
     int y;
     unsigned char flags;
-    unsigned char health;
     char ore;
     char terrain;
-    char type;
     char entity_occupied;
+    char type;
 } Tile;
 
 typedef struct TileType

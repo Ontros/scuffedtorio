@@ -7,7 +7,7 @@ static inline char tile_is_empty(Tile *tile)
 
 static inline char tile_is_not_empty(Tile *tile)
 {
-    return tile->base_tile->type != -1 || tile->terrain != 2;
+    return tile->base_tile || tile->terrain != 2;
 }
 
 static inline void render_tile(SDL_Renderer *renderer, Camera camera, Tile *tile, TileType *types, int x, int y, char advance_animation)
@@ -23,14 +23,14 @@ static inline void render_tile(SDL_Renderer *renderer, Camera camera, Tile *tile
         SDL_RenderCopy(renderer, types[tile->type].texture,
                        types[tile->type].animation_rects + (tile->flags & types[tile->type].animation_mask),
                        rect_in_camera_space(camera, x, y, types[tile->type].size_x, types[tile->type].size_y));
-        if (tile->health < type->max_health)
+        if (tile->base_tile->health < type->max_health)
         {
             // health background
             SDL_SetRenderDrawColor(renderer, 55, 55, 55, 255);
             SDL_RenderFillRect(renderer, rect_sub_in_camera_space(camera, x, y + (float)type->size_y - 0.2f, (float)type->size_y, 0.2f));
             // helth status
             SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
-            SDL_RenderFillRect(renderer, rect_sub_in_camera_space(camera, x, y + (float)type->size_y - 0.2f, (float)type->size_y * ((float)tile->health / (float)type->max_health), 0.2f));
+            SDL_RenderFillRect(renderer, rect_sub_in_camera_space(camera, x, y + (float)type->size_y - 0.2f, (float)type->size_y * ((float)tile->base_tile->health / (float)type->max_health), 0.2f));
         }
     }
 }
@@ -82,13 +82,16 @@ char tile_place(Tile *tiles, Tile *mouse_tile, TileType type)
 {
     if (is_room_for_tile(tiles, mouse_tile, type))
     {
+        BuiltTile *built = (BuiltTile *)(malloc(sizeof(BuiltTile)));
         mouse_tile->type = type.id;
-        mouse_tile->health = type.max_health;
+        built->health = type.max_health;
+        built->tile = mouse_tile;
+        built->type = type.id;
         for (int x = mouse_tile->x; x < (mouse_tile->x + type.size_x) && x >= 0 && x < tX; x++)
         {
             for (int y = mouse_tile->y; y < (mouse_tile->y + type.size_y) && y >= 0 && y < tY; y++)
             {
-                tiles[y * tY + x].base_tile = mouse_tile;
+                tiles[y * tY + x].base_tile = built;
             }
         }
         return 1;
@@ -99,19 +102,22 @@ char tile_place(Tile *tiles, Tile *mouse_tile, TileType type)
     }
 }
 
-TileType *tile_destroy(Tile *tiles, Tile *base_tile, TileType *types)
+TileType *tile_destroy(Tile *tiles, BuiltTile *base_tile, TileType *types)
 {
-    if (tile_is_not_empty(base_tile) && base_tile->type != -1)
+    if (base_tile)
     {
         int og_type = base_tile->type;
-        for (int x = base_tile->x; x < (base_tile->x + types[base_tile->type].size_x) && x >= 0 && x < tX; x++)
+        Tile *tile = base_tile->tile;
+        for (int x = tile->x; x < (tile->x + types[tile->type].size_x) && x >= 0 && x < tX; x++)
         {
-            for (int y = base_tile->y; y < (base_tile->y + types[base_tile->type].size_y) && y >= 0 && y < tY; y++)
+            for (int y = tile->y; y < (tile->y + types[tile->type].size_y) && y >= 0 && y < tY; y++)
             {
-                tiles[y * tY + x].base_tile = tiles + (y * tY + x);
+                tiles[y * tY + x].base_tile = NULL;
             }
         }
         base_tile->type = -1;
+        base_tile->tile->type = -1;
+        free(base_tile);
         return types + og_type;
     }
     else
@@ -128,10 +134,9 @@ Tile *tiles_malloc()
         for (int y = 0; y < tY; y++)
         {
             Tile *cur_tile = tiles + (y * tY + x);
-            cur_tile->base_tile = cur_tile;
+            cur_tile->base_tile = NULL;
             cur_tile->type = -1;
             cur_tile->flags = 0;
-            cur_tile->health = -1;
             cur_tile->terrain = 0;
             cur_tile->ore = -1;
             cur_tile->x = x;

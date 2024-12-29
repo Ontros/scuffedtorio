@@ -42,7 +42,7 @@ int main(int argc, char *argv[])
         .tiles = tiles,
         .wave_count = 1,
         .wave_current = 0,
-        .waves = &(Wave){.enemies_count = 0, .evolution_factor = 10, .spawner_count = 10000}};
+        .waves = &(Wave){.enemies_count = 1000, .evolution_factor = 10, .spawner_count = 1000}};
 
     // srand(time(NULL));
     srand(69420);
@@ -102,7 +102,7 @@ int main(int argc, char *argv[])
                 {
                     for (int i = 0; i < tX * tY; i++)
                     {
-                        if (tiles[i].base_tile->type == 1)
+                        if (tiles[i].base_tile && tiles[i].base_tile->type == 1)
                         {
                             if (tiles[i].ore != -1)
                             {
@@ -158,11 +158,12 @@ int main(int argc, char *argv[])
         // Mouse position
         SDL_GetMouseState(&mouse_x, &mouse_y);
         mouse_id = get_mouse_id(mouse_x, mouse_y, camera, type_in_hand, types);
+        // Mouse is in bounds
         if (mouse_id >= 0 && mouse_id < tX * tY)
         {
-            if (type_in_hand == -1)
+            if (type_in_hand == -1 && tiles[mouse_id].base_tile)
             {
-                mouse_tile = tiles[mouse_id].base_tile;
+                mouse_tile = tiles[mouse_id].base_tile->tile;
             }
             else
             {
@@ -229,7 +230,7 @@ int main(int argc, char *argv[])
                 else if (event.key.keysym.sym == SDLK_q)
                 {
                     animate = 1;
-                    if (mouse_tile && type_in_hand == -1)
+                    if (mouse_tile && mouse_tile->base_tile && type_in_hand == -1)
                     {
                         type_in_hand = mouse_tile->base_tile->type;
                     }
@@ -339,9 +340,10 @@ int main(int argc, char *argv[])
         else if (keyStates.mouse_right)
         {
             // Remove
-            if (mouse_tile && types[tiles[get_mouse_id(mouse_x, mouse_y, camera, -1, types)].base_tile->type].cost_count)
+            Tile tile = tiles[get_mouse_id(mouse_x, mouse_y, camera, -1, types)];
+            if (mouse_tile && tile.base_tile && types[tile.base_tile->type].cost_count)
             {
-                TileType *destroyed_type = tile_destroy(tiles, tiles[get_mouse_id(mouse_x, mouse_y, camera, -1, types)].base_tile, types);
+                TileType *destroyed_type = tile_destroy(tiles, tile.base_tile, types);
                 // Add resources
                 if (destroyed_type != NULL)
                 {
@@ -407,7 +409,7 @@ int main(int argc, char *argv[])
             SDL_RenderDrawRect(renderer, rect_in_camera_space(camera, mouse_tile->x, mouse_tile->y, types[type_in_hand].size_x, types[type_in_hand].size_y));
         }
         // Hover over highlight
-        else if (mouse_tile && mouse_tile->type != -1)
+        else if (mouse_tile && mouse_tile->base_tile)
         {
             SDL_SetRenderDrawColor(renderer, 255, 255, 224, 255);
             SDL_RenderDrawRect(renderer, rect_in_camera_space(camera, mouse_tile->x, mouse_tile->y, types[mouse_tile->type].size_x, types[mouse_tile->type].size_y));

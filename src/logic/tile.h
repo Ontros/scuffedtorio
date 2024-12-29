@@ -19,7 +19,7 @@ char is_room_for_tile(Tile *tiles, Tile *mouse_tile, TileType type);
 
 char tile_place(Tile *tiles, Tile *mouse_tile, TileType type);
 
-TileType *tile_destroy(Tile *tiles, Tile *base_tile, TileType *types);
+TileType *tile_destroy(Tile *tiles, BuiltTile *base_tile, TileType *types);
 
 Tile *tiles_malloc();
 
