@@ -43,10 +43,10 @@ typedef struct Tile
     int x;
     int y;
     unsigned char flags;
+    unsigned char health;
     char ore;
     char terrain;
     char type;
-    char health;
     char entity_occupied;
 } Tile;
 
@@ -148,8 +148,8 @@ typedef struct
     EntityTexture *texture_attack;
     float size;
     float offset;
-    float damage;
     float max_health;
+    char damage;
 } EntityType;
 
 // animation - TRRAAAA

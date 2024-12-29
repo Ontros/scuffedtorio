@@ -40,7 +40,7 @@ int main(int argc, char *argv[])
         .tiles = tiles,
         .wave_count = 1,
         .wave_current = 0,
-        .waves = &(Wave){.enemies_count = 100, .evolution_factor = 10, .spawner_count = 10000}};
+        .waves = &(Wave){.enemies_count = 1000, .evolution_factor = 10, .spawner_count = 10000}};
 
     // srand(time(NULL));
     srand(69420);

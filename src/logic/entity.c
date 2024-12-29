@@ -1,10 +1,10 @@
 #include "entity.h"
-const float ticks_to_cross_tile = 5.0f;
-const float distance_per_tick = 1.0 / ticks_to_cross_tile; // move speed
+const float ticks_to_cross_tile = 2.0f;
+const float distance_per_tick = 1.0 / 5.0f; // move speed
 
 static inline char tile_is_pathfindable(Tile *tile)
 {
-    return tile->base_tile->type == -1 && tile->terrain != 1;
+    return tile->base_tile->type != 5 && tile->terrain != 1;
 }
 
 static inline char tile_left_pathfindable(Tile *tiles, int x, int y)
@@ -26,7 +26,7 @@ static inline char tile_down_pathfindable(Tile *tiles, int x, int y)
 
 char tile_found_path(int move_x, int move_y, int check_x, int check_y, Tile *tiles, int x, int y)
 {
-    for (int i = 1; i < 50; i++)
+    for (int i = 1; i < 10; i++)
     {
         // Found wall
         if (!tile_is_pathfindable(tiles + ((y + i * move_y) * tY + x + i * move_x)))
@@ -149,18 +149,8 @@ void entity_spawn(Entity *entity, Tile *tiles, SpawnerContainer container, char 
 {
     Tile *spawner = tiles + container.spawner_indecies[rand() % container.amount];
     entity->health = types[type].max_health;
-    // float x_offset = (float)(rand() % 400) / 100.0f;
-    // if (x_offset > 2.0f)
-    // {
-    //     x_offset += 5.0f;
-    // }
-    // float y_offset = (float)(rand() % 400) / 100.0f;
-    // if (y_offset > 2.0f)
-    // {
-    //     y_offset += 5.0f;
-    // }
-    entity->x = spawner->x - 2;
-    entity->y = spawner->y - 2;
+    entity->x = spawner->x - 1;
+    entity->y = spawner->y - 1;
     entity->type = type;
     entity->is_dead = 0;
     entity->moving_to_x = entity->x;
