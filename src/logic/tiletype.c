@@ -107,21 +107,21 @@ TileType *types_init(SDL_Renderer *renderer)
 {
     TileType *types = malloc(sizeof(TileType) * type_amount);
     types[0] = type_create_base("Wall", 1, 1);
-    type_add_static_section(types, renderer, "../data/base/graphics/entity/wall/wall-single.png", 1, 0, 128, 86);
+    type_add_static_section(types, renderer, "./data/base/graphics/entity/wall/wall-single.png", 1, 0, 128, 86);
     type_add_costs(types, 1, (Tile_Cost[]){{3, 5}});
     types[1] = type_create_base("Electric mining drill", 3, 3);
-    type_add_full_texture(types + 1, renderer, "../data/base/graphics/entity/electric-mining-drill/electric-mining-drill-N.png");
+    type_add_full_texture(types + 1, renderer, "./data/base/graphics/entity/electric-mining-drill/electric-mining-drill-N.png");
     type_add_costs(types + 1, 2, (Tile_Cost[]){{0, 10}, {1, 10}});
     types[2] = type_create_base("Gun Turret", 2, 2);
-    type_add_static_section(types + 2, renderer, "../data/base/graphics/entity/gun-turret/gun-turret-shooting-1.png", 1, 4, 264, 2080);
+    type_add_static_section(types + 2, renderer, "./data/base/graphics/entity/gun-turret/gun-turret-shooting-1.png", 1, 4, 264, 2080);
     type_add_costs(types + 2, 2, (Tile_Cost[]){{0, 10}, {1, 10}});
     types[3] = type_create_base("Laser turret", 2, 2);
-    type_add_static_section(types + 3, renderer, "../data/base/graphics/entity/laser-turret/laser-turret-shooting.png", 3, 3, 1008, 960);
+    type_add_static_section(types + 3, renderer, "./data/base/graphics/entity/laser-turret/laser-turret-shooting.png", 3, 3, 1008, 960);
     type_add_costs(types + 3, 2, (Tile_Cost[]){{0, 10}, {1, 10}});
     types[4] = type_create_base("Rocket silo", 9, 9);
-    type_add_full_texture(types + 4, renderer, "../data/base/graphics/entity/rocket-silo/06-rocket-silo.png");
+    type_add_full_texture(types + 4, renderer, "./data/base/graphics/entity/rocket-silo/06-rocket-silo.png");
     types[5] = type_create_base("Biter spawner", 5, 5);
-    type_add_static_section(types + 5, renderer, "../data/base/graphics/entity/spawner/spawner-idle.png", 2, 3, 2080, 3008);
+    type_add_static_section(types + 5, renderer, "./data/base/graphics/entity/spawner/spawner-idle.png", 2, 3, 2080, 3008);
     return types;
 }
 
@@ -129,15 +129,15 @@ TileType *types_ore_init(SDL_Renderer *renderer)
 {
     TileType *types = malloc(sizeof(TileType) * ore_amount);
     types[0] = type_create_base("Iron Ore", 1, 1);
-    type_add_static_section(types, renderer, "../data/base/graphics/entity/iron-ore/iron-ore.png", 3, 3, 1024, 1024);
+    type_add_static_section(types, renderer, "./data/base/graphics/entity/iron-ore/iron-ore.png", 3, 3, 1024, 1024);
     types[1] = type_create_base("Copper Ore", 1, 1);
-    type_add_static_section(types + 1, renderer, "../data/base/graphics/entity/copper-ore/copper-ore.png", 3, 3, 1024, 1024);
+    type_add_static_section(types + 1, renderer, "./data/base/graphics/entity/copper-ore/copper-ore.png", 3, 3, 1024, 1024);
     types[2] = type_create_base("Coal Ore", 1, 1);
-    type_add_static_section(types + 2, renderer, "../data/base/graphics/entity/coal/coal.png", 3, 3, 1024, 1024);
+    type_add_static_section(types + 2, renderer, "./data/base/graphics/entity/coal/coal.png", 3, 3, 1024, 1024);
     types[3] = type_create_base("Stone Ore", 1, 1);
-    type_add_static_section(types + 3, renderer, "../data/base/graphics/entity/stone/stone.png", 3, 3, 1024, 1024);
+    type_add_static_section(types + 3, renderer, "./data/base/graphics/entity/stone/stone.png", 3, 3, 1024, 1024);
     types[4] = type_create_base("Uranium Ore", 1, 1);
-    type_add_static_section(types + 4, renderer, "../data/base/graphics/entity/uranium-ore/uranium.png", 3, 3, 1024, 1024);
+    type_add_static_section(types + 4, renderer, "./data/base/graphics/entity/uranium-ore/uranium.png", 3, 3, 1024, 1024);
     return types;
 }
 
@@ -146,23 +146,23 @@ TileType *types_terrain_init(SDL_Renderer *renderer)
     TileType *types = malloc(sizeof(TileType) * terrain_amount);
     SDL_Rect top_left_rect = {0, 0, 64, 64};
     types[0] = type_create_base("Grass", 1, 1);
-    type_add_full_texture(types, renderer, "../data/base/graphics/terrain/grass-1.png");
+    type_add_full_texture(types, renderer, "./data/base/graphics/terrain/grass-1.png");
     types[0].animation_rects = (SDL_Rect *)(malloc(sizeof(SDL_Rect)));
     memcpy(types[0].animation_rects, &top_left_rect, sizeof(SDL_Rect));
 
     types[1] = type_create_base("Water", 1, 1);
-    type_add_full_texture(types + 1, renderer, "../data/base/graphics/terrain/water/water1.png");
+    type_add_full_texture(types + 1, renderer, "./data/base/graphics/terrain/water/water1.png");
     types[1].animation_rects = (SDL_Rect *)(malloc(sizeof(SDL_Rect)));
     memcpy(types[1].animation_rects, &top_left_rect, sizeof(SDL_Rect));
 
     types[2] = type_create_base("Concrete", 1, 1);
-    type_add_full_texture(types + 2, renderer, "../data/base/graphics/terrain/concrete/refined-concrete.png");
+    type_add_full_texture(types + 2, renderer, "./data/base/graphics/terrain/concrete/refined-concrete.png");
     types[2].animation_rects = (SDL_Rect *)(malloc(sizeof(SDL_Rect)));
     memcpy(types[2].animation_rects, &top_left_rect, sizeof(SDL_Rect));
 
     top_left_rect = (SDL_Rect){0, 0, 86, 86};
     types[3] = type_create_base("Hazard Concrete", 1, 1);
-    type_add_full_texture(types + 3, renderer, "../data/base/graphics/terrain/hazard-concrete-left/refined-hazard-concrete-left.png");
+    type_add_full_texture(types + 3, renderer, "./data/base/graphics/terrain/hazard-concrete-left/refined-hazard-concrete-left.png");
     types[3].animation_rects = (SDL_Rect *)(malloc(sizeof(SDL_Rect)));
     memcpy(types[3].animation_rects, &top_left_rect, sizeof(SDL_Rect));
 

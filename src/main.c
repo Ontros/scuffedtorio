@@ -30,7 +30,7 @@ int main(int argc, char *argv[])
     int mouse_y = 0;
     Tile *mouse_tile = NULL;
 
-    Text fps_text = text_init("../data/core/fonts/TitilliumWeb-SemiBold.ttf", 24, 50);
+    Text fps_text = text_init("./data/core/fonts/TitilliumWeb-SemiBold.ttf", 24, 50);
     InventorySlot *inventory = inventory_init(renderer);
 
     GameState state = {

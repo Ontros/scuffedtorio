@@ -2,7 +2,7 @@
 
 Button button_init(SDL_Renderer *renderer, const char *text_inp, int font_size, SDL_Rect rect, void (*on_click)(struct SDL_Renderer *, Button *, GameState *))
 {
-    Text text = text_init("../data/core/fonts/TitilliumWeb-SemiBold.ttf", font_size, 50);
+    Text text = text_init("./data/core/fonts/TitilliumWeb-SemiBold.ttf", font_size, 50);
     memcpy(text.buffer, text_inp, strlen(text_inp));
     text_create_with_pos(renderer, &text, rect.x + 10, rect.y);
     return (Button){

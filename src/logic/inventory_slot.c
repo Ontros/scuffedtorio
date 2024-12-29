@@ -15,7 +15,7 @@ InventorySlot inventory_slot_create(SDL_Renderer *renderer, const char *file, co
         .name = SDL_strdup(name),
         .count = starting_count,
         .id = id++};
-    slot.text = text_init("../data/core/fonts/TitilliumWeb-SemiBold.ttf", 24, 50);
+    slot.text = text_init("./data/core/fonts/TitilliumWeb-SemiBold.ttf", 24, 50);
     sprintf(slot.text.buffer, "%s: %d", slot.name, slot.count);
     text_create_with_pos(renderer, &slot.text, 0, start_y);
     start_y += 24;
@@ -25,12 +25,12 @@ InventorySlot inventory_slot_create(SDL_Renderer *renderer, const char *file, co
 InventorySlot *inventory_init(SDL_Renderer *renderer)
 {
     InventorySlot *inventory = (InventorySlot *)(malloc(sizeof(InventorySlot) * inventory_slots));
-    inventory[0] = inventory_slot_create(renderer, "../data/base/graphics/icons/iron-plate.png", "Iron", 20);
-    inventory[1] = inventory_slot_create(renderer, "../data/base/graphics/icons/copper-plate.png", "Copper", 20);
-    inventory[2] = inventory_slot_create(renderer, "../data/base/graphics/icons/coal.png", "Coal", 0);
-    inventory[3] = inventory_slot_create(renderer, "../data/base/graphics/icons/stone.png", "Stone", 0);
-    inventory[4] = inventory_slot_create(renderer, "../data/base/graphics/icons/uranium-235.png", "Uranium", 0);
-    inventory[5] = inventory_slot_create(renderer, "../data/base/graphics/icons/fluid/crude-oil.png", "Coins", 1000);
+    inventory[0] = inventory_slot_create(renderer, "./data/base/graphics/icons/iron-plate.png", "Iron", 20);
+    inventory[1] = inventory_slot_create(renderer, "./data/base/graphics/icons/copper-plate.png", "Copper", 20);
+    inventory[2] = inventory_slot_create(renderer, "./data/base/graphics/icons/coal.png", "Coal", 0);
+    inventory[3] = inventory_slot_create(renderer, "./data/base/graphics/icons/stone.png", "Stone", 0);
+    inventory[4] = inventory_slot_create(renderer, "./data/base/graphics/icons/uranium-235.png", "Uranium", 0);
+    inventory[5] = inventory_slot_create(renderer, "./data/base/graphics/icons/fluid/crude-oil.png", "Coins", 1000);
     return inventory;
 }
 
