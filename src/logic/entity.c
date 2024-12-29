@@ -221,13 +221,15 @@ void entity_move(Entity *entity, EntityType *types, Tile *tiles)
             {
             // Up
             case 0:
-                if (((-x_dif > -y_dif) || !uP) && lP)
+                if (((-x_dif > -y_dif) && luP && lP) || // Too far on one side
+                    (!uP && luP && lP))                 // Cant move
                 {
                     // Move left
                     dir = 3;
                     entity->moving_to_x--;
                 }
-                else if (((x_dif > -y_dif) || !uP) && rP)
+                else if (((x_dif > -y_dif) && ruP && rP) // Too far on one side
+                         || (!uP && rP))                 // Cant move
                 {
                     // Move right
                     dir = 1;
@@ -265,13 +267,15 @@ void entity_move(Entity *entity, EntityType *types, Tile *tiles)
                 break;
             // Down
             case 2:
-                if (((-x_dif > y_dif) || !dP) && lP)
+                if (((-x_dif > y_dif) && ldP && lP) || // Too far on one side
+                    (!dP && ldP && lP))                // Cant move
                 {
                     // Move left
                     dir = 3;
                     entity->moving_to_x--;
                 }
-                else if (((x_dif > y_dif) || !dP) && rP)
+                else if (((x_dif > y_dif) && rdP && rP) // Too far on one side
+                         || (!dP && rP))                // Cant move
                 {
                     // Move right
                     dir = 1;
