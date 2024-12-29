@@ -76,6 +76,7 @@ char tile_place(Tile *tiles, Tile *mouse_tile, TileType type)
     if (is_room_for_tile(tiles, mouse_tile, type))
     {
         mouse_tile->type = type.id;
+        mouse_tile->health = type.max_health;
         for (int x = mouse_tile->x; x < (mouse_tile->x + type.size_x) && x >= 0 && x < tX; x++)
         {
             for (int y = mouse_tile->y; y < (mouse_tile->y + type.size_y) && y >= 0 && y < tY; y++)

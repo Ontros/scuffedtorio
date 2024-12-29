@@ -85,7 +85,7 @@ TileType type_create_base(const char *name, unsigned char size_x, unsigned char 
         .cost_count = 0,
         .costs = NULL,
         .id = id++,
-        .max_health = -1,
+        .max_health = 100,
         .name = SDL_strdup(name),
         .size_x = size_x,
         .size_y = size_y,

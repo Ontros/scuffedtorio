@@ -7,7 +7,8 @@
         "tiletype.h": "c",
         "string.h": "c",
         "camera.h": "c",
-        "tile.h": "c"
+        "tile.h": "c",
+        "entity.h": "c"
     },
     "C_Cpp.default.configurationProvider": "ms-vscode.makefile-tools"
 }

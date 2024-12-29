@@ -208,7 +208,7 @@ void entity_render(SDL_Renderer *renderer, Camera camera, Entity *entity, Entity
     }
 }
 
-void entity_move(Entity *entity, EntityType *types, Tile *tiles)
+void entity_move(Entity *entity, EntityType *types, Tile *tiles, TileType *tile_types)
 {
     if (entity->x == (float)entity->moving_to_x && entity->y == (float)entity->moving_to_y)
     {
@@ -467,6 +467,22 @@ void entity_move(Entity *entity, EntityType *types, Tile *tiles)
     // Attacking
     if (entity->animation & 0b1000000)
     {
+        char anim = ((entity->animation & 0b1111) + 1) % 11;
+        entity->animation &= 0b1110000;
+        entity->animation |= anim;
+        Tile *attacking = tiles + (entity->moving_to_y * tY + entity->moving_to_x);
+        if (!tile_is_attackable(attacking))
+        {
+            entity->animation &= 0b111111;
+        }
+        else if ((entity->animation & 0b1111) == 7)
+        {
+            attacking->base_tile->health = fmax(attacking->base_tile->health - types[entity->type].damage, 0);
+            if (attacking->base_tile->health == 0)
+            {
+                tile_destroy(tiles, attacking->base_tile, tile_types);
+            }
+        }
     }
     else
     {

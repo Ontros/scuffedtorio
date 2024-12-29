@@ -1,5 +1,6 @@
 #pragma once
 #include "../structs.h"
+#include "tile.h"
 #include "entity.c"
 
 EntityType *entity_types_init(SDL_Renderer *renderer);
@@ -12,4 +13,4 @@ EntityContainer entity_container_create(int amount);
 
 void entity_render(SDL_Renderer *renderer, Camera camera, Entity *entity, EntityType *types);
 
-void entity_move(Entity *entity, EntityType *types, Tile *tiles);
+void entity_move(Entity *entity, EntityType *types, Tile *tiles, TileType *tile_types);

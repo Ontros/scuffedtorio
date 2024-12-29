@@ -14,7 +14,10 @@ int main(int argc, char *argv[])
     Camera camera = {-cX + 4, -cY + 4, 100, 1920, 1080, 2, 2, 7, 1};
     SDL_Window *window = NULL;
     SDL_Renderer *renderer = NULL;
-    sdl_init(camera, &window, &renderer);
+    if (sdl_init(camera, &window, &renderer))
+    {
+        return 1;
+    }
 
     Tile *tiles = tiles_malloc();
     TileType *types = types_init(renderer);
@@ -130,7 +133,7 @@ int main(int argc, char *argv[])
                             // entity_container.entities[i].animation++;
                             // entity_container.entities[i].animation %= 16;
                             // Reset moving state
-                            entity_move(entity_container.entities + i, entity_types, tiles);
+                            entity_move(entity_container.entities + i, entity_types, tiles, types);
                         }
                     }
                 }
