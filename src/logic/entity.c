@@ -205,6 +205,15 @@ void entity_render(SDL_Renderer *renderer, Camera camera, Entity *entity, Entity
                        entity_texture->texture[(entity->animation >> 4) & 0b11],
                        entity_texture->animation_rects + (entity->animation & entity_texture->animation_mask),
                        rect_in_camera_space_f(camera, entity->x, entity->y, type->size, type->offset));
+        if (entity->health < type->max_health)
+        {
+            // health background
+            SDL_SetRenderDrawColor(renderer, 55, 55, 55, 255);
+            SDL_RenderFillRect(renderer, rect_sub_in_camera_space_f(camera, entity->x, entity->y + type->size - 1.0f, type->size, 0.2f, type->offset));
+            // helth status
+            SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+            SDL_RenderFillRect(renderer, rect_sub_in_camera_space_f(camera, entity->x, entity->y + type->size - 1.0f, type->size * (entity->health / type->max_health), 0.2f, type->offset));
+        }
     }
 }
 

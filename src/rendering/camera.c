@@ -12,7 +12,17 @@ static inline SDL_Rect *rect_in_camera_space(Camera camera, int x, int y, int w,
     return &(SDL_Rect){(camera.x + x) * camera.size, (camera.y + y) * camera.size, camera.size * w, camera.size * h};
 }
 
+static inline SDL_Rect *rect_sub_in_camera_space(Camera camera, float x, float y, float w, float h)
+{
+    return &(SDL_Rect){(camera.x + x) * camera.size, (camera.y + y) * camera.size, camera.size * w, camera.size * h};
+}
+
 static inline SDL_Rect *rect_in_camera_space_f(Camera camera, float x, float y, float size, float offset)
 {
     return &(SDL_Rect){(camera.x + x - offset) * camera.size, (camera.y + y - offset) * camera.size, camera.size * size, camera.size * size};
+}
+
+static inline SDL_Rect *rect_sub_in_camera_space_f(Camera camera, float x, float y, float w, float h, float offset)
+{
+    return &(SDL_Rect){(camera.x + x - offset) * camera.size, (camera.y + y - offset) * camera.size, camera.size * w, camera.size * h};
 }

@@ -1,6 +1,7 @@
 #pragma once
 #include "../structs.h"
 #include <SDL2/SDL.h>
+#include "../rendering/camera.h"
 #include "tiletype.h"
 #include "tile.c"
 
@@ -8,11 +9,11 @@ static inline char tile_is_empty(Tile *tile);
 
 static inline char tile_is_not_empty(Tile *tile);
 
-void render_tile(SDL_Renderer *renderer, Camera camera, Tile *tile, TileType *types, int x, int y, char advance_animation);
+static inline void render_tile(SDL_Renderer *renderer, Camera camera, Tile *tile, TileType *types, int x, int y, char advance_animation);
 
-void render_ore(SDL_Renderer *renderer, Camera camera, Tile *tile, TileType *types, int x, int y);
+static inline void render_ore(SDL_Renderer *renderer, Camera camera, Tile *tile, TileType *types, int x, int y);
 
-void render_terrain(SDL_Renderer *renderer, Camera camera, Tile *tile, TileType *terrain_types, int x, int y);
+static inline void render_terrain(SDL_Renderer *renderer, Camera camera, Tile *tile, TileType *terrain_types, int x, int y);
 
 char is_room_for_tile(Tile *tiles, Tile *mouse_tile, TileType type);
 

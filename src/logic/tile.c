@@ -10,8 +10,7 @@ static inline char tile_is_not_empty(Tile *tile)
     return tile->base_tile->type != -1 || tile->terrain != 2;
 }
 
-// TODO: use type
-void render_tile(SDL_Renderer *renderer, Camera camera, Tile *tile, TileType *types, int x, int y, char advance_animation)
+static inline void render_tile(SDL_Renderer *renderer, Camera camera, Tile *tile, TileType *types, int x, int y, char advance_animation)
 {
     if (tile->type != -1)
     {
@@ -25,10 +24,19 @@ void render_tile(SDL_Renderer *renderer, Camera camera, Tile *tile, TileType *ty
         SDL_RenderCopy(renderer, types[tile->type].texture,
                        types[tile->type].animation_rects + (tile->flags & types[tile->type].animation_mask),
                        rect_in_camera_space(camera, x, y, types[tile->type].size_x, types[tile->type].size_y));
+        if (tile->health < type->max_health)
+        {
+            // health background
+            SDL_SetRenderDrawColor(renderer, 55, 55, 55, 255);
+            SDL_RenderFillRect(renderer, rect_sub_in_camera_space(camera, x, y + (float)type->size_y - 0.2f, (float)type->size_y, 0.2f));
+            // helth status
+            SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
+            SDL_RenderFillRect(renderer, rect_sub_in_camera_space(camera, x, y + (float)type->size_y - 0.2f, (float)type->size_y * ((float)tile->health / (float)type->max_health), 0.2f));
+        }
     }
 }
 
-void render_ore(SDL_Renderer *renderer, Camera camera, Tile *tile, TileType *ore_types, int x, int y)
+static inline void render_ore(SDL_Renderer *renderer, Camera camera, Tile *tile, TileType *ore_types, int x, int y)
 {
     if (tile->ore != -1)
     {
@@ -39,7 +47,7 @@ void render_ore(SDL_Renderer *renderer, Camera camera, Tile *tile, TileType *ore
     }
 }
 
-void render_terrain(SDL_Renderer *renderer, Camera camera, Tile *tile, TileType *terrain_types, int x, int y)
+static inline void render_terrain(SDL_Renderer *renderer, Camera camera, Tile *tile, TileType *terrain_types, int x, int y)
 {
     if (tile->entity_occupied)
     {
