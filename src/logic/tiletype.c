@@ -79,6 +79,7 @@ TileType type_create_base(const char *name, unsigned char size_x, unsigned char 
         .texture = NULL,
         .textures_count = 0,
         .x_count = 0,
+        .turret_radius = 0,
     };
     return type;
 }
@@ -105,6 +106,8 @@ TileType *types_init(SDL_Renderer *renderer)
     types[3] = type_create_base("Laser turret", 2, 2);
     type_add_animation(types + 3, renderer, "./data/base/graphics/entity/laser-turret/laser-turret-shooting.png", 3, 3, 1008, 960);
     type_add_costs(types + 3, 2, (Tile_Cost[]){{0, 10}, {1, 10}});
+    types[3].animation_modulo = 1;
+    types[3].turret_radius = 16.0f;
     types[4] = type_create_base("Rocket silo", 9, 9);
     type_add_full_texture(types + 4, renderer, "./data/base/graphics/entity/rocket-silo/06-rocket-silo.png");
     types[5] = type_create_base("Biter spawner", 5, 5);

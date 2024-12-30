@@ -64,6 +64,7 @@ typedef struct TileType
     char *name;
     unsigned int anim_tile_x;
     unsigned int anim_tile_y;
+    float turret_radius;
     unsigned char size_x;
     unsigned char size_y;
     unsigned char x_count;

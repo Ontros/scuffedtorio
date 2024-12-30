@@ -7,6 +7,13 @@
 #include "logic/spawner.h"
 #include "logic/entity.h"
 #include <time.h>
+const float pi = 3.14159265359f;
+
+float atan2c(float y, float x)
+{
+    float f = atan2(y, x) / pi;
+    return (-f + ((f > 0.5f) ? 2.5f : 0.5f)) / 2;
+}
 
 int main(int argc, char *argv[])
 {
@@ -42,7 +49,7 @@ int main(int argc, char *argv[])
         .tiles = tiles,
         .wave_count = 1,
         .wave_current = 0,
-        .waves = &(Wave){.enemies_count = 1000, .evolution_factor = 10, .spawner_count = 1000}};
+        .waves = &(Wave){.enemies_count = 100, .evolution_factor = 10, .spawner_count = 100}};
 
     // srand(time(NULL));
     srand(69420);
@@ -113,6 +120,46 @@ int main(int argc, char *argv[])
                     for (int i = 0; i < inventory_slots; i++)
                     {
                         inventory_slot_update(renderer, inventory, i, 0);
+                    }
+                }
+
+                // Turret attack
+                for (int i = 0; i < tX * tY; i++)
+                {
+                    if (tiles[i].base_tile)
+                    {
+                        switch (tiles[i].type)
+                        {
+                        // Laser turret
+                        case 3:
+                            Entity *closest = NULL;
+                            float closest_dist = tX * tY * 4; // 4*just to be safe
+                            for (int j = 0; j < entity_container.amount; j++)
+                            {
+                                if (entity_container.entities[j].is_dead == 0)
+                                {
+                                    float dist = pow((float)tiles[i].x - entity_container.entities[j].x, 2) + pow((float)tiles[i].y - entity_container.entities[j].y, 2);
+                                    if (dist < pow(types[3].turret_radius, 2) && dist < closest_dist)
+                                    {
+                                        closest_dist = dist;
+                                        closest = entity_container.entities + j;
+                                    }
+                                }
+                            }
+                            if (closest)
+                            {
+                                closest->health -= 1.0f;
+                                tiles[i].flags = (unsigned char)(atan2c((float)tiles[i].y - closest->y, closest->x - (float)tiles[i].x) * 64);
+                                if (closest->health <= 0)
+                                {
+                                    closest->is_dead = 1;
+                                }
+                            }
+                            break;
+
+                        default:
+                            break;
+                        }
                     }
                 }
 
