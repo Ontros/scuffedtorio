@@ -31,6 +31,4 @@ void tile_create_lake(Tile *tiles, double xS, double yS, double d);
 
 void tile_update_concrete(Tile *tiles, int concrete_radius);
 
-// char tile_is_spawner_blocked(Tile *tiles, int spawner_x, int spawner_y);
-
-// char tile_is_blocking_spawner(int tile_x, int tile_y, int spawner_x, int spawner_y);
+float atan2c(float y, float x);

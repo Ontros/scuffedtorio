@@ -190,13 +190,13 @@ typedef struct
     int amount;
 } SpawnerContainer;
 
-typedef struct LaserList LaserList;
+typedef struct BulletList BulletList;
 
-typedef struct LaserList
+typedef struct BulletList
 {
-    LaserList *next;
+    BulletList *next;
     float x_start;
     float y_start;
     float x_end;
     float y_end;
-} LaserList;
+} BulletList;

@@ -52,7 +52,8 @@ TileType type_add_animation(TileType *type, SDL_Renderer *renderer, const char *
     }
     else
     {
-        type->animation_rects = (SDL_Rect *)(malloc(sizeof(SDL_Rect) * pow(2.0, (double)(tile_map_x_pow + tile_map_y_pow))));
+        printf("%d\n", sizeof(SDL_Rect));
+        type->animation_rects = (SDL_Rect *)(malloc(sizeof(SDL_Rect) * ((int)type->animation_modulo + 1)));
         for (int i = 0; i <= type->animation_modulo; i++)
         {
             type->animation_rects[i] = get_animation_rect_general(i, *type);
@@ -93,7 +94,7 @@ void type_add_costs(TileType *type, int costs_count, Tile_Cost *costs)
 
 TileType *types_init(SDL_Renderer *renderer)
 {
-    TileType *types = malloc(sizeof(TileType) * type_amount);
+    TileType *types = malloc(sizeof(TileType) * (type_amount + 1));
     types[0] = type_create_base("Wall", 1, 1);
     type_add_static_section(types, renderer, "./data/base/graphics/entity/wall/wall-single.png", 1, 0, 128, 86);
     type_add_costs(types, 1, (Tile_Cost[]){{3, 5}});

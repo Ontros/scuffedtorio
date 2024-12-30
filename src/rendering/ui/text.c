@@ -12,6 +12,7 @@ Text text_init(char *font_name, int font_size, int buffer_size)
 
 void text_create(SDL_Renderer *renderer, Text *text)
 {
+    printf("%d\n", text == NULL);
     if (text->texture)
     {
         SDL_FreeSurface(text->surface);

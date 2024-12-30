@@ -1,4 +1,5 @@
 #include "tile.h"
+const float pi = 3.14159265359f;
 
 static inline char tile_is_empty(Tile *tile)
 {
@@ -134,7 +135,7 @@ void tile_add_ore_patch(Tile *tiles, int ore_id, int patch_size, int x, int y)
     int side_length = (int)sqrt(patch_size);
     for (int i = 0; i < patch_size; i++)
     {
-        int index = fmin(tY, cur_y) * tY + fmin(tX, cur_x);
+        int index = fmin(tY - 1, cur_y) * tY + fmin(tX - 1, cur_x);
         if (tiles[index].terrain != 1)
         {
             tiles[index].ore = ore_id;
@@ -218,6 +219,7 @@ Tile *tiles_malloc(TileType *types)
             cur_tile->ore = -1;
             cur_tile->x = x;
             cur_tile->y = y;
+            cur_tile->entity_occupied = 0;
         }
     }
     tile_create_lake(tiles, 150, 85, 32);
@@ -236,4 +238,10 @@ Tile *tiles_malloc(TileType *types)
     tile_add_ore_patch(tiles, 1, 9, cX + 5, cY - 1);
     tile_add_ore_patch(tiles, 3, 9, cX + 5, cY + 2);
     return tiles;
+}
+// atan2 but top
+float atan2c(float y, float x)
+{
+    float f = atan2(y, x) / pi;
+    return (-f + ((f > 0.5f) ? 2.5f : 0.5f)) / 2;
 }

@@ -1,0 +1,567 @@
+{
+   lol
+   Memcheck:Cond
+   obj:/usr/lib/x86_64-linux-gnu/libSDL2_ttf-2.0.so.0.18.0
+   fun:text_create
+   fun:text_create_with_pos
+   fun:button_init
+   fun:button_container_in_game_create
+   fun:main
+}
+
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:malloc
+   fun:malloc
+   fun:_dl_find_object_update
+   fun:dl_open_worker_begin
+   fun:_dl_catch_exception
+   fun:dl_open_worker
+   fun:_dl_catch_exception
+   fun:_dl_open
+   fun:dlopen_doit
+   fun:_dl_catch_exception
+   fun:_dl_catch_error
+   fun:_dlerror_run
+   fun:dlopen_implementation
+   fun:dlopen@@GLIBC_2.34
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   obj:/usr/lib/x86_64-linux-gnu/libGLX_nvidia.so.550.120
+   obj:/usr/lib/x86_64-linux-gnu/libGLX_nvidia.so.550.120
+   obj:/usr/lib/x86_64-linux-gnu/libGLX_nvidia.so.550.120
+   obj:/usr/lib/x86_64-linux-gnu/libGLX_nvidia.so.550.120
+   fun:__run_exit_handlers
+   fun:exit
+   fun:(below main)
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:strdup
+   fun:_XlcCreateLC
+   fun:_XlcDefaultLoader
+   fun:_XOpenLC
+   fun:_XrmInitParseInfo
+   obj:/usr/lib/x86_64-linux-gnu/libX11.so.6.4.0
+   fun:XrmGetStringDatabase
+   obj:/usr/lib/x86_64-linux-gnu/libX11.so.6.4.0
+   fun:XGetDefault
+   obj:/usr/lib/x86_64-linux-gnu/libSDL2-2.0.so.0.18.2
+   obj:/usr/lib/x86_64-linux-gnu/libSDL2-2.0.so.0.18.2
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Addr1
+   obj:/usr/lib/x86_64-linux-gnu/libSDL2_ttf-2.0.so.0.18.0
+   fun:text_create
+   fun:text_create_with_pos
+   fun:button_init
+   fun:button_container_in_game_create
+   fun:main
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:strdup
+   fun:_XlcResolveLocaleName
+   obj:/usr/lib/x86_64-linux-gnu/libX11.so.6.4.0
+   obj:/usr/lib/x86_64-linux-gnu/libX11.so.6.4.0
+   fun:_XlcCreateLC
+   fun:_XlcDefaultLoader
+   fun:_XOpenLC
+   fun:_XrmInitParseInfo
+   obj:/usr/lib/x86_64-linux-gnu/libX11.so.6.4.0
+   fun:XrmGetStringDatabase
+   obj:/usr/lib/x86_64-linux-gnu/libX11.so.6.4.0
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:strdup
+   fun:XOpenDisplay
+   obj:/usr/lib/x86_64-linux-gnu/libSDL2-2.0.so.0.18.2
+   obj:/usr/lib/x86_64-linux-gnu/libSDL2-2.0.so.0.18.2
+   obj:/usr/lib/x86_64-linux-gnu/libSDL2-2.0.so.0.18.2
+   fun:sdl_init
+   fun:main
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Value8
+   obj:/usr/lib/x86_64-linux-gnu/libSDL2_ttf-2.0.so.0.18.0
+   fun:text_create
+   fun:text_create_with_pos
+   fun:button_init
+   fun:button_container_in_game_create
+   fun:main
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   obj:/usr/lib/x86_64-linux-gnu/libglib-2.0.so.0.7200.4
+   fun:g_private_get
+   fun:g_slice_alloc
+   fun:g_hash_table_new_full
+   obj:/usr/lib/x86_64-linux-gnu/libglib-2.0.so.0.7200.4
+   obj:/usr/lib/x86_64-linux-gnu/libglib-2.0.so.0.7200.4
+   fun:call_init.part.0
+   fun:call_init
+   fun:_dl_init
+   obj:/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Cond
+   obj:/usr/lib/x86_64-linux-gnu/libSDL2_ttf-2.0.so.0.18.0
+   obj:/usr/lib/x86_64-linux-gnu/libSDL2_ttf-2.0.so.0.18.0
+   fun:text_create
+   fun:text_create_with_pos
+   fun:button_init
+   fun:button_container_in_game_create
+   fun:main
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Value8
+   fun:strlen
+   fun:hb_buffer_add_utf8
+   obj:/usr/lib/x86_64-linux-gnu/libSDL2_ttf-2.0.so.0.18.0
+   obj:/usr/lib/x86_64-linux-gnu/libSDL2_ttf-2.0.so.0.18.0
+   fun:text_create
+   fun:text_create_with_pos
+   fun:button_init
+   fun:button_container_in_game_create
+   fun:main
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:strdup
+   fun:XInitExtension
+   fun:XextAddDisplay
+   obj:/usr/lib/x86_64-linux-gnu/libGLX_nvidia.so.550.120
+   fun:glXChooseVisual
+   obj:/usr/lib/x86_64-linux-gnu/libSDL2-2.0.so.0.18.2
+   obj:/usr/lib/x86_64-linux-gnu/libSDL2-2.0.so.0.18.2
+   obj:/usr/lib/x86_64-linux-gnu/libSDL2-2.0.so.0.18.2
+   obj:/usr/lib/x86_64-linux-gnu/libSDL2-2.0.so.0.18.2
+   obj:/usr/lib/x86_64-linux-gnu/libSDL2-2.0.so.0.18.2
+   obj:/usr/lib/x86_64-linux-gnu/libSDL2-2.0.so.0.18.2
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   obj:/usr/lib/x86_64-linux-gnu/libfreetype.so.6.18.1
+   obj:/usr/lib/x86_64-linux-gnu/libfreetype.so.6.18.1
+   obj:/usr/lib/x86_64-linux-gnu/libfreetype.so.6.18.1
+   obj:/usr/lib/x86_64-linux-gnu/libfreetype.so.6.18.1
+   obj:/usr/lib/x86_64-linux-gnu/libfreetype.so.6.18.1
+   fun:TTF_OpenFontIndexDPIRW
+   fun:text_init
+   fun:main
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   obj:/usr/lib/x86_64-linux-gnu/libfreetype.so.6.18.1
+   obj:/usr/lib/x86_64-linux-gnu/libfreetype.so.6.18.1
+   obj:/usr/lib/x86_64-linux-gnu/libfreetype.so.6.18.1
+   obj:/usr/lib/x86_64-linux-gnu/libfreetype.so.6.18.1
+   obj:/usr/lib/x86_64-linux-gnu/libfreetype.so.6.18.1
+   fun:TTF_OpenFontIndexDPIRW
+   fun:text_init
+   fun:inventory_slot_create
+   fun:inventory_init
+   fun:main
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Cond
+   fun:strlen
+   fun:hb_buffer_add_utf8
+   obj:/usr/lib/x86_64-linux-gnu/libSDL2_ttf-2.0.so.0.18.0
+   obj:/usr/lib/x86_64-linux-gnu/libSDL2_ttf-2.0.so.0.18.0
+   fun:text_create
+   fun:text_create_with_pos
+   fun:button_init
+   fun:button_container_in_game_create
+   fun:main
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   obj:/usr/lib/x86_64-linux-gnu/libfreetype.so.6.18.1
+   obj:/usr/lib/x86_64-linux-gnu/libfreetype.so.6.18.1
+   obj:/usr/lib/x86_64-linux-gnu/libfreetype.so.6.18.1
+   obj:/usr/lib/x86_64-linux-gnu/libfreetype.so.6.18.1
+   obj:/usr/lib/x86_64-linux-gnu/libfreetype.so.6.18.1
+   fun:TTF_OpenFontIndexDPIRW
+   fun:text_init
+   fun:button_init
+   fun:button_container_in_game_create
+   fun:main
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:_XimOpenIM
+   obj:/usr/lib/x86_64-linux-gnu/libSDL2-2.0.so.0.18.2
+   obj:/usr/lib/x86_64-linux-gnu/libSDL2-2.0.so.0.18.2
+   obj:/usr/lib/x86_64-linux-gnu/libSDL2-2.0.so.0.18.2
+   obj:/usr/lib/x86_64-linux-gnu/libSDL2-2.0.so.0.18.2
+   fun:sdl_init
+   fun:main
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: indirect
+   fun:malloc
+   obj:/usr/lib/x86_64-linux-gnu/libSDL2-2.0.so.0.18.2
+   fun:type_create_base
+   fun:types_init
+   fun:main
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: indirect
+   fun:malloc
+   obj:/usr/lib/x86_64-linux-gnu/libSDL2-2.0.so.0.18.2
+   fun:inventory_slot_create
+   fun:inventory_init
+   fun:main
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: indirect
+   fun:malloc
+   obj:/usr/lib/x86_64-linux-gnu/libSDL2-2.0.so.0.18.2
+   fun:inventory_slot_create
+   fun:inventory_init
+   fun:main
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:strdup
+   fun:XInitExtension
+   fun:XextAddDisplay
+   obj:/usr/lib/x86_64-linux-gnu/libXrandr.so.2.2.0
+   fun:XRRQueryVersion
+   obj:/usr/lib/x86_64-linux-gnu/libSDL2-2.0.so.0.18.2
+   obj:/usr/lib/x86_64-linux-gnu/libSDL2-2.0.so.0.18.2
+   obj:/usr/lib/x86_64-linux-gnu/libSDL2-2.0.so.0.18.2
+   obj:/usr/lib/x86_64-linux-gnu/libSDL2-2.0.so.0.18.2
+   fun:sdl_init
+   fun:main
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:strdup
+   obj:/usr/lib/x86_64-linux-gnu/libX11.so.6.4.0
+   obj:/usr/lib/x86_64-linux-gnu/libX11.so.6.4.0
+   fun:_XlcCreateLC
+   fun:_XlcUtf8Loader
+   fun:_XOpenLC
+   fun:XSetLocaleModifiers
+   obj:/usr/lib/x86_64-linux-gnu/libSDL2-2.0.so.0.18.2
+   obj:/usr/lib/x86_64-linux-gnu/libSDL2-2.0.so.0.18.2
+   obj:/usr/lib/x86_64-linux-gnu/libSDL2-2.0.so.0.18.2
+   obj:/usr/lib/x86_64-linux-gnu/libSDL2-2.0.so.0.18.2
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:_dbus_strdup
+   fun:dbus_bus_register
+   obj:/usr/lib/x86_64-linux-gnu/libSDL2-2.0.so.0.18.2
+   obj:/usr/lib/x86_64-linux-gnu/libSDL2-2.0.so.0.18.2
+   obj:/usr/lib/x86_64-linux-gnu/libSDL2-2.0.so.0.18.2
+   obj:/usr/lib/x86_64-linux-gnu/libSDL2-2.0.so.0.18.2
+   obj:/usr/lib/x86_64-linux-gnu/libSDL2-2.0.so.0.18.2
+   obj:/usr/lib/x86_64-linux-gnu/libSDL2-2.0.so.0.18.2
+   obj:/usr/lib/x86_64-linux-gnu/libSDL2-2.0.so.0.18.2
+   fun:sdl_init
+   fun:main
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: indirect
+   fun:malloc
+   obj:/usr/lib/x86_64-linux-gnu/libSDL2-2.0.so.0.18.2
+   fun:type_create_base
+   fun:types_terrain_init
+   fun:main
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:_dbus_strdup
+   fun:dbus_bus_register
+   obj:/usr/lib/x86_64-linux-gnu/libdbus-1.so.3.19.13
+   obj:/usr/lib/x86_64-linux-gnu/libSDL2-2.0.so.0.18.2
+   obj:/usr/lib/x86_64-linux-gnu/libSDL2-2.0.so.0.18.2
+   fun:sdl_init
+   fun:main
+}
+{
+   opengl_memcpy_addr8
+   Memcheck:Addr8
+   fun:memcpy@GLIBC*
+   obj:/usr/lib/x86_64-linux-gnu/dri/*_dri.so
+   ...
+}
+
+{
+   opengl_memcpy_addr1
+   Memcheck:Addr1
+   fun:memcpy@GLIBC*
+   obj:/usr/lib/x86_64-linux-gnu/dri/*_dri.so
+   ...
+}
+
+{
+   opengl_memset_addr8
+   Memcheck:Addr8
+   fun:memset
+   obj:/usr/lib/x86_64-linux-gnu/dri/*_dri.so
+   ...
+}
+
+{
+   sdl_leak_reachable
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   ...
+   fun:SDL_Init_REAL
+   ...
+}
+
+{
+   x11_leak_reachable
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   ...
+   obj:/usr/lib/x86_64-linux-gnu/libX11.so.*
+   ...
+}
+
+{
+   sdl_leak_indirect
+   Memcheck:Leak
+   match-leak-kinds: indirect
+   ...
+   fun:SDL_Init_REAL
+   ...
+}
+
+{
+   sdl_leak_definite
+   Memcheck:Leak
+   match-leak-kinds: definite
+   ...
+   fun:SDL_Init_REAL
+   ...
+}
+
+
+{
+   dl_leak_reachable
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   ...
+   fun:dlopen@@GLIBC*
+   ...
+}
+
+
+{
+   dl_leak_reachable
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   ...
+   fun:_dl_*
+   ...
+}
+
+{
+   x11_leak_indirect
+   Memcheck:Leak
+   match-leak-kinds: indirect
+   ...
+   obj:/usr/lib/x86_64-linux-gnu/libX11.so.*
+   ...
+}
+
+{
+   x11_leak_definite
+   Memcheck:Leak
+   match-leak-kinds: definite
+   ...
+   obj:/usr/lib/x86_64-linux-gnu/libX11.so.*
+   ...
+}
+
+{
+   x11_leak_possible
+   Memcheck:Leak
+   match-leak-kinds: possible
+   ...
+   obj:/usr/lib/x86_64-linux-gnu/libX11.so.*
+   ...
+}
+
+{
+   opengl_leak_reachable
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   ...
+   obj:/usr/lib/x86_64-linux-gnu/libGLX.so.*
+   ...
+}
+
+{
+   LinuxDriLibraries_Addr2
+   Memcheck:Addr2
+   ...
+   obj:/usr/lib/x86_64-linux-gnu/dri/iris_dri.so
+   ...
+}
+
+{
+   LinuxDriLibraries_Addr4
+   Memcheck:Addr4
+   ...
+   obj:/usr/lib/x86_64-linux-gnu/dri/iris_dri.so
+   ...
+}
+
+{
+   LinuxDriLibraries_Addr8
+   Memcheck:Addr8
+   ...
+   obj:/usr/lib/x86_64-linux-gnu/dri/iris_dri.so
+   ...
+}
+
+{
+   LinuxDriLibraries_Leak_Reachable
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   ...
+   obj:/usr/lib/x86_64-linux-gnu/dri/iris_dri.so
+   ...
+}
+
+
+{
+   SDL_MemHack_GetErrBuf
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   ...
+   fun:SDL_GetErrBuf
+   ...
+}
+
+{
+   Linux_Internal_Leak_malloc_libLLVM
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   obj:/usr/lib/x86_64-linux-gnu/libLLVM-10.so.1
+   ...
+}
+
+{
+   Linux_Internal_Leak__Znwm_libLLVM
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:_Znwm
+   obj:/usr/lib/x86_64-linux-gnu/libLLVM-10.so.1
+   ...
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Cond
+   obj:/usr/lib/x86_64-linux-gnu/libSDL2-2.0.so.0.18.2
+   obj:/usr/lib/x86_64-linux-gnu/libSDL2-2.0.so.0.18.2
+   fun:render_terrain
+   fun:main
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Cond
+   obj:/usr/lib/x86_64-linux-gnu/libSDL2-2.0.so.0.18.2
+   obj:/usr/lib/x86_64-linux-gnu/libSDL2-2.0.so.0.18.2
+   fun:render_ore
+   fun:main
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Cond
+   obj:/usr/lib/x86_64-linux-gnu/libSDL2-2.0.so.0.18.2
+   obj:/usr/lib/x86_64-linux-gnu/libSDL2-2.0.so.0.18.2
+   fun:render_tile
+   fun:main
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Cond
+   obj:/usr/lib/x86_64-linux-gnu/libSDL2-2.0.so.0.18.2
+   obj:/usr/lib/x86_64-linux-gnu/libSDL2-2.0.so.0.18.2
+   fun:entity_render
+   fun:main
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Cond
+   obj:/usr/lib/x86_64-linux-gnu/libSDL2-2.0.so.0.18.2
+   obj:/usr/lib/x86_64-linux-gnu/libSDL2-2.0.so.0.18.2
+   obj:/usr/lib/x86_64-linux-gnu/libSDL2-2.0.so.0.18.2
+   obj:/usr/lib/x86_64-linux-gnu/libSDL2-2.0.so.0.18.2
+   fun:main
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Cond
+   obj:/usr/lib/x86_64-linux-gnu/libSDL2-2.0.so.0.18.2
+   obj:/usr/lib/x86_64-linux-gnu/libSDL2-2.0.so.0.18.2
+   fun:main
+}

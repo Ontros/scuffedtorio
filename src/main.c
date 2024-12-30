@@ -8,13 +8,6 @@
 #include "logic/entity.h"
 #include "logic/linked_list.h"
 #include <time.h>
-const float pi = 3.14159265359f;
-
-float atan2c(float y, float x)
-{
-    float f = atan2(y, x) / pi;
-    return (-f + ((f > 0.5f) ? 2.5f : 0.5f)) / 2;
-}
 
 int main(int argc, char *argv[])
 {
@@ -68,6 +61,8 @@ int main(int argc, char *argv[])
     {
         entity_spawn(entity_container.entities + i, tiles, spawner_container, 0, entity_types, state);
     }
+    BulletList *bullet_list = NULL;
+    BulletList *laser_list = NULL;
 
     int frames = 0;
     int updates = 0;
@@ -75,8 +70,6 @@ int main(int argc, char *argv[])
     Uint64 LAST = 0;
     double deltaTime = 0;
     int animate = 0;
-
-    LaserList *laser_list = NULL;
 
     while (running)
     {
@@ -112,7 +105,7 @@ int main(int argc, char *argv[])
                 }
 
                 // Turret attack
-                laser_list_free(laser_list);
+                bullet_list_free(laser_list);
                 laser_list = NULL;
                 for (int i = 0; i < tX * tY; i++)
                 {
@@ -141,7 +134,7 @@ int main(int argc, char *argv[])
                                 closest->health -= 1.0f;
                                 tiles[i].flags = (unsigned char)(atan2c((float)tiles[i].y - closest->y, closest->x - (float)tiles[i].x) * 64);
                                 // Put new line at start
-                                LaserList *new_list = (LaserList *)(malloc(sizeof(LaserList)));
+                                BulletList *new_list = (BulletList *)(malloc(sizeof(BulletList)));
                                 new_list->next = laser_list;
                                 laser_list = new_list;
                                 laser_list->x_start = (float)tiles[i].x + 1;
@@ -373,7 +366,7 @@ int main(int argc, char *argv[])
         if (keyStates.mouse_left)
         {
             // Place
-            if (mouse_tile && types[type_in_hand].cost_count && (type_in_hand != -1) && tile_place(tiles, mouse_tile, types[type_in_hand]))
+            if (mouse_tile && (type_in_hand != -1) && types[type_in_hand].cost_count && tile_place(tiles, mouse_tile, types[type_in_hand]))
             {
                 // Remove resources
                 for (int i = 0; i < types[type_in_hand].cost_count; i++)
@@ -386,7 +379,7 @@ int main(int argc, char *argv[])
         {
             // Remove
             Tile tile = tiles[get_mouse_id(mouse_x, mouse_y, camera, -1, types)];
-            if (mouse_tile && tile.base_tile && types[tile.base_tile->type].cost_count)
+            if (mouse_tile && tile.base_tile && (tile.base_tile->type != -1) && types[tile.base_tile->type].cost_count)
             {
                 TileType *destroyed_type = tile_destroy(tiles, tile.base_tile, types);
                 // Add resources
@@ -418,7 +411,7 @@ int main(int argc, char *argv[])
 
         // Laser rendering
         SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
-        laser_list_render(renderer, camera, laser_list);
+        bullet_list_render(renderer, camera, laser_list);
 
         // Tile rendering
         for (int x = fmax(0, -camera.x - 9); x < max_x; x++)
@@ -458,7 +451,7 @@ int main(int argc, char *argv[])
             SDL_RenderDrawRect(renderer, rect_in_camera_space(camera, mouse_tile->x, mouse_tile->y, types[type_in_hand].size_x, types[type_in_hand].size_y));
         }
         // Hover over highlight
-        else if (mouse_tile && mouse_tile->base_tile)
+        else if (mouse_tile && mouse_tile->base_tile && (mouse_tile->type != -1))
         {
             SDL_SetRenderDrawColor(renderer, 255, 255, 224, 255);
             SDL_RenderDrawRect(renderer, rect_in_camera_space(camera, mouse_tile->x, mouse_tile->y, types[mouse_tile->type].size_x, types[mouse_tile->type].size_y));
