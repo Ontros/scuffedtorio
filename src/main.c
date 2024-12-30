@@ -6,6 +6,7 @@
 #include "logic/inventory_slot.h"
 #include "logic/spawner.h"
 #include "logic/entity.h"
+#include "logic/linked_list.h"
 #include <time.h>
 const float pi = 3.14159265359f;
 
@@ -24,9 +25,10 @@ int main(int argc, char *argv[])
     {
         return 1;
     }
+    srand(69420);
 
-    Tile *tiles = tiles_malloc();
     TileType *types = types_init(renderer);
+    Tile *tiles = tiles_malloc(types);
     TileType *ore_types = types_ore_init(renderer);
     TileType *terrain_types = types_terrain_init(renderer);
 
@@ -52,22 +54,6 @@ int main(int argc, char *argv[])
         .waves = &(Wave){.enemies_count = 100, .evolution_factor = 10, .spawner_count = 100}};
 
     // srand(time(NULL));
-    srand(69420);
-    tile_create_lake(tiles, 150, 85, 32);
-    tile_create_lake(tiles, 300, 450, 16);
-    tile_create_lake(tiles, 50, 311, 48);
-    tile_create_lake(tiles, 345, 100, 22);
-    tile_create_lake(tiles, 200, 200, 32);
-    tile_update_concrete(tiles, 16);
-    tile_add_ore(tiles, 4, 50);
-    tile_add_ore(tiles, 3, 50);
-    tile_add_ore(tiles, 2, 50);
-    tile_add_ore(tiles, 1, 50);
-    tile_add_ore(tiles, 0, 50);
-    tile_place(tiles, tiles + ((cY - 4) * tY + cX - 4), types[4]);
-    tile_add_ore_patch(tiles, 0, 9, cX + 5, cY - 4);
-    tile_add_ore_patch(tiles, 1, 9, cX + 5, cY - 1);
-    tile_add_ore_patch(tiles, 3, 9, cX + 5, cY + 2);
     uint64_t UPDATE_TIME = SDL_GetPerformanceFrequency() / 60;
     uint64_t NEXT_UPDATE_TIME = SDL_GetPerformanceCounter() + UPDATE_TIME;
     uint64_t SECOND_TIME = SDL_GetPerformanceFrequency();
@@ -89,6 +75,8 @@ int main(int argc, char *argv[])
     Uint64 LAST = 0;
     double deltaTime = 0;
     int animate = 0;
+
+    LaserList *laser_list = NULL;
 
     while (running)
     {
@@ -124,6 +112,8 @@ int main(int argc, char *argv[])
                 }
 
                 // Turret attack
+                laser_list_free(laser_list);
+                laser_list = NULL;
                 for (int i = 0; i < tX * tY; i++)
                 {
                     if (tiles[i].base_tile)
@@ -150,6 +140,14 @@ int main(int argc, char *argv[])
                             {
                                 closest->health -= 1.0f;
                                 tiles[i].flags = (unsigned char)(atan2c((float)tiles[i].y - closest->y, closest->x - (float)tiles[i].x) * 64);
+                                // Put new line at start
+                                LaserList *new_list = (LaserList *)(malloc(sizeof(LaserList)));
+                                new_list->next = laser_list;
+                                laser_list = new_list;
+                                laser_list->x_start = (float)tiles[i].x + 1;
+                                laser_list->y_start = (float)tiles[i].y + 1;
+                                laser_list->x_end = closest->x;
+                                laser_list->y_end = closest->y;
                                 if (closest->health <= 0)
                                 {
                                     closest->is_dead = 1;
@@ -418,6 +416,10 @@ int main(int argc, char *argv[])
             }
         }
 
+        // Laser rendering
+        SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+        laser_list_render(renderer, camera, laser_list);
+
         // Tile rendering
         for (int x = fmax(0, -camera.x - 9); x < max_x; x++)
         {
@@ -476,8 +478,8 @@ int main(int argc, char *argv[])
         type_free(types[i]);
     }
 
-    SDL_DestroyRenderer(renderer);
     inventory_free(inventory);
+    SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     TTF_Quit();
     SDL_Quit();

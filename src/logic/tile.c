@@ -126,26 +126,6 @@ TileType *tile_destroy(Tile *tiles, BuiltTile *base_tile, TileType *types)
     }
 }
 
-Tile *tiles_malloc()
-{
-    Tile *tiles = (Tile *)(malloc(sizeof(Tile) * tX * tY));
-    for (int x = 0; x < tX; x++)
-    {
-        for (int y = 0; y < tY; y++)
-        {
-            Tile *cur_tile = tiles + (y * tY + x);
-            cur_tile->base_tile = NULL;
-            cur_tile->type = -1;
-            cur_tile->flags = 0;
-            cur_tile->terrain = 0;
-            cur_tile->ore = -1;
-            cur_tile->x = x;
-            cur_tile->y = y;
-        }
-    }
-    return tiles;
-}
-
 void tile_add_ore_patch(Tile *tiles, int ore_id, int patch_size, int x, int y)
 {
     int cur_x = x;
@@ -221,4 +201,39 @@ void tile_add_ore(Tile *tiles, int ore_id, int count)
 
         tile_add_ore_patch(tiles, ore_id, 9, x, y);
     }
+}
+
+Tile *tiles_malloc(TileType *types)
+{
+    Tile *tiles = (Tile *)(malloc(sizeof(Tile) * tX * tY));
+    for (int x = 0; x < tX; x++)
+    {
+        for (int y = 0; y < tY; y++)
+        {
+            Tile *cur_tile = tiles + (y * tY + x);
+            cur_tile->base_tile = NULL;
+            cur_tile->type = -1;
+            cur_tile->flags = 0;
+            cur_tile->terrain = 0;
+            cur_tile->ore = -1;
+            cur_tile->x = x;
+            cur_tile->y = y;
+        }
+    }
+    tile_create_lake(tiles, 150, 85, 32);
+    tile_create_lake(tiles, 300, 450, 16);
+    tile_create_lake(tiles, 50, 311, 48);
+    tile_create_lake(tiles, 345, 100, 22);
+    tile_create_lake(tiles, 200, 200, 32);
+    tile_update_concrete(tiles, 16);
+    tile_add_ore(tiles, 4, 50);
+    tile_add_ore(tiles, 3, 50);
+    tile_add_ore(tiles, 2, 50);
+    tile_add_ore(tiles, 1, 50);
+    tile_add_ore(tiles, 0, 50);
+    tile_place(tiles, tiles + ((cY - 4) * tY + cX - 4), types[4]);
+    tile_add_ore_patch(tiles, 0, 9, cX + 5, cY - 4);
+    tile_add_ore_patch(tiles, 1, 9, cX + 5, cY - 1);
+    tile_add_ore_patch(tiles, 3, 9, cX + 5, cY + 2);
+    return tiles;
 }

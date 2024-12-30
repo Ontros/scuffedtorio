@@ -21,7 +21,7 @@ char tile_place(Tile *tiles, Tile *mouse_tile, TileType type);
 
 TileType *tile_destroy(Tile *tiles, BuiltTile *base_tile, TileType *types);
 
-Tile *tiles_malloc();
+Tile *tiles_malloc(TileType *types);
 
 void tile_add_ore(Tile *tiles, int ore_id, int count);
 

@@ -189,3 +189,14 @@ typedef struct
     int *spawner_indecies;
     int amount;
 } SpawnerContainer;
+
+typedef struct LaserList LaserList;
+
+typedef struct LaserList
+{
+    LaserList *next;
+    float x_start;
+    float y_start;
+    float x_end;
+    float y_end;
+} LaserList;
