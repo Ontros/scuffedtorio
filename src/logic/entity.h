@@ -11,6 +11,6 @@ Entity entity_create();
 
 EntityContainer entity_container_create(int amount);
 
-void entity_render(SDL_Renderer *renderer, Camera camera, Entity *entity, EntityType *types);
+void entity_render(SDL_Renderer *renderer, Camera camera, Entity *entity, EntityType *types, SDL_Texture *fire_texture);
 
 void entity_move(Entity *entity, EntityType *types, Tile *tiles, TileType *tile_types);

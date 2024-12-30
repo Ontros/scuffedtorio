@@ -135,6 +135,8 @@ TileType *types_init(SDL_Renderer *renderer)
     types[2] = type_create_base("Gun Turret", 2, 2);
     type_add_gun_animation(types + 2, renderer, 1, 4, 264, 2080);
     type_add_costs(types + 2, 2, (Tile_Cost[]){{0, 10}, {1, 10}});
+    types[2].animation_modulo = 1;
+    types[2].turret_radius = 24.0f;
     types[3] = type_create_base("Laser turret", 2, 2);
     type_add_animation(types + 3, renderer, "./data/base/graphics/entity/laser-turret/laser-turret-shooting.png", 3, 3, 1008, 960);
     type_add_costs(types + 3, 2, (Tile_Cost[]){{0, 10}, {1, 10}});
@@ -147,6 +149,8 @@ TileType *types_init(SDL_Renderer *renderer)
     types[6] = type_create_base("Flamethrower", 2, 2);
     type_add_animation(types + 6, renderer, "data/base/graphics/entity/flamethrower-turret/flamethrower-turret-gun.png", 3, 3, 1264, 1024);
     type_add_costs(types + 6, 2, (Tile_Cost[]){{0, 10}, {1, 10}});
+    types[6].animation_modulo = 1;
+    types[6].turret_radius = 24.0f;
     return types;
 }
 

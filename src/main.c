@@ -63,6 +63,8 @@ int main(int argc, char *argv[])
     }
     BulletList *bullet_list = NULL;
     BulletList *laser_list = NULL;
+    FlameList *flame_list = NULL;
+    SDL_Texture *flame_texture = flame_texture_get(renderer);
 
     int frames = 0;
     int updates = 0;
@@ -109,6 +111,7 @@ int main(int argc, char *argv[])
                 laser_list = NULL;
                 bullet_list_free(bullet_list);
                 bullet_list = NULL;
+                flame_list = flame_list_tick(flame_list, entity_container, entity_types);
                 for (int i = 0; i < tX * tY; i++)
                 {
                     if (tiles[i].base_tile)
@@ -126,7 +129,7 @@ int main(int argc, char *argv[])
                                     if (entity_container.entities[j].is_dead == 0)
                                     {
                                         float dist = pow((float)tiles[i].x - entity_container.entities[j].x, 2) + pow((float)tiles[i].y - entity_container.entities[j].y, 2);
-                                        if (dist < pow(types[3].turret_radius, 2) && dist < closest_dist)
+                                        if (dist < pow(types[2].turret_radius, 2) && dist < closest_dist)
                                         {
                                             closest_dist = dist;
                                             closest = entity_container.entities + j;
@@ -183,6 +186,44 @@ int main(int argc, char *argv[])
                                 if (closest->health <= 0)
                                 {
                                     closest->is_dead = 1;
+                                }
+                            }
+                            break;
+                            // Flame turret
+                        case 6:
+                            if ((updates % 4) == 0)
+                            {
+                                Entity *closest = NULL;
+                                float closest_dist = tX * tY * 4; // 4*just to be safe
+                                for (int j = 0; j < entity_container.amount; j++)
+                                {
+                                    if (entity_container.entities[j].is_dead == 0)
+                                    {
+                                        float dist = pow((float)tiles[i].x - entity_container.entities[j].x, 2) + pow((float)tiles[i].y - entity_container.entities[j].y, 2);
+                                        if (dist < pow(types[6].turret_radius, 2) && dist < closest_dist)
+                                        {
+                                            closest_dist = dist;
+                                            closest = entity_container.entities + j;
+                                        }
+                                    }
+                                }
+                                if (closest)
+                                {
+                                    closest->health -= 1.0f;
+                                    tiles[i].flags = (unsigned char)(atan2c(((float)tiles[i].y - closest->y), -(closest->x - (float)tiles[i].x)) * 64);
+                                    // Put new line at start
+                                    FlameList *new_list = (FlameList *)(malloc(sizeof(FlameList)));
+                                    new_list->next = flame_list;
+                                    flame_list = new_list;
+                                    flame_list->x = (float)tiles[i].x + 1;
+                                    flame_list->y = (float)tiles[i].y + 1;
+                                    flame_list->x_end = closest->x;
+                                    flame_list->y_end = closest->y;
+                                    flame_list->live_left = 180;
+                                    if (closest->health <= 0)
+                                    {
+                                        closest->is_dead = 1;
+                                    }
                                 }
                             }
                             break;
@@ -449,6 +490,7 @@ int main(int argc, char *argv[])
         bullet_list_render(renderer, camera, laser_list);
         SDL_SetRenderDrawColor(renderer, 255, 255, 0, 255);
         bullet_list_render(renderer, camera, bullet_list);
+        flame_list_render(renderer, camera, flame_list, flame_texture);
 
         // Tile rendering
         for (int x = fmax(0, -camera.x - 9); x < max_x; x++)
@@ -461,7 +503,7 @@ int main(int argc, char *argv[])
 
         for (int i = 0; i < entity_container.amount; i++)
         {
-            entity_render(renderer, camera, entity_container.entities + i, entity_types);
+            entity_render(renderer, camera, entity_container.entities + i, entity_types, flame_texture);
         }
 
         // Placing preview

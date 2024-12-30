@@ -176,6 +176,7 @@ typedef struct
     unsigned char animation;
     char is_dead;
     char main_dir;
+    unsigned char fire_time_left;
 } Entity;
 
 typedef struct
@@ -201,3 +202,15 @@ typedef struct BulletList
     float x_end;
     float y_end;
 } BulletList;
+
+typedef struct FlameList FlameList;
+
+typedef struct FlameList
+{
+    FlameList *next;
+    float x;
+    float y;
+    float x_end;
+    float y_end;
+    int live_left;
+} FlameList;

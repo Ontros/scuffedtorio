@@ -1,6 +1,7 @@
 #include "entity.h"
 const float ticks_to_cross_tile = 2.0f;
 const float distance_per_tick = 1.0 / 5.0f; // move speed
+const float fire_damage = 1.0f;
 
 static inline char tile_is_pathfindable(Tile *tile)
 {
@@ -176,7 +177,8 @@ Entity entity_create()
         .x = -1,
         .y = -1,
         .is_dead = 1,
-        .main_dir = 0};
+        .main_dir = 0,
+        .fire_time_left = 0};
 }
 
 EntityContainer entity_container_create(int amount)
@@ -194,13 +196,20 @@ EntityContainer entity_container_create(int amount)
 }
 
 // All types have the same texture so we can directly acces types
-void entity_render(SDL_Renderer *renderer, Camera camera, Entity *entity, EntityType *types)
+void entity_render(SDL_Renderer *renderer, Camera camera, Entity *entity, EntityType *types, SDL_Texture *fire_texture)
 {
     EntityType *type = types + entity->type;
     // TODO: entity culling
     if (entity->is_dead == 0)
     {
         EntityTexture *entity_texture = (entity->animation & 0b1000000) ? types->texture_attack : types->texture_running;
+        if (entity->fire_time_left)
+        {
+            SDL_RenderCopy(renderer,
+                           fire_texture,
+                           &(SDL_Rect){0, 0, 84, 130},
+                           rect_in_camera_space_f(camera, entity->x, entity->y, type->size, type->offset));
+        }
         SDL_RenderCopy(renderer,
                        entity_texture->texture[(entity->animation >> 4) & 0b11],
                        entity_texture->animation_rects + (entity->animation & entity_texture->animation_mask),
@@ -219,6 +228,16 @@ void entity_render(SDL_Renderer *renderer, Camera camera, Entity *entity, Entity
 
 void entity_move(Entity *entity, EntityType *types, Tile *tiles, TileType *tile_types)
 {
+    if (entity->fire_time_left)
+    {
+        entity->fire_time_left--;
+        entity->health -= fire_damage;
+        if (entity->health <= 0)
+        {
+            entity->is_dead = 1;
+            return;
+        }
+    }
     if (entity->x == (float)entity->moving_to_x && entity->y == (float)entity->moving_to_y)
     {
         // There is room for me
