@@ -52,11 +52,41 @@ TileType type_add_animation(TileType *type, SDL_Renderer *renderer, const char *
     }
     else
     {
-        printf("%d\n", sizeof(SDL_Rect));
         type->animation_rects = (SDL_Rect *)(malloc(sizeof(SDL_Rect) * ((int)type->animation_modulo + 1)));
         for (int i = 0; i <= type->animation_modulo; i++)
         {
             type->animation_rects[i] = get_animation_rect_general(i, *type);
+        }
+    }
+}
+
+TileType type_add_gun_animation(TileType *type, SDL_Renderer *renderer, int tile_map_x_pow, int tile_map_y_pow, int text_width, int text_height)
+{
+    type->gun_texture[0] = IMG_LoadTexture(renderer, "./data/base/graphics/entity/gun-turret/gun-turret-shooting-1.png");
+    SDL_SetTextureBlendMode(type->gun_texture[0], SDL_BLENDMODE_BLEND);
+    type->gun_texture[1] = IMG_LoadTexture(renderer, "./data/base/graphics/entity/gun-turret/gun-turret-shooting-2.png");
+    SDL_SetTextureBlendMode(type->gun_texture[1], SDL_BLENDMODE_BLEND);
+    type->gun_texture[2] = IMG_LoadTexture(renderer, "./data/base/graphics/entity/gun-turret/gun-turret-shooting-3.png");
+    SDL_SetTextureBlendMode(type->gun_texture[2], SDL_BLENDMODE_BLEND);
+    type->gun_texture[3] = IMG_LoadTexture(renderer, "./data/base/graphics/entity/gun-turret/gun-turret-shooting-4.png");
+    SDL_SetTextureBlendMode(type->gun_texture[3], SDL_BLENDMODE_BLEND);
+    type->anim_tile_x = text_width / pow(2.0, tile_map_x_pow);
+    type->anim_tile_y = text_height / pow(2.0, tile_map_y_pow);
+    type->x_count = pow(2.0, tile_map_x_pow);
+    type->animation_modulo = pow(2.0, (double)(tile_map_x_pow + tile_map_y_pow));
+    type->animation_mask = ((char)pow(2.0, (double)(tile_map_x_pow + tile_map_y_pow)) - 1);
+
+    if (type->animation_modulo == 1)
+    {
+        type->animation_rects = NULL;
+    }
+    else
+    {
+        type->animation_rects = (SDL_Rect *)(malloc(sizeof(SDL_Rect) * ((int)type->animation_modulo + 1)));
+        for (int i = 0; i <= type->animation_modulo; i += 2)
+        {
+            type->animation_rects[i] = get_animation_rect_general(i, *type);
+            type->animation_rects[i + 1] = get_animation_rect_general(i, *type);
         }
     }
 }
@@ -67,6 +97,7 @@ TileType type_create_base(const char *name, unsigned char size_x, unsigned char 
     TileType type = {
         .anim_tile_x = 0,
         .anim_tile_y = 0,
+        .gun_texture = NULL,
         .animation_mask = 0,
         .animation_modulo = 1,
         .animation_rects = 0,
@@ -102,7 +133,7 @@ TileType *types_init(SDL_Renderer *renderer)
     type_add_full_texture(types + 1, renderer, "./data/base/graphics/entity/electric-mining-drill/electric-mining-drill-N.png");
     type_add_costs(types + 1, 2, (Tile_Cost[]){{0, 10}, {1, 10}});
     types[2] = type_create_base("Gun Turret", 2, 2);
-    type_add_static_section(types + 2, renderer, "./data/base/graphics/entity/gun-turret/gun-turret-shooting-1.png", 1, 4, 264, 2080);
+    type_add_gun_animation(types + 2, renderer, 1, 4, 264, 2080);
     type_add_costs(types + 2, 2, (Tile_Cost[]){{0, 10}, {1, 10}});
     types[3] = type_create_base("Laser turret", 2, 2);
     type_add_animation(types + 3, renderer, "./data/base/graphics/entity/laser-turret/laser-turret-shooting.png", 3, 3, 1008, 960);

@@ -59,6 +59,7 @@ typedef struct Tile
 typedef struct TileType
 {
     SDL_Texture *texture;
+    SDL_Texture *gun_texture[4];
     SDL_Rect *animation_rects;
     Tile_Cost *costs;
     char *name;

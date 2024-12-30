@@ -107,12 +107,51 @@ int main(int argc, char *argv[])
                 // Turret attack
                 bullet_list_free(laser_list);
                 laser_list = NULL;
+                bullet_list_free(bullet_list);
+                bullet_list = NULL;
                 for (int i = 0; i < tX * tY; i++)
                 {
                     if (tiles[i].base_tile)
                     {
                         switch (tiles[i].type)
                         {
+                            // Gun turret
+                        case 2:
+                            if ((updates % 4) == 0)
+                            {
+                                Entity *closest = NULL;
+                                float closest_dist = tX * tY * 4; // 4*just to be safe
+                                for (int j = 0; j < entity_container.amount; j++)
+                                {
+                                    if (entity_container.entities[j].is_dead == 0)
+                                    {
+                                        float dist = pow((float)tiles[i].x - entity_container.entities[j].x, 2) + pow((float)tiles[i].y - entity_container.entities[j].y, 2);
+                                        if (dist < pow(types[3].turret_radius, 2) && dist < closest_dist)
+                                        {
+                                            closest_dist = dist;
+                                            closest = entity_container.entities + j;
+                                        }
+                                    }
+                                }
+                                if (closest)
+                                {
+                                    closest->health -= 1.0f;
+                                    tiles[i].flags = (unsigned char)(atan2c((float)tiles[i].y - closest->y, closest->x - (float)tiles[i].x) * 128);
+                                    // Put new line at start
+                                    BulletList *new_list = (BulletList *)(malloc(sizeof(BulletList)));
+                                    new_list->next = bullet_list;
+                                    bullet_list = new_list;
+                                    bullet_list->x_start = (float)tiles[i].x + 1;
+                                    bullet_list->y_start = (float)tiles[i].y + 1;
+                                    bullet_list->x_end = closest->x;
+                                    bullet_list->y_end = closest->y;
+                                    if (closest->health <= 0)
+                                    {
+                                        closest->is_dead = 1;
+                                    }
+                                }
+                            }
+                            break;
                         // Laser turret
                         case 3:
                             Entity *closest = NULL;
@@ -412,6 +451,8 @@ int main(int argc, char *argv[])
         // Laser rendering
         SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
         bullet_list_render(renderer, camera, laser_list);
+        SDL_SetRenderDrawColor(renderer, 255, 255, 0, 255);
+        bullet_list_render(renderer, camera, bullet_list);
 
         // Tile rendering
         for (int x = fmax(0, -camera.x - 9); x < max_x; x++)

@@ -1,0 +1,24 @@
+==30837== Memcheck, a memory error detector
+==30837== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==30837== Using Valgrind-3.18.1 and LibVEX; rerun with -h for copyright info
+==30837== Command: ./scuffedtorio
+==30837== Parent PID: 13146
+==30837== 
+==30837== Warning: noted but unhandled ioctl 0x644f with no size/direction hints.
+==30837==    This could cause spurious value errors to appear.
+==30837==    See README_MISSING_SYSCALL_OR_IOCTL for guidance on writing a proper wrapper.
+==30837== 
+==30837== HEAP SUMMARY:
+==30837==     in use at exit: 196,307 bytes in 1,307 blocks
+==30837==   total heap usage: 120,357 allocs, 119,050 frees, 4,800,411,316 bytes allocated
+==30837== 
+==30837== LEAK SUMMARY:
+==30837==    definitely lost: 7,048 bytes in 117 blocks
+==30837==    indirectly lost: 81,264 bytes in 83 blocks
+==30837==      possibly lost: 0 bytes in 0 blocks
+==30837==    still reachable: 18,673 bytes in 93 blocks
+==30837==         suppressed: 89,322 bytes in 1,014 blocks
+==30837== Rerun with --leak-check=full to see details of leaked memory
+==30837== 
+==30837== For lists of detected and suppressed errors, rerun with: -s
+==30837== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 3974280 from 36)

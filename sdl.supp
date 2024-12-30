@@ -565,3 +565,10 @@
    obj:/usr/lib/x86_64-linux-gnu/libSDL2-2.0.so.0.18.2
    fun:main
 }
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Addr8
+   fun:type_add_gun_animation
+   fun:types_init
+   fun:main
+}

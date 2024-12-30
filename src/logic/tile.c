@@ -21,9 +21,18 @@ static inline void render_tile(SDL_Renderer *renderer, Camera camera, Tile *tile
             tile->flags = (tile->flags & ~(types[tile->type].animation_mask))         // clear animanion_frame
                           | ((tile->flags + 1) % types[tile->type].animation_modulo); // set new animation_frame
         }
-        SDL_RenderCopy(renderer, types[tile->type].texture,
-                       types[tile->type].animation_rects + (tile->flags & types[tile->type].animation_mask),
-                       rect_in_camera_space(camera, x, y, types[tile->type].size_x, types[tile->type].size_y));
+        if (type->texture)
+        {
+            SDL_RenderCopy(renderer, types[tile->type].texture,
+                           types[tile->type].animation_rects + (tile->flags & types[tile->type].animation_mask),
+                           rect_in_camera_space(camera, x, y, types[tile->type].size_x, types[tile->type].size_y));
+        }
+        else
+        {
+            SDL_RenderCopy(renderer, types[tile->type].gun_texture[(int)tile->flags / 32],
+                           types[tile->type].animation_rects + (tile->flags % 32),
+                           rect_in_camera_space(camera, x, y, types[tile->type].size_x, types[tile->type].size_y));
+        }
         if (tile->base_tile->health < type->max_health)
         {
             // health background
