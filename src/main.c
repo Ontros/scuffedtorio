@@ -298,11 +298,7 @@ int main(int argc, char *argv[])
                 }
                 else if (event.key.keysym.sym == SDLK_5)
                 {
-                    type_in_hand = 4;
-                }
-                else if (event.key.keysym.sym == SDLK_6)
-                {
-                    type_in_hand = 5;
+                    type_in_hand = 6;
                 }
                 else if (event.key.keysym.sym == SDLK_q)
                 {
@@ -472,9 +468,18 @@ int main(int argc, char *argv[])
         if (type_in_hand != -1 && mouse_tile)
         {
             // Render preview
-            SDL_SetTextureAlphaMod(types[type_in_hand].texture, 128);
-            SDL_RenderCopy(renderer, types[type_in_hand].texture, types[type_in_hand].animation_rects, rect_in_camera_space(camera, mouse_tile->x, mouse_tile->y, types[type_in_hand].size_x, types[type_in_hand].size_y));
-            SDL_SetTextureAlphaMod(types[type_in_hand].texture, 255);
+            if (types[type_in_hand].texture)
+            {
+                SDL_SetTextureAlphaMod(types[type_in_hand].texture, 128);
+                SDL_RenderCopy(renderer, types[type_in_hand].texture, types[type_in_hand].animation_rects, rect_in_camera_space(camera, mouse_tile->x, mouse_tile->y, types[type_in_hand].size_x, types[type_in_hand].size_y));
+                SDL_SetTextureAlphaMod(types[type_in_hand].texture, 255);
+            }
+            else
+            {
+                SDL_SetTextureAlphaMod(types[type_in_hand].gun_texture[0], 128);
+                SDL_RenderCopy(renderer, types[type_in_hand].gun_texture[0], types[type_in_hand].animation_rects, rect_in_camera_space(camera, mouse_tile->x, mouse_tile->y, types[type_in_hand].size_x, types[type_in_hand].size_y));
+                SDL_SetTextureAlphaMod(types[type_in_hand].gun_texture[0], 255);
+            }
             // Render blocking tiles
             for (int x = mouse_tile->x; x < (mouse_tile->x + types[type_in_hand].size_x) && x >= 0 && x < tX; x++)
             {

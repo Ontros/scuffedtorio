@@ -51,8 +51,8 @@ static inline void render_ore(SDL_Renderer *renderer, Camera camera, Tile *tile,
     {
         TileType type = ore_types[tile->ore];
         SDL_RenderCopy(renderer, type.texture,
-                       type.animation_rects + (tile->flags & type.animation_mask),
-                       rect_in_camera_space(camera, x, y, type.size_x, type.size_y));
+                       type.animation_rects,
+                       rect_in_camera_space(camera, x, y, 1, 1));
     }
 }
 

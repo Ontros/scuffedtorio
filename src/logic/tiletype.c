@@ -1,7 +1,7 @@
 #include "tiletype.h"
 #include "../structs.h"
 #include <string.h>
-const int type_amount = 6;
+const int type_amount = 7;
 const int ore_amount = 5;
 const int terrain_amount = 4;
 
@@ -125,7 +125,7 @@ void type_add_costs(TileType *type, int costs_count, Tile_Cost *costs)
 
 TileType *types_init(SDL_Renderer *renderer)
 {
-    TileType *types = malloc(sizeof(TileType) * (type_amount + 1));
+    TileType *types = malloc(sizeof(TileType) * type_amount);
     types[0] = type_create_base("Wall", 1, 1);
     type_add_static_section(types, renderer, "./data/base/graphics/entity/wall/wall-single.png", 1, 0, 128, 86);
     type_add_costs(types, 1, (Tile_Cost[]){{3, 5}});
@@ -144,6 +144,9 @@ TileType *types_init(SDL_Renderer *renderer)
     type_add_full_texture(types + 4, renderer, "./data/base/graphics/entity/rocket-silo/06-rocket-silo.png");
     types[5] = type_create_base("Biter spawner", 5, 5);
     type_add_static_section(types + 5, renderer, "./data/base/graphics/entity/spawner/spawner-idle.png", 2, 3, 2080, 3008);
+    types[6] = type_create_base("Flamethrower", 2, 2);
+    type_add_animation(types + 6, renderer, "data/base/graphics/entity/flamethrower-turret/flamethrower-turret-gun.png", 3, 3, 1264, 1024);
+    type_add_costs(types + 6, 2, (Tile_Cost[]){{0, 10}, {1, 10}});
     return types;
 }
 
