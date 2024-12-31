@@ -11,16 +11,11 @@ static inline char tile_is_not_empty(Tile *tile)
     return tile->base_tile || tile->terrain != 2;
 }
 
-static inline void render_tile(SDL_Renderer *renderer, Camera camera, Tile *tile, TileType *types, int x, int y, char advance_animation)
+static inline void render_tile(SDL_Renderer *renderer, Camera camera, Tile *tile, TileType *types, int x, int y)
 {
     if (tile->type != -1)
     {
         TileType *type = types + tile->type;
-        if (advance_animation && type->animation_modulo != 1)
-        {
-            tile->flags = (tile->flags & ~(types[tile->type].animation_mask))         // clear animanion_frame
-                          | ((tile->flags + 1) % types[tile->type].animation_modulo); // set new animation_frame
-        }
         if (type->texture)
         {
             SDL_RenderCopy(renderer, types[tile->type].texture,
@@ -38,7 +33,7 @@ static inline void render_tile(SDL_Renderer *renderer, Camera camera, Tile *tile
             // health background
             SDL_SetRenderDrawColor(renderer, 55, 55, 55, 255);
             SDL_RenderFillRect(renderer, rect_sub_in_camera_space(camera, x, y + (float)type->size_y - 0.2f, (float)type->size_y, 0.2f));
-            // helth status
+            // health status
             SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
             SDL_RenderFillRect(renderer, rect_sub_in_camera_space(camera, x, y + (float)type->size_y - 0.2f, (float)type->size_y * ((float)tile->base_tile->health / (float)type->max_health), 0.2f));
         }

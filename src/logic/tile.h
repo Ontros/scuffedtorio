@@ -9,7 +9,7 @@ static inline char tile_is_empty(Tile *tile);
 
 static inline char tile_is_not_empty(Tile *tile);
 
-static inline void render_tile(SDL_Renderer *renderer, Camera camera, Tile *tile, TileType *types, int x, int y, char advance_animation);
+static inline void render_tile(SDL_Renderer *renderer, Camera camera, Tile *tile, TileType *types, int x, int y);
 
 static inline void render_ore(SDL_Renderer *renderer, Camera camera, Tile *tile, TileType *types, int x, int y);
 

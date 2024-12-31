@@ -10,6 +10,7 @@
 #include "logic/entity.h"
 #include "logic/linked_list.h"
 #include "logic/input.h"
+#include "logic/turret.h"
 #include "game.c"
 
 int game(SDL_Renderer *renderer, Camera *camera);
