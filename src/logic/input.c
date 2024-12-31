@@ -94,7 +94,7 @@ void input_handler(KeyStates *keyStates, int *running, int *type_in_hand, Tile *
         {
             if (event.button.button == SDL_BUTTON_LEFT)
             {
-                if (button_container_click(renderer, state, buttons, mouse_x, mouse_y))
+                if ((state->is_wave_running == 0) && button_container_click(renderer, state, buttons, mouse_x, mouse_y))
                 {
                     keyStates->mouse_left = 0;
                     keyStates->mouse_right = 0;

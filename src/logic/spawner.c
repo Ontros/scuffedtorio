@@ -35,8 +35,8 @@ void spawner_place(Tile *tiles, Tile *mouse_tile, TileType type)
 SpawnerContainer spawner_spawn(Tile *tiles, GameState state, TileType spawner_type)
 {
     SpawnerContainer container = (SpawnerContainer){
-        .amount = state.waves[state.wave_current].spawner_count,
-        .spawner_indecies = (int *)(malloc(sizeof(int) * state.waves[state.wave_current].spawner_count))};
+        .amount = state.wave.spawner_count,
+        .spawner_indecies = (int *)(malloc(sizeof(int) * state.wave.spawner_count))};
     int real_count = 0;
     for (int i = 0; i < container.amount; i++)
     {

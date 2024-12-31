@@ -29,9 +29,13 @@ int game(SDL_Renderer *renderer, Camera *camera)
         .concrete_upgrade_cost = 100,
         .inventory = inventory,
         .tiles = tiles,
-        .wave_count = 1,
+        .types = types,
+        .is_infinite = 0,
+        .can_build_mid_wave = 0,
         .wave_current = 0,
-        .waves = &(Wave){.enemies_count = 100, .evolution_factor = 10, .spawner_count = 100}};
+        .entity_types = entity_types_init(renderer),
+        .is_wave_running = 0,
+        .wave = {.enemies_count = 0, .evolution_factor = 0, .spawner_count = 0}};
 
     // srand(time(NULL));
     uint64_t UPDATE_TIME = SDL_GetPerformanceFrequency() / 60;
@@ -41,13 +45,8 @@ int game(SDL_Renderer *renderer, Camera *camera)
 
     ButtonContainer buttons = button_container_in_game_create(renderer, state);
 
-    SpawnerContainer spawner_container = spawner_spawn(tiles, state, types[5]);
-    EntityType *entity_types = entity_types_init(renderer);
-    EntityContainer entity_container = entity_container_create(state.waves[state.wave_current].enemies_count);
-    for (int i = 0; i < state.waves[state.wave_current].enemies_count; i++)
-    {
-        entity_spawn(entity_container.entities + i, tiles, spawner_container, 0, entity_types, state);
-    }
+    state.spawner_container = spawner_spawn(tiles, state, types[5]);
+    state.entity_container = entity_container_create(state.wave.enemies_count);
     BulletList *bullet_list = NULL;
     BulletList *laser_list = NULL;
     FlameList *flame_list = NULL;
@@ -92,7 +91,7 @@ int game(SDL_Renderer *renderer, Camera *camera)
                 }
 
                 // Turret attack
-                turret_tick(tiles, types, updates, &bullet_list, &laser_list, &flame_list, entity_container, entity_types);
+                turret_tick(tiles, types, updates, &bullet_list, &laser_list, &flame_list, state.entity_container, state.entity_types);
 
                 if (updates % 2)
                 {
@@ -103,14 +102,14 @@ int game(SDL_Renderer *renderer, Camera *camera)
                             tiles[i].entity_occupied--;
                     }
                     // Move entities
-                    for (int i = 0; i < entity_container.amount; i++)
+                    for (int i = 0; i < state.entity_container.amount; i++)
                     {
-                        if (entity_container.entities[i].is_dead == 0)
+                        if (state.entity_container.entities[i].is_dead == 0)
                         {
                             // entity_container.entities[i].animation++;
                             // entity_container.entities[i].animation %= 16;
                             // Reset moving state
-                            entity_move(entity_container.entities + i, entity_types, tiles, types);
+                            entity_move(state.entity_container.entities + i, state.entity_types, tiles, types);
                         }
                     }
                 }
@@ -205,9 +204,9 @@ int game(SDL_Renderer *renderer, Camera *camera)
             }
         }
 
-        for (int i = 0; i < entity_container.amount; i++)
+        for (int i = 0; i < state.entity_container.amount; i++)
         {
-            entity_render(renderer, *camera, entity_container.entities + i, entity_types, flame_texture);
+            entity_render(renderer, *camera, state.entity_container.entities + i, state.entity_types, flame_texture);
         }
 
         // Placing preview
@@ -251,7 +250,8 @@ int game(SDL_Renderer *renderer, Camera *camera)
 
         text_render(renderer, fps_text);
         inventory_render(renderer, inventory);
-        button_container_render(renderer, buttons, mouse_x, mouse_y);
+        if (state.is_wave_running == 0)
+            button_container_render(renderer, buttons, mouse_x, mouse_y);
         if (missing_materials_duration)
         {
             text_render(renderer, missing_materials_text);
@@ -267,10 +267,10 @@ int game(SDL_Renderer *renderer, Camera *camera)
     type_free(terrain_types, terrain_amount);
 
     button_container_free(buttons);
-    spawner_free(spawner_container);
 
-    entity_type_free(entity_types);
-    entity_container_free(entity_container);
+    spawner_free(state.spawner_container);
+    entity_type_free(state.entity_types);
+    entity_container_free(state.entity_container);
 
     bullet_list_free(laser_list);
     bullet_list_free(bullet_list);

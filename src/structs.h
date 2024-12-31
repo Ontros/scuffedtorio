@@ -115,34 +115,6 @@ typedef struct Wave
 
 typedef struct
 {
-    Wave *waves;
-    InventorySlot *inventory;
-    Tile *tiles;
-    int concrete_radius;
-    int concrete_upgrade_cost;
-    int wave_current;
-    int wave_count;
-} GameState;
-
-typedef struct Button Button;
-
-typedef struct Button
-{
-    void (*on_click)(struct SDL_Renderer *, Button *, GameState *);
-    Text text;
-    SDL_Rect rect;
-    SDL_Color base_color;
-    SDL_Color hover_color;
-} Button;
-
-typedef struct ButtonContainer
-{
-    Button *buttons;
-    int count;
-} ButtonContainer;
-
-typedef struct
-{
     SDL_Texture *texture[4];
     SDL_Rect *animation_rects;
     char animation_modulo;
@@ -179,7 +151,7 @@ typedef struct
     unsigned char fire_time_left;
 } Entity;
 
-typedef struct
+typedef struct EntityContainer
 {
     Entity *entities;
     int amount;
@@ -214,3 +186,36 @@ typedef struct FlameList
     float y_end;
     int live_left;
 } FlameList;
+
+typedef struct
+{
+    Wave wave;
+    InventorySlot *inventory;
+    Tile *tiles;
+    TileType *types;
+    EntityContainer entity_container;
+    SpawnerContainer spawner_container;
+    EntityType *entity_types;
+    int concrete_radius;
+    int concrete_upgrade_cost;
+    int wave_current;
+    char is_infinite;
+    char can_build_mid_wave;
+    char is_wave_running;
+} GameState;
+
+typedef struct Button Button;
+
+typedef struct Button
+{
+    void (*on_click)(void *, void *, void *);
+    Text text;
+    SDL_Rect rect;
+    SDL_Color base_color;
+    SDL_Color hover_color;
+} Button;
+typedef struct ButtonContainer
+{
+    Button *buttons;
+    int count;
+} ButtonContainer;

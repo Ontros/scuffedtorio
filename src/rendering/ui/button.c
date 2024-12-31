@@ -1,6 +1,6 @@
 #include "button.h"
 
-Button button_init(SDL_Renderer *renderer, const char *text_inp, int font_size, SDL_Rect rect, void (*on_click)(struct SDL_Renderer *, Button *, GameState *))
+Button button_init(SDL_Renderer *renderer, const char *text_inp, int font_size, SDL_Rect rect, void (*on_click)(void *, void *, void *))
 {
     Text text = text_init("./data/core/fonts/TitilliumWeb-SemiBold.ttf", font_size, 50);
     memcpy(text.buffer, text_inp, strlen(text_inp));
@@ -30,8 +30,11 @@ void button_render(SDL_Renderer *renderer, Button *button, int mouse_x, int mous
     text_render(renderer, button->text);
 }
 
-void button_expand_concrete_click(SDL_Renderer *renderer, Button *button, GameState *state)
+void button_expand_concrete_click(void *v0, void *v1, void *v2)
 {
+    SDL_Renderer *renderer = (SDL_Renderer *)v0;
+    Button *button = (Button *)v1;
+    GameState *state = (GameState *)v2;
     if (state->inventory[5].count >= state->concrete_upgrade_cost)
     {
         state->inventory[5].count -= state->concrete_upgrade_cost;
@@ -40,6 +43,27 @@ void button_expand_concrete_click(SDL_Renderer *renderer, Button *button, GameSt
         tile_update_concrete(state->tiles, state->concrete_radius);
         sprintf(button->text.buffer, "Expand concrete (%d coins)", state->concrete_upgrade_cost);
         text_create(renderer, &button->text);
+    }
+}
+
+void button_next_wave_click(void *v0, void *v1, void *v2)
+{
+    SDL_Renderer *renderer = (SDL_Renderer *)v0;
+    GameState *state = (GameState *)v2;
+    state->wave_current++;
+    if (state->is_infinite)
+    {
+        state->wave = (Wave){.enemies_count = state->wave_current * 10, .evolution_factor = fmin(2, state->wave_current / 5), .spawner_count = state->wave_current * 15};
+    }
+    else
+    {
+        state->wave = (Wave[3]){{10, 0, 5}, {100, 1, 50}, {500, 2, 250}}[state->wave_current - 1];
+    }
+    state->spawner_container = spawner_spawn(state->tiles, *state, state->types[5]);
+    state->entity_container = entity_container_create(state->wave.enemies_count);
+    for (int i = 0; i < state->wave.enemies_count; i++)
+    {
+        entity_spawn(state->entity_container.entities + i, state->tiles, state->spawner_container, 0, state->entity_types, *state);
     }
 }
 
@@ -67,11 +91,12 @@ void button_container_render(SDL_Renderer *renderer, ButtonContainer container, 
 
 ButtonContainer button_container_in_game_create(SDL_Renderer *renderer, GameState state)
 {
-    int button_count = 1;
+    int button_count = 2;
     ButtonContainer buttons = (ButtonContainer){
         .buttons = (Button *)(malloc(sizeof(Button) * button_count)),
         .count = button_count};
     buttons.buttons[0] = button_init(renderer, "Expand concrete (100 coins)", 24, (SDL_Rect){200, 0, 350, 50}, button_expand_concrete_click);
+    buttons.buttons[1] = button_init(renderer, "Start Wave", 24, (SDL_Rect){600, 0, 150, 50}, button_next_wave_click);
     return buttons;
 }
 

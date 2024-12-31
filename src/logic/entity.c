@@ -1,5 +1,5 @@
 #include "entity.h"
-const int entity_type_count = 1;
+const int entity_type_count = 3;
 const float ticks_to_cross_tile = 2.0f;
 const float distance_per_tick = 1.0 / 5.0f; // move speed
 const float fire_damage = 1.0f;
@@ -116,7 +116,9 @@ EntityType *entity_types_init(SDL_Renderer *renderer)
     EntityType *types = (EntityType *)(malloc(sizeof(EntityType) * entity_type_count));
     EntityTexture *run = entity_texture_create_run(renderer);
     EntityTexture *attack = entity_texture_create_attack(renderer);
-    types[0] = entity_type_init(run, attack, 10, 100, 3.0f, 1.0f);
+    types[0] = entity_type_init(run, attack, 1, 10, 1.0f, 0.0f);
+    types[1] = entity_type_init(run, attack, 5, 50, 2.0f, 0.5f);
+    types[2] = entity_type_init(run, attack, 10, 100, 3.0f, 1.0f);
     return types;
 }
 
