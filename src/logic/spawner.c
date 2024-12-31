@@ -16,7 +16,7 @@ char spawner_is_spot_valid(Tile *tiles, int xS, int yS)
     return 1;
 }
 
-char spawner_place(Tile *tiles, Tile *mouse_tile, TileType type)
+void spawner_place(Tile *tiles, Tile *mouse_tile, TileType type)
 {
     BuiltTile *built = (BuiltTile *)(malloc(sizeof(BuiltTile)));
     mouse_tile->type = type.id;
