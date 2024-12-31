@@ -6,6 +6,7 @@
    fun:text_create_with_pos
    fun:button_init
    fun:button_container_in_game_create
+   fun:game
    fun:main
 }
 
@@ -66,6 +67,7 @@
    fun:text_create_with_pos
    fun:button_init
    fun:button_container_in_game_create
+   fun:game
    fun:main
 }
 {
@@ -106,6 +108,7 @@
    fun:text_create_with_pos
    fun:button_init
    fun:button_container_in_game_create
+   fun:game
    fun:main
 }
 {
@@ -133,6 +136,7 @@
    fun:text_create_with_pos
    fun:button_init
    fun:button_container_in_game_create
+   fun:game
    fun:main
 }
 {
@@ -146,6 +150,7 @@
    fun:text_create_with_pos
    fun:button_init
    fun:button_container_in_game_create
+   fun:game
    fun:main
 }
 {
@@ -177,6 +182,7 @@
    obj:/usr/lib/x86_64-linux-gnu/libfreetype.so.6.18.1
    fun:TTF_OpenFontIndexDPIRW
    fun:text_init
+   fun:game
    fun:main
 }
 {
@@ -193,6 +199,7 @@
    fun:text_init
    fun:inventory_slot_create
    fun:inventory_init
+   fun:game
    fun:main
 }
 {
@@ -206,6 +213,7 @@
    fun:text_create_with_pos
    fun:button_init
    fun:button_container_in_game_create
+   fun:game
    fun:main
 }
 {
@@ -222,6 +230,7 @@
    fun:text_init
    fun:button_init
    fun:button_container_in_game_create
+   fun:game
    fun:main
 }
 {
@@ -245,6 +254,7 @@
    obj:/usr/lib/x86_64-linux-gnu/libSDL2-2.0.so.0.18.2
    fun:type_create_base
    fun:types_init
+   fun:game
    fun:main
 }
 {
@@ -255,6 +265,7 @@
    obj:/usr/lib/x86_64-linux-gnu/libSDL2-2.0.so.0.18.2
    fun:inventory_slot_create
    fun:inventory_init
+   fun:game
    fun:main
 }
 {
@@ -265,6 +276,7 @@
    obj:/usr/lib/x86_64-linux-gnu/libSDL2-2.0.so.0.18.2
    fun:inventory_slot_create
    fun:inventory_init
+   fun:game
    fun:main
 }
 {
@@ -326,6 +338,7 @@
    obj:/usr/lib/x86_64-linux-gnu/libSDL2-2.0.so.0.18.2
    fun:type_create_base
    fun:types_terrain_init
+   fun:game
    fun:main
 }
 {
@@ -523,6 +536,7 @@
    obj:/usr/lib/x86_64-linux-gnu/libSDL2-2.0.so.0.18.2
    obj:/usr/lib/x86_64-linux-gnu/libSDL2-2.0.so.0.18.2
    fun:render_terrain
+   fun:game
    fun:main
 }
 {
@@ -531,6 +545,7 @@
    obj:/usr/lib/x86_64-linux-gnu/libSDL2-2.0.so.0.18.2
    obj:/usr/lib/x86_64-linux-gnu/libSDL2-2.0.so.0.18.2
    fun:render_ore
+   fun:game
    fun:main
 }
 {
@@ -539,6 +554,7 @@
    obj:/usr/lib/x86_64-linux-gnu/libSDL2-2.0.so.0.18.2
    obj:/usr/lib/x86_64-linux-gnu/libSDL2-2.0.so.0.18.2
    fun:render_tile
+   fun:game
    fun:main
 }
 {
@@ -547,6 +563,7 @@
    obj:/usr/lib/x86_64-linux-gnu/libSDL2-2.0.so.0.18.2
    obj:/usr/lib/x86_64-linux-gnu/libSDL2-2.0.so.0.18.2
    fun:entity_render
+   fun:game
    fun:main
 }
 {
@@ -570,5 +587,24 @@
    Memcheck:Addr8
    fun:type_add_gun_animation
    fun:types_init
+   fun:game
+   fun:main
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Addr8
+   fun:type_add_gun_animation
+   fun:types_init
+   fun:game
+   fun:main
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Cond
+   obj:/usr/lib/x86_64-linux-gnu/libSDL2-2.0.so.0.18.2
+   obj:/usr/lib/x86_64-linux-gnu/libSDL2-2.0.so.0.18.2
+   obj:/usr/lib/x86_64-linux-gnu/libSDL2-2.0.so.0.18.2
+   obj:/usr/lib/x86_64-linux-gnu/libSDL2-2.0.so.0.18.2
+   fun:game
    fun:main
 }
