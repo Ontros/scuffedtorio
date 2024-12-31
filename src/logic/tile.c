@@ -62,10 +62,13 @@ static inline void render_terrain(SDL_Renderer *renderer, Camera camera, Tile *t
     {
         return;
     }
-    TileType type = terrain_types[tile->terrain];
-    SDL_RenderCopy(renderer, type.texture,
-                   type.animation_rects + (tile->flags & type.animation_mask),
-                   rect_in_camera_space(camera, x, y, type.size_x, type.size_y));
+    if (camera.size > 10 || tile->terrain != 0)
+    {
+        TileType type = terrain_types[tile->terrain];
+        SDL_RenderCopy(renderer, type.texture,
+                       type.animation_rects,
+                       rect_in_camera_space(camera, x, y, 1, 1));
+    }
 }
 
 char is_room_for_tile(Tile *tiles, Tile *mouse_tile, TileType type)

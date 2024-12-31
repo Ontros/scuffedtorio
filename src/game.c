@@ -467,6 +467,11 @@ int game(SDL_Renderer *renderer, Camera *camera)
         int max_x = fmin(tX, -camera->x + camera->width / camera->size + 1);
         int max_y = fmin(tY, -camera->y + camera->height / camera->size + 1);
         // Tile+Ore rendering
+        if (camera->size < 10)
+        {
+            SDL_SetRenderDrawColor(renderer, 61, 52, 12, 255);
+            SDL_RenderFillRect(renderer, rect_in_camera_space(*camera, 0, 0, tX, tY));
+        }
         for (int x = fmax(0, -camera->x - 1); x < max_x; x++)
         {
             for (int y = fmax(0, -camera->y - 1); y < max_y; y++)
