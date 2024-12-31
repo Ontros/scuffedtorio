@@ -8,4 +8,4 @@ TileType *types_ore_init(SDL_Renderer *renderer);
 
 TileType *types_terrain_init(SDL_Renderer *renderer);
 
-void type_free(TileType type);
+void type_free(TileType *types, int amount);

@@ -198,8 +198,27 @@ TileType *types_terrain_init(SDL_Renderer *renderer)
     return types;
 }
 
-void type_free(TileType type)
+void type_free(TileType *types, int amount)
 {
-    SDL_DestroyTexture(type.texture);
-    free(type.animation_rects);
+    for (int i = 0; i < amount; i++)
+    {
+        if (types[i].texture)
+        {
+            SDL_DestroyTexture(types[i].texture);
+            types[i].texture = NULL;
+        }
+        else
+        {
+            SDL_DestroyTexture(types[i].gun_texture[0]);
+            SDL_DestroyTexture(types[i].gun_texture[1]);
+            SDL_DestroyTexture(types[i].gun_texture[2]);
+            SDL_DestroyTexture(types[i].gun_texture[3]);
+        }
+        if (types[i].animation_rects)
+            free(types[i].animation_rects);
+        free(types[i].name);
+        if (types[i].costs)
+            free(types[i].costs);
+    }
+    free(types);
 }

@@ -254,3 +254,16 @@ float atan2c(float y, float x)
     float f = atan2(y, x) / pi;
     return (-f + ((f > 0.5f) ? 2.5f : 0.5f)) / 2;
 }
+
+void tile_free(Tile *tiles)
+{
+    for (int i = 0; i < tX * tY; i++)
+    {
+        if (tiles[i].type != -1)
+        {
+            free(tiles[i].base_tile);
+            tiles[i].base_tile = NULL;
+        }
+    }
+    free(tiles);
+}

@@ -542,13 +542,22 @@ int game(SDL_Renderer *renderer, Camera *camera)
         SDL_RenderPresent(renderer);
     }
 
-    free(tiles);
+    tile_free(tiles);
     text_free(fps_text);
 
-    for (int i = 0; i < type_amount; i++)
-    {
-        type_free(types[i]);
-    }
+    type_free(types, type_amount);
+    type_free(ore_types, ore_amount);
+    type_free(terrain_types, terrain_amount);
+
+    button_container_free(buttons);
+    spawner_free(spawner_container);
+
+    entity_type_free(entity_types);
+    entity_container_free(entity_container);
+
+    bullet_list_free(laser_list);
+    bullet_list_free(bullet_list);
+    flame_list_free(flame_list);
 
     inventory_free(inventory);
 }

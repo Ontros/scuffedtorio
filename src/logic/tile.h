@@ -32,3 +32,5 @@ void tile_create_lake(Tile *tiles, double xS, double yS, double d);
 void tile_update_concrete(Tile *tiles, int concrete_radius);
 
 float atan2c(float y, float x);
+
+void tile_free(Tile *tiles);

@@ -608,3 +608,16 @@
    fun:game
    fun:main
 }
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Cond
+   fun:hb_buffer_add_utf8
+   obj:/usr/lib/x86_64-linux-gnu/libSDL2_ttf-2.0.so.0.18.0
+   obj:/usr/lib/x86_64-linux-gnu/libSDL2_ttf-2.0.so.0.18.0
+   fun:text_create
+   fun:text_create_with_pos
+   fun:button_init
+   fun:button_container_in_game_create
+   fun:game
+   fun:main
+}

@@ -1,4 +1,5 @@
 #include "entity.h"
+const int entity_type_count = 1;
 const float ticks_to_cross_tile = 2.0f;
 const float distance_per_tick = 1.0 / 5.0f; // move speed
 const float fire_damage = 1.0f;
@@ -112,7 +113,7 @@ EntityTexture *entity_texture_create_attack(SDL_Renderer *renderer)
 //  3: 1
 EntityType *entity_types_init(SDL_Renderer *renderer)
 {
-    EntityType *types = (EntityType *)(malloc(sizeof(EntityType) * 1));
+    EntityType *types = (EntityType *)(malloc(sizeof(EntityType) * entity_type_count));
     EntityTexture *run = entity_texture_create_run(renderer);
     EntityTexture *attack = entity_texture_create_attack(renderer);
     types[0] = entity_type_init(run, attack, 10, 100, 3.0f, 1.0f);
@@ -537,4 +538,16 @@ void entity_move(Entity *entity, EntityType *types, Tile *tiles, TileType *tile_
         entity->animation &= 0b1110000;
         entity->animation |= anim;
     }
+}
+
+void entity_type_free(EntityType *types)
+{
+    free(types->texture_attack);
+    free(types->texture_running);
+    free(types);
+}
+
+void entity_container_free(EntityContainer container)
+{
+    free(container.entities);
 }

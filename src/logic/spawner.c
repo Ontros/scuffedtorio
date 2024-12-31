@@ -56,3 +56,8 @@ SpawnerContainer spawner_spawn(Tile *tiles, GameState state, TileType spawner_ty
     container.amount = real_count;
     return container;
 }
+
+void spawner_free(SpawnerContainer container)
+{
+    free(container.spawner_indecies);
+}

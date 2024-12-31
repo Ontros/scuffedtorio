@@ -74,3 +74,12 @@ ButtonContainer button_container_in_game_create(SDL_Renderer *renderer, GameStat
     buttons.buttons[0] = button_init(renderer, "Expand concrete (100 coins)", 24, (SDL_Rect){200, 0, 350, 50}, button_expand_concrete_click);
     return buttons;
 }
+
+void button_container_free(ButtonContainer container)
+{
+    for (int i = 0; i < container.count; i++)
+    {
+        text_free(container.buttons[i].text);
+    }
+    free(container.buttons);
+}
