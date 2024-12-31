@@ -190,6 +190,7 @@ EntityContainer entity_container_create(int amount)
         .amount = amount,
         .entities = (Entity *)(malloc(sizeof(Entity) * amount)),
         .spawned = 0,
+        .alive = amount,
     };
     for (int i = 0; i < amount; i++)
     {
@@ -229,7 +230,7 @@ void entity_render(SDL_Renderer *renderer, Camera camera, Entity *entity, Entity
     }
 }
 
-void entity_move(Entity *entity, EntityType *types, Tile *tiles, TileType *tile_types)
+void entity_move(Entity *entity, EntityType *types, Tile *tiles, TileType *tile_types, GameState *state)
 {
     if (entity->fire_time_left)
     {
@@ -238,6 +239,8 @@ void entity_move(Entity *entity, EntityType *types, Tile *tiles, TileType *tile_
         if (entity->health <= 0)
         {
             entity->is_dead = 1;
+            state->entity_container.alive--;
+            state->inventory[5].count += pow(entity->type + 1, 2);
             return;
         }
     }

@@ -51,6 +51,7 @@ void button_next_wave_click(void *v0, void *v1, void *v2)
     SDL_Renderer *renderer = (SDL_Renderer *)v0;
     GameState *state = (GameState *)v2;
     state->wave_current++;
+    state->is_wave_running = 1;
     if (state->is_infinite)
     {
         state->wave = (Wave){.enemies_count = state->wave_current * 10, .evolution_factor = fmin(2, state->wave_current / 5), .spawner_count = state->wave_current * 15};
@@ -63,7 +64,7 @@ void button_next_wave_click(void *v0, void *v1, void *v2)
     state->entity_container = entity_container_create(state->wave.enemies_count);
     for (int i = 0; i < state->wave.enemies_count; i++)
     {
-        entity_spawn(state->entity_container.entities + i, state->tiles, state->spawner_container, 0, state->entity_types, *state);
+        entity_spawn(state->entity_container.entities + i, state->tiles, state->spawner_container, 0, state->entity_types + (int)state->wave.evolution_factor, *state);
     }
 }
 

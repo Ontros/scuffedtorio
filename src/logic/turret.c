@@ -1,6 +1,6 @@
 #include "turret.h"
 
-void turret_tick(Tile *tiles, TileType *types, int updates, BulletList **bullet_list, BulletList **laser_list, FlameList **flame_list, EntityContainer entity_container, EntityType *entity_types)
+void turret_tick(Tile *tiles, TileType *types, int updates, BulletList **bullet_list, BulletList **laser_list, FlameList **flame_list, EntityContainer entity_container, EntityType *entity_types, GameState *state)
 {
     bullet_list_free(*laser_list);
     *laser_list = NULL;
@@ -46,6 +46,8 @@ void turret_tick(Tile *tiles, TileType *types, int updates, BulletList **bullet_
                         if (closest->health <= 0)
                         {
                             closest->is_dead = 1;
+                            state->entity_container.alive--;
+                            state->inventory[5].count += pow(closest->type + 1, 2);
                         }
                     }
                 }
@@ -81,6 +83,8 @@ void turret_tick(Tile *tiles, TileType *types, int updates, BulletList **bullet_
                     if (closest->health <= 0)
                     {
                         closest->is_dead = 1;
+                        state->entity_container.alive--;
+                        state->inventory[5].count += pow(closest->type + 1, 2);
                     }
                 }
                 break;
@@ -118,6 +122,8 @@ void turret_tick(Tile *tiles, TileType *types, int updates, BulletList **bullet_
                         if (closest->health <= 0)
                         {
                             closest->is_dead = 1;
+                            state->entity_container.alive--;
+                            state->inventory[5].count += pow(closest->type + 1, 2);
                         }
                     }
                 }

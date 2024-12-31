@@ -72,7 +72,7 @@ int game(SDL_Renderer *renderer, Camera *camera)
             if (updates < 60)
             {
                 // Add mined resources
-                if (!updates)
+                if (!updates && state.is_wave_running)
                 {
                     for (int i = 0; i < tX * tY; i++)
                     {
@@ -91,9 +91,10 @@ int game(SDL_Renderer *renderer, Camera *camera)
                 }
 
                 // Turret attack
-                turret_tick(tiles, types, updates, &bullet_list, &laser_list, &flame_list, state.entity_container, state.entity_types);
+                if (state.is_wave_running)
+                    turret_tick(tiles, types, updates, &bullet_list, &laser_list, &flame_list, state.entity_container, state.entity_types, &state);
 
-                if (updates % 2)
+                if (updates % 2 && state.is_wave_running)
                 {
                     // Reset occupations
                     for (int i = 0; i < tX * tY; i++)
@@ -109,7 +110,7 @@ int game(SDL_Renderer *renderer, Camera *camera)
                             // entity_container.entities[i].animation++;
                             // entity_container.entities[i].animation %= 16;
                             // Reset moving state
-                            entity_move(state.entity_container.entities + i, state.entity_types, tiles, types);
+                            entity_move(state.entity_container.entities + i, state.entity_types, tiles, types, &state);
                         }
                     }
                 }
@@ -118,6 +119,11 @@ int game(SDL_Renderer *renderer, Camera *camera)
                 {
                     missing_materials_duration--;
                 }
+            }
+
+            if (state.is_wave_running && !state.entity_container.alive)
+            {
+                state.is_wave_running = 0;
             }
 
             updates++;

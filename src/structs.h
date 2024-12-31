@@ -156,6 +156,7 @@ typedef struct EntityContainer
     Entity *entities;
     int amount;
     int spawned;
+    int alive;
 } EntityContainer;
 
 typedef struct
