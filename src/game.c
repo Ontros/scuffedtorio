@@ -21,6 +21,9 @@ int game(SDL_Renderer *renderer, Camera *camera)
     Text fps_text = text_init("./data/core/fonts/TitilliumWeb-SemiBold.ttf", 24, 50);
     InventorySlot *inventory = inventory_init(renderer);
 
+    Text missing_materials_text = text_init("./data/core/fonts/TitilliumWeb-SemiBold.ttf", 24, 100);
+    int missing_materials_duration = 0;
+
     GameState state = {
         .concrete_radius = 6,
         .concrete_upgrade_cost = 100,
@@ -238,6 +241,11 @@ int game(SDL_Renderer *renderer, Camera *camera)
                         }
                     }
                 }
+
+                if (missing_materials_duration)
+                {
+                    missing_materials_duration--;
+                }
             }
 
             updates++;
@@ -433,12 +441,30 @@ int game(SDL_Renderer *renderer, Camera *camera)
         if (keyStates.mouse_left)
         {
             // Place
-            if (mouse_tile && (type_in_hand != -1) && types[type_in_hand].cost_count && tile_place(tiles, mouse_tile, types[type_in_hand]))
+            if (mouse_tile && (type_in_hand != -1) && types[type_in_hand].cost_count)
             {
-                // Remove resources
-                for (int i = 0; i < types[type_in_hand].cost_count; i++)
+                TileType *t = types + type_in_hand;
+                char can_be_placed = 1;
+                for (int i = 0; i < t->cost_count; i++)
                 {
-                    inventory_slot_update(renderer, inventory, types[type_in_hand].costs[i].item, -types[type_in_hand].costs[i].count);
+                    if (inventory[t->costs[i].item].count < (t->costs[i].count))
+                    {
+                        if (can_be_placed)
+                            sprintf(missing_materials_text.buffer, "Missing %dx %s", t->costs[i].count - inventory[t->costs[i].item].count, inventory[t->costs[i].item].name);
+                        else
+                            sprintf(missing_materials_text.buffer, "%s, %dx %s", missing_materials_text.buffer, t->costs[i].count - inventory[t->costs[i].item].count, inventory[t->costs[i].item].name);
+                        can_be_placed = 0;
+                        text_create_with_pos(renderer, &missing_materials_text, mouse_x, mouse_y);
+                        missing_materials_duration = 180;
+                    }
+                }
+                // Remove resources
+                if (can_be_placed && tile_place(tiles, mouse_tile, types[type_in_hand]))
+                {
+                    for (int i = 0; i < t->cost_count; i++)
+                    {
+                        inventory_slot_update(renderer, inventory, t->costs[i].item, -t->costs[i].count);
+                    }
                 }
             }
         }
@@ -544,6 +570,10 @@ int game(SDL_Renderer *renderer, Camera *camera)
         text_render(renderer, fps_text);
         inventory_render(renderer, inventory);
         button_container_render(renderer, buttons, mouse_x, mouse_y);
+        if (missing_materials_duration)
+        {
+            text_render(renderer, missing_materials_text);
+        }
         SDL_RenderPresent(renderer);
     }
 
