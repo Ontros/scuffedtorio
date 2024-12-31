@@ -7,10 +7,8 @@ InventorySlot inventory_slot_create(SDL_Renderer *renderer, const char *file, co
 {
     static int id = 0;
     static int start_y = 24;
-    SDL_Texture *texture = IMG_LoadTexture(renderer, file);
-    SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
     InventorySlot slot = {
-        .texture = texture,
+        .texture = NULL,
         .rect = {0, 0, 64, 64},
         .name = SDL_strdup(name),
         .count = starting_count,
@@ -30,7 +28,7 @@ InventorySlot *inventory_init(SDL_Renderer *renderer)
     inventory[2] = inventory_slot_create(renderer, "./data/base/graphics/icons/coal.png", "Coal", 0);
     inventory[3] = inventory_slot_create(renderer, "./data/base/graphics/icons/stone.png", "Stone", 0);
     inventory[4] = inventory_slot_create(renderer, "./data/base/graphics/icons/uranium-235.png", "Uranium", 0);
-    inventory[5] = inventory_slot_create(renderer, "./data/base/graphics/icons/fluid/crude-oil.png", "Coins", 1000);
+    inventory[5] = inventory_slot_create(renderer, "./data/base/graphics/icons/fluid/crude-oil.png", "Coins", 0);
     return inventory;
 }
 
@@ -38,7 +36,7 @@ void inventory_free(InventorySlot *inventory)
 {
     for (int i = 0; i < inventory_slots; i++)
     {
-        SDL_DestroyTexture(inventory[i].texture);
+        // SDL_DestroyTexture(inventory[i].texture);
         text_free(inventory[i].text);
         free(inventory[i].name);
     }
@@ -57,7 +55,5 @@ void inventory_render(SDL_Renderer *renderer, InventorySlot *inventory)
     for (int i = 0; i < inventory_slots; i++)
     {
         text_render(renderer, inventory[i].text);
-        // TODO: add icon rendering
-        //  SDL_RenderCopy(renderer, inventory[i].texture, &inventory[i].rect, &(SDL_Rect){0, (i + 1) * TTF_FontHeight(inventory[i].text.font), 24, 24});
     }
 }

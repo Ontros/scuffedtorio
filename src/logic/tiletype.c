@@ -166,7 +166,7 @@ TileType *types_ore_init(SDL_Renderer *renderer)
     types[3] = type_create_base("Stone Ore", 1, 1);
     type_add_static_section(types + 3, renderer, "./data/base/graphics/entity/stone/stone.png", 3, 3, 1024, 1024);
     types[4] = type_create_base("Uranium Ore", 1, 1);
-    type_add_static_section(types + 4, renderer, "./data/base/graphics/entity/uranium-ore/uranium.png", 3, 3, 1024, 1024);
+    type_add_static_section(types + 4, renderer, "./data/base/graphics/entity/uranium-ore/uranium-ore.png", 3, 3, 1024, 1024);
     return types;
 }
 

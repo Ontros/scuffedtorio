@@ -58,11 +58,7 @@ static inline void render_ore(SDL_Renderer *renderer, Camera camera, Tile *tile,
 
 static inline void render_terrain(SDL_Renderer *renderer, Camera camera, Tile *tile, TileType *terrain_types, int x, int y)
 {
-    if (tile->entity_occupied)
-    {
-        return;
-    }
-    if (camera.size > 10 || tile->terrain != 0)
+    if (camera.size >= 10 || tile->terrain != 0)
     {
         TileType type = terrain_types[tile->terrain];
         SDL_RenderCopy(renderer, type.texture,
