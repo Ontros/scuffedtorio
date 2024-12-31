@@ -454,17 +454,29 @@ int game(SDL_Renderer *renderer, Camera *camera)
                         else
                             sprintf(missing_materials_text.buffer, "%s, %dx %s", missing_materials_text.buffer, t->costs[i].count - inventory[t->costs[i].item].count, inventory[t->costs[i].item].name);
                         can_be_placed = 0;
+                    }
+                }
+                if (can_be_placed)
+                {
+                    // Remove resources
+                    if (tile_place(tiles, mouse_tile, types[type_in_hand]))
+                    {
+                        for (int i = 0; i < t->cost_count; i++)
+                        {
+                            inventory_slot_update(renderer, inventory, t->costs[i].item, -t->costs[i].count);
+                        }
+                    }
+                    else
+                    {
+                        sprintf(missing_materials_text.buffer, "Not enough room");
                         text_create_with_pos(renderer, &missing_materials_text, mouse_x, mouse_y);
                         missing_materials_duration = 180;
                     }
                 }
-                // Remove resources
-                if (can_be_placed && tile_place(tiles, mouse_tile, types[type_in_hand]))
+                else
                 {
-                    for (int i = 0; i < t->cost_count; i++)
-                    {
-                        inventory_slot_update(renderer, inventory, t->costs[i].item, -t->costs[i].count);
-                    }
+                    text_create_with_pos(renderer, &missing_materials_text, mouse_x, mouse_y);
+                    missing_materials_duration = 180;
                 }
             }
         }
