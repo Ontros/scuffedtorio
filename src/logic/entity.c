@@ -202,10 +202,9 @@ EntityContainer entity_container_create(int amount)
 // All types have the same texture so we can directly acces types
 void entity_render(SDL_Renderer *renderer, Camera camera, Entity *entity, EntityType *types, SDL_Texture *fire_texture)
 {
-    EntityType *type = types + entity->type;
-    // TODO: entity culling
     if (entity->is_dead == 0)
     {
+        EntityType *type = types + entity->type;
         EntityTexture *entity_texture = (entity->animation & 0b1000000) ? types->texture_attack : types->texture_running;
         if (entity->fire_time_left)
         {

@@ -3,9 +3,7 @@ pripravit tily s placeholder texturama OK
 inventar OK
 vyresit klikani mimo herni pole 
 entity OK
-ui + logika
-zvuky
-move from mallocing everything
-free all mallocs
-renderGeometry / optimalizace terenu pro odzoomovane (replacni rectem)
-udelat si to hezky
+ui + logika OK
+free all mallocs OK
+entity size doesnt matter
+main menu

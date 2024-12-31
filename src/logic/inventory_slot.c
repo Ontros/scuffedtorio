@@ -6,7 +6,7 @@ const int inventory_slots = 6;
 InventorySlot inventory_slot_create(SDL_Renderer *renderer, const char *file, const char *name, int starting_count)
 {
     static int id = 0;
-    static int start_y = 24;
+    static int start_y = 48;
     InventorySlot slot = {
         .texture = NULL,
         .rect = {0, 0, 64, 64},

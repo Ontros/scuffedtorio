@@ -19,6 +19,7 @@ int game(SDL_Renderer *renderer, Camera *camera)
     Tile *mouse_tile = NULL;
 
     Text fps_text = text_init("./data/core/fonts/TitilliumWeb-SemiBold.ttf", 24, 50);
+    Text wave_text = text_init("./data/core/fonts/TitilliumWeb-SemiBold.ttf", 24, 50);
     InventorySlot *inventory = inventory_init(renderer);
 
     Text missing_materials_text = text_init("./data/core/fonts/TitilliumWeb-SemiBold.ttf", 24, 100);
@@ -124,6 +125,7 @@ int game(SDL_Renderer *renderer, Camera *camera)
             if (state.is_wave_running && !state.entity_container.alive)
             {
                 state.is_wave_running = 0;
+                inventory_render(renderer, inventory);
             }
 
             updates++;
@@ -134,6 +136,8 @@ int game(SDL_Renderer *renderer, Camera *camera)
             {
                 sprintf(fps_text.buffer, "FPS/UPS: %d/%d", frames, updates);
                 text_create_with_pos(renderer, &fps_text, 0, 0);
+                sprintf(wave_text.buffer, "Wave: %d, Alive: %d", state.wave_current, state.entity_container.alive);
+                text_create_with_pos(renderer, &wave_text, 0, 24);
                 frames = 0;
                 NEXT_SECOND_TIME += SECOND_TIME;
             }
@@ -255,6 +259,7 @@ int game(SDL_Renderer *renderer, Camera *camera)
         }
 
         text_render(renderer, fps_text);
+        text_render(renderer, wave_text);
         inventory_render(renderer, inventory);
         if (state.is_wave_running == 0)
             button_container_render(renderer, buttons, mouse_x, mouse_y);
@@ -267,6 +272,7 @@ int game(SDL_Renderer *renderer, Camera *camera)
 
     tile_free(tiles);
     text_free(fps_text);
+    text_free(wave_text);
 
     type_free(types, type_amount);
     type_free(ore_types, ore_amount);
