@@ -109,7 +109,7 @@ typedef struct
 typedef struct Wave
 {
     int enemies_count;
-    float evolution_factor;
+    int evolution_factor;
     int spawner_count;
 } Wave;
 
