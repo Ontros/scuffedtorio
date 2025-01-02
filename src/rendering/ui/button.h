@@ -17,6 +17,9 @@ char button_container_click(SDL_Renderer *renderer, GameState *state, ButtonCont
 
 void button_container_render(SDL_Renderer *renderer, ButtonContainer container, int mouse_x, int mouse_y);
 
-ButtonContainer button_container_in_game_create(SDL_Renderer *renderer, GameState state);
+ButtonContainer button_container_in_game_create(SDL_Renderer *renderer);
+ButtonContainer button_container_menu_create(SDL_Renderer *renderer);
+
+void button_container_center(ButtonContainer container, int width);
 
 void button_container_free(ButtonContainer container);

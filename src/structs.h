@@ -113,6 +113,14 @@ typedef struct Wave
     int spawner_count;
 } Wave;
 
+typedef struct MenuState
+{
+    // 0 - towerdef, 1 - infinite
+    int mode;
+    int wave_build;
+    int game_running;
+} MenuState;
+
 typedef struct
 {
     SDL_Texture *texture[4];

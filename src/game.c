@@ -44,7 +44,7 @@ int game(SDL_Renderer *renderer, Camera *camera)
     uint64_t SECOND_TIME = SDL_GetPerformanceFrequency();
     uint64_t NEXT_SECOND_TIME = SDL_GetPerformanceCounter() + SECOND_TIME;
 
-    ButtonContainer buttons = button_container_in_game_create(renderer, state);
+    ButtonContainer buttons = button_container_in_game_create(renderer);
 
     state.spawner_container = spawner_spawn(tiles, state, types[5]);
     state.entity_container = entity_container_create(state.wave.enemies_count);

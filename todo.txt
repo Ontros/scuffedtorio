@@ -7,3 +7,4 @@ ui + logika OK
 free all mallocs OK
 entity size doesnt matter
 main menu
+text_free font causes seg fault

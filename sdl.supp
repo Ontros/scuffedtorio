@@ -621,3 +621,10 @@
    fun:game
    fun:main
 }
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Cond
+   obj:/usr/lib/x86_64-linux-gnu/libSDL2_ttf-2.0.so.0.18.0
+   fun:text_create
+   ...
+}

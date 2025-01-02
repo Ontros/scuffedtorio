@@ -90,7 +90,7 @@ void button_container_render(SDL_Renderer *renderer, ButtonContainer container, 
     }
 }
 
-ButtonContainer button_container_in_game_create(SDL_Renderer *renderer, GameState state)
+ButtonContainer button_container_in_game_create(SDL_Renderer *renderer)
 {
     int button_count = 2;
     ButtonContainer buttons = (ButtonContainer){
@@ -99,6 +99,70 @@ ButtonContainer button_container_in_game_create(SDL_Renderer *renderer, GameStat
     buttons.buttons[0] = button_init(renderer, "Expand concrete (100 coins)", 24, (SDL_Rect){200, 0, 350, 50}, button_expand_concrete_click);
     buttons.buttons[1] = button_init(renderer, "Start Wave", 24, (SDL_Rect){600, 0, 150, 50}, button_next_wave_click);
     return buttons;
+}
+
+void button_switch_mode(void *v0, void *v1, void *v2)
+{
+    Button *button = (Button *)v0;
+    MenuState *state = (MenuState *)v1;
+    SDL_Renderer *renderer = (SDL_Renderer *)v2;
+    if (state->mode == 0)
+    {
+        state->mode = 1;
+        sprintf(button->text.buffer, "Mode: Infinite");
+    }
+    else
+    {
+        state->mode = 0;
+        sprintf(button->text.buffer, "Mode: 3 waves");
+    }
+    text_create(renderer, &button->text);
+}
+
+void button_switch_wave_build(void *v0, void *v1, void *v2)
+{
+    Button *button = (Button *)v0;
+    MenuState *state = (MenuState *)v1;
+    SDL_Renderer *renderer = (SDL_Renderer *)v2;
+    if (state->wave_build == 0)
+    {
+        state->wave_build = 1;
+        sprintf(button->text.buffer, "Building mid wave: ON");
+    }
+    else
+    {
+        state->wave_build = 0;
+        sprintf(button->text.buffer, "Building mid wave: OFF");
+    }
+    text_create(renderer, &button->text);
+}
+
+void button_start_game(void *v0, void *v1, void *v2)
+{
+    MenuState *state = (MenuState *)v1;
+    state->game_running = 1;
+}
+
+ButtonContainer button_container_menu_create(SDL_Renderer *renderer)
+{
+    int button_count = 3;
+    ButtonContainer buttons = (ButtonContainer){
+        .buttons = (Button *)(malloc(sizeof(Button) * button_count)),
+        .count = button_count};
+    buttons.buttons[0] = button_init(renderer, "Mode: 3 waves", 24, (SDL_Rect){0, 200, 300, 50}, button_switch_mode);
+    buttons.buttons[1] = button_init(renderer, "Building mid wave: ON", 24, (SDL_Rect){0, 275, 300, 50}, button_switch_wave_build);
+    buttons.buttons[2] = button_init(renderer, "Start game", 24, (SDL_Rect){0, 350, 300, 50}, button_start_game);
+    return buttons;
+}
+
+void button_container_center(ButtonContainer container, int width)
+{
+    for (int i = 0; i < container.count; i++)
+    {
+        Button *button = container.buttons + i;
+        button->rect.x = (width - button->rect.w) / 2;
+        button->text.rect.x = button->rect.x + 10;
+    }
 }
 
 void button_container_free(ButtonContainer container)
