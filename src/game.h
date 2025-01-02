@@ -14,4 +14,4 @@
 #include "logic/score.h"
 #include "game.c"
 
-int game(Camera *camera, MenuState menu_state);
+GameResult game(Camera *camera, MenuState menu_state);

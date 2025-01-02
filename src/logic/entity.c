@@ -229,7 +229,7 @@ void entity_render(SDL_Renderer *renderer, Camera camera, Entity *entity, Entity
     }
 }
 
-void entity_move(Entity *entity, EntityType *types, Tile *tiles, TileType *tile_types, GameState *state)
+void entity_move(Entity *entity, EntityType *types, Tile *tiles, TileType *tile_types, GameState *state, int *score)
 {
     if (entity->fire_time_left)
     {
@@ -240,6 +240,7 @@ void entity_move(Entity *entity, EntityType *types, Tile *tiles, TileType *tile_
             entity->is_dead = 1;
             state->entity_container.alive--;
             state->inventory[5].count += pow(entity->type + 1, 2);
+            (*score) += pow(entity->type + 1, 2);
             return;
         }
     }

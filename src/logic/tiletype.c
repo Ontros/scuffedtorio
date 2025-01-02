@@ -143,7 +143,7 @@ TileType *types_init(SDL_Renderer *renderer)
     types[2].turret_radius = 24.0f;
     types[3] = type_create_base("Laser turret", 2, 2, 0);
     type_add_animation(types + 3, renderer, "./data/base/graphics/entity/laser-turret/laser-turret-shooting.png", 3, 3, 1008, 960);
-    type_add_costs(types + 3, 4, (Tile_Cost[]){{0, 162}, {1, 162}, {2, 81}, {5, 5}});
+    type_add_costs(types + 3, 4, (Tile_Cost[]){{0, 162}, {1, 162}, {4, 81}, {5, 5}});
     types[3].animation_modulo = 1;
     types[3].turret_radius = 16.0f;
     types[4] = type_create_base("Rocket silo", 9, 9, 0);
@@ -152,7 +152,7 @@ TileType *types_init(SDL_Renderer *renderer)
     type_add_full_texture(types + 5, renderer, "./data/base/graphics/entity/spawner/spawner-idle.png");
     types[6] = type_create_base("Flamethrower", 2, 2, 0);
     type_add_animation(types + 6, renderer, "data/base/graphics/entity/flamethrower-turret/flamethrower-turret-gun.png", 3, 3, 1264, 1024);
-    type_add_costs(types + 6, 4, (Tile_Cost[]){{0, 162}, {1, 162}, {4, 81}, {5, 5}});
+    type_add_costs(types + 6, 4, (Tile_Cost[]){{0, 162}, {1, 162}, {2, 81}, {5, 5}});
     types[6].animation_modulo = 1;
     types[6].turret_radius = 24.0f;
     return types;

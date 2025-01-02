@@ -241,3 +241,9 @@ typedef struct ScoreContainer
     Text *texts;
     int amount;
 } ScoreContainer;
+
+typedef struct GameResult
+{
+    int won;
+    int score;
+} GameResult;

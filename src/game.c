@@ -1,15 +1,16 @@
 #include "game.h"
 
-int game(Camera *camera, MenuState menu_state)
+GameResult game(Camera *camera, MenuState menu_state)
 {
     srand(69420);
     SDL_Window *window = NULL;
     SDL_Renderer *renderer = NULL;
     if (sdl_init_mid_game(*camera, &window, &renderer))
     {
-        return -1;
+        return (GameResult){.score = -1, .won = 0};
     }
     int score = 0;
+    int won = 0;
     TileType *types = types_init(renderer);
     Tile *tiles = tiles_malloc(types);
     TileType *ore_types = types_ore_init(renderer);
@@ -26,7 +27,7 @@ int game(Camera *camera, MenuState menu_state)
     Tile *mouse_tile = NULL;
 
     Text fps_text = text_init("./data/core/fonts/TitilliumWeb-SemiBold.ttf", 24, 50);
-    Text wave_text = text_init("./data/core/fonts/TitilliumWeb-SemiBold.ttf", 24, 50);
+    Text wave_text = text_init("./data/core/fonts/TitilliumWeb-SemiBold.ttf", 24, 100);
     InventorySlot *inventory = inventory_init(renderer);
 
     Text missing_materials_text = text_init("./data/core/fonts/TitilliumWeb-SemiBold.ttf", 24, 100);
@@ -100,7 +101,7 @@ int game(Camera *camera, MenuState menu_state)
 
                 // Turret attack
                 if (state.is_wave_running)
-                    turret_tick(tiles, types, updates, &bullet_list, &laser_list, &flame_list, state.entity_container, state.entity_types, &state);
+                    turret_tick(tiles, types, updates, &bullet_list, &laser_list, &flame_list, state.entity_container, state.entity_types, &state, &score);
 
                 if (updates % 2 && state.is_wave_running)
                 {
@@ -118,7 +119,7 @@ int game(Camera *camera, MenuState menu_state)
                             // entity_container.entities[i].animation++;
                             // entity_container.entities[i].animation %= 16;
                             // Reset moving state
-                            entity_move(state.entity_container.entities + i, state.entity_types, tiles, types, &state);
+                            entity_move(state.entity_container.entities + i, state.entity_types, tiles, types, &state, &score);
                         }
                     }
                 }
@@ -143,7 +144,7 @@ int game(Camera *camera, MenuState menu_state)
             {
                 sprintf(fps_text.buffer, "FPS/UPS: %d/%d", frames, updates);
                 text_create_with_pos(renderer, &fps_text, 0, 0);
-                sprintf(wave_text.buffer, "Wave: %d, Alive: %d", state.wave_current, state.entity_container.alive);
+                sprintf(wave_text.buffer, "Wave: %d, Alive: %d, Score: %d", state.wave_current, state.entity_container.alive, score);
                 text_create_with_pos(renderer, &wave_text, 0, 24);
                 frames = 0;
                 NEXT_SECOND_TIME += SECOND_TIME;
@@ -157,6 +158,12 @@ int game(Camera *camera, MenuState menu_state)
         // Did game end?
         if (rocket_tile->type == -1)
         {
+            running = 0;
+            break;
+        }
+        else if (!state.is_infinite && state.wave_current == 3)
+        {
+            won = 1;
             running = 0;
             break;
         }
@@ -303,5 +310,5 @@ int game(Camera *camera, MenuState menu_state)
     inventory_free(inventory);
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
-    return score;
+    return (GameResult){.score = score, .won = won};
 }

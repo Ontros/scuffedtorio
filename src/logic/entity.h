@@ -13,7 +13,7 @@ EntityContainer entity_container_create(int amount);
 
 void entity_render(SDL_Renderer *renderer, Camera camera, Entity *entity, EntityType *types, SDL_Texture *fire_texture);
 
-void entity_move(Entity *entity, EntityType *types, Tile *tiles, TileType *tile_types, GameState *state);
+void entity_move(Entity *entity, EntityType *types, Tile *tiles, TileType *tile_types, GameState *state, int *score);
 
 void entity_type_free(EntityType *types);
 

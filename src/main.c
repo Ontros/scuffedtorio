@@ -31,6 +31,9 @@ int main(int argc, char *argv[])
     SDL_SetTextureBlendMode(background, SDL_BLENDMODE_BLEND);
     ButtonContainer container = button_container_menu_create(renderer);
     button_container_center(container, camera.width);
+    Text result_text = text_init("./data/core/fonts/TitilliumWeb-SemiBold.ttf", 48, 50);
+    sprintf(result_text.buffer, " ");
+    text_create_with_pos(renderer, &result_text, 0, 450);
     int mouse_x, mouse_y;
 
     ScoreContainer score_container = score_load(renderer);
@@ -41,7 +44,22 @@ int main(int argc, char *argv[])
         {
             // Game creates a new window to avoid a memory leak from not destroying renderer
             SDL_HideWindow(window);
-            game(&camera, state);
+            GameResult result = game(&camera, state);
+            if (result.won)
+            {
+                sprintf(result_text.buffer, "You won, score: %d", result.score);
+            }
+            else
+            {
+                sprintf(result_text.buffer, "You lost, score: %d", result.score);
+            }
+            text_create_with_pos(renderer, &result_text, (camera.width - 300) / 2, 450);
+            if (result.score >= 0)
+            {
+                printf("Writing score: %d\n", result.score);
+                score_save(score_container, result.score);
+                score_container = score_load(renderer);
+            }
             SDL_ShowWindow(window);
             state.game_running = 0;
         }
@@ -82,6 +100,7 @@ int main(int argc, char *argv[])
             SDL_RenderClear(renderer);
             SDL_RenderCopy(renderer, background, NULL, &(SDL_Rect){0, 0, camera.width, camera.height});
             score_render(renderer, score_container);
+            text_render(renderer, result_text);
             SDL_RenderCopy(renderer, scufftorio_logo, NULL, &(SDL_Rect){(camera.width - 972) / 2, 0, 972, 133});
             button_container_render(renderer, container, mouse_x, mouse_y);
             SDL_RenderPresent(renderer);
@@ -89,6 +108,8 @@ int main(int argc, char *argv[])
         }
     }
 
+    text_free(result_text);
+    score_free(score_container);
     SDL_DestroyTexture(scufftorio_logo);
     button_container_free(container);
     SDL_DestroyRenderer(renderer);
