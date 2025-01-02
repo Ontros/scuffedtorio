@@ -149,7 +149,7 @@ TileType *types_init(SDL_Renderer *renderer)
     types[4] = type_create_base("Rocket silo", 9, 9, 0);
     type_add_full_texture(types + 4, renderer, "./data/base/graphics/entity/rocket-silo/06-rocket-silo.png");
     types[5] = type_create_base("Biter spawner", 5, 5, 0);
-    type_add_static_section(types + 5, renderer, "./data/base/graphics/entity/spawner/spawner-idle.png", 2, 3, 2080, 3008);
+    type_add_full_texture(types + 5, renderer, "./data/base/graphics/entity/spawner/spawner-idle.png");
     types[6] = type_create_base("Flamethrower", 2, 2, 0);
     type_add_animation(types + 6, renderer, "data/base/graphics/entity/flamethrower-turret/flamethrower-turret-gun.png", 3, 3, 1264, 1024);
     type_add_costs(types + 6, 2, (Tile_Cost[]){{0, 10}, {1, 10}});
@@ -162,15 +162,15 @@ TileType *types_ore_init(SDL_Renderer *renderer)
 {
     TileType *types = malloc(sizeof(TileType) * ore_amount);
     types[0] = type_create_base("Iron Ore", 1, 1, 1);
-    type_add_static_section(types, renderer, "./data/base/graphics/entity/iron-ore/iron-ore.png", 3, 3, 1024, 1024);
+    type_add_full_texture(types, renderer, "./data/base/graphics/entity/iron-ore/iron-ore.png");
     types[1] = type_create_base("Copper Ore", 1, 1, 0);
-    type_add_static_section(types + 1, renderer, "./data/base/graphics/entity/copper-ore/copper-ore.png", 3, 3, 1024, 1024);
+    type_add_full_texture(types + 1, renderer, "./data/base/graphics/entity/copper-ore/copper-ore.png");
     types[2] = type_create_base("Coal Ore", 1, 1, 0);
-    type_add_static_section(types + 2, renderer, "./data/base/graphics/entity/coal/coal.png", 3, 3, 1024, 1024);
+    type_add_full_texture(types + 2, renderer, "./data/base/graphics/entity/coal/coal.png");
     types[3] = type_create_base("Stone Ore", 1, 1, 0);
-    type_add_static_section(types + 3, renderer, "./data/base/graphics/entity/stone/stone.png", 3, 3, 1024, 1024);
+    type_add_full_texture(types + 3, renderer, "./data/base/graphics/entity/stone/stone.png");
     types[4] = type_create_base("Uranium Ore", 1, 1, 0);
-    type_add_static_section(types + 4, renderer, "./data/base/graphics/entity/uranium-ore/uranium-ore.png", 3, 3, 1024, 1024);
+    type_add_full_texture(types + 4, renderer, "./data/base/graphics/entity/uranium-ore/uranium-ore.png");
     return types;
 }
 

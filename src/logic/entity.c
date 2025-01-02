@@ -78,8 +78,8 @@ EntityTexture *entity_texture_create_run(SDL_Renderer *renderer)
     output->texture[2] = texture_load(renderer, "./data/base/graphics/entity/biter/biter-run-3.png");
     output->texture[3] = texture_load(renderer, "./data/base/graphics/entity/biter/biter-run-4.png");
     output->animation_rects = (SDL_Rect *)(malloc(sizeof(SDL_Rect) * 16));
-    const int tile_w = 398;
-    const int tile_h = 310;
+    const int tile_w = 398 / 2;
+    const int tile_h = 310 / 2;
     for (int i = 0; i < 8; i++)
     {
         output->animation_rects[i] = (SDL_Rect){tile_w * i, 0, tile_w, tile_h};
@@ -98,8 +98,8 @@ EntityTexture *entity_texture_create_attack(SDL_Renderer *renderer)
     output->texture[2] = texture_load(renderer, "./data/base/graphics/entity/biter/biter-attack-3.png");
     output->texture[3] = texture_load(renderer, "./data/base/graphics/entity/biter/biter-attack-4.png");
     output->animation_rects = (SDL_Rect *)(malloc(sizeof(SDL_Rect) * 12));
-    const int tile_w = 356;
-    const int tile_h = 348;
+    const int tile_w = 356 / 2;
+    const int tile_h = 348 / 2;
     for (int i = 0; i < 12; i++)
     {
         output->animation_rects[i] = (SDL_Rect){tile_w * i, 0, tile_w, tile_h};
