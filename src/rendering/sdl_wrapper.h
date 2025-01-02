@@ -6,3 +6,4 @@
 #include "sdl_wrapper.c"
 
 int sdl_init(Camera camera, SDL_Window **window, SDL_Renderer **renderer);
+int sdl_init_mid_game(Camera camera, SDL_Window **window, SDL_Renderer **renderer);

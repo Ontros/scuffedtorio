@@ -13,4 +13,4 @@
 #include "logic/turret.h"
 #include "game.c"
 
-int game(SDL_Renderer *renderer, Camera *camera);
+int game(Camera *camera);

@@ -1,7 +1,14 @@
 #include "game.h"
 
-int game(SDL_Renderer *renderer, Camera *camera)
+int game(Camera *camera)
 {
+    srand(69420);
+    SDL_Window *window = NULL;
+    SDL_Renderer *renderer = NULL;
+    if (sdl_init_mid_game(*camera, &window, &renderer))
+    {
+        return -1;
+    }
     int score = 0;
     TileType *types = types_init(renderer);
     Tile *tiles = tiles_malloc(types);
@@ -176,6 +183,10 @@ int game(SDL_Renderer *renderer, Camera *camera)
 
         // Events
         input_handler(&keyStates, &running, &type_in_hand, mouse_tile, camera, deltaTime, inventory, renderer, &state, buttons, mouse_x, mouse_y, tiles, types, &missing_materials_text, &missing_materials_duration);
+        if (!running)
+        {
+            break;
+        }
 
         // Background
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
@@ -290,4 +301,7 @@ int game(SDL_Renderer *renderer, Camera *camera)
     flame_list_free(flame_list);
 
     inventory_free(inventory);
+    SDL_DestroyRenderer(renderer);
+    SDL_DestroyWindow(window);
+    return score;
 }

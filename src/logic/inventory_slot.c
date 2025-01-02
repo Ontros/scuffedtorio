@@ -3,16 +3,19 @@
 #include "../rendering/ui/text.h"
 const int inventory_slots = 6;
 
-InventorySlot inventory_slot_create(SDL_Renderer *renderer, const char *file, const char *name, int starting_count)
+InventorySlot inventory_slot_create(SDL_Renderer *renderer, const char *file, const char *name, int starting_count, int id)
 {
-    static int id = 0;
     static int start_y = 48;
+    if (id == 0)
+    {
+        start_y = 48;
+    }
     InventorySlot slot = {
         .texture = NULL,
         .rect = {0, 0, 64, 64},
         .name = SDL_strdup(name),
         .count = starting_count,
-        .id = id++};
+        .id = id};
     slot.text = text_init("./data/core/fonts/TitilliumWeb-SemiBold.ttf", 24, 50);
     sprintf(slot.text.buffer, "%s: %d", slot.name, slot.count);
     text_create_with_pos(renderer, &slot.text, 0, start_y);
@@ -23,12 +26,12 @@ InventorySlot inventory_slot_create(SDL_Renderer *renderer, const char *file, co
 InventorySlot *inventory_init(SDL_Renderer *renderer)
 {
     InventorySlot *inventory = (InventorySlot *)(malloc(sizeof(InventorySlot) * inventory_slots));
-    inventory[0] = inventory_slot_create(renderer, "./data/base/graphics/icons/iron-plate.png", "Iron", 20);
-    inventory[1] = inventory_slot_create(renderer, "./data/base/graphics/icons/copper-plate.png", "Copper", 20);
-    inventory[2] = inventory_slot_create(renderer, "./data/base/graphics/icons/coal.png", "Coal", 0);
-    inventory[3] = inventory_slot_create(renderer, "./data/base/graphics/icons/stone.png", "Stone", 0);
-    inventory[4] = inventory_slot_create(renderer, "./data/base/graphics/icons/uranium-235.png", "Uranium", 0);
-    inventory[5] = inventory_slot_create(renderer, "./data/base/graphics/icons/fluid/crude-oil.png", "Coins", 0);
+    inventory[0] = inventory_slot_create(renderer, "./data/base/graphics/icons/iron-plate.png", "Iron", 20, 0);
+    inventory[1] = inventory_slot_create(renderer, "./data/base/graphics/icons/copper-plate.png", "Copper", 20, 1);
+    inventory[2] = inventory_slot_create(renderer, "./data/base/graphics/icons/coal.png", "Coal", 0, 2);
+    inventory[3] = inventory_slot_create(renderer, "./data/base/graphics/icons/stone.png", "Stone", 0, 3);
+    inventory[4] = inventory_slot_create(renderer, "./data/base/graphics/icons/uranium-235.png", "Uranium", 0, 4);
+    inventory[5] = inventory_slot_create(renderer, "./data/base/graphics/icons/fluid/crude-oil.png", "Coins", 0, 5);
     return inventory;
 }
 

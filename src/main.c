@@ -1,4 +1,5 @@
 #include "game.h"
+#include "SDL2/SDL_video.h"
 
 int main(int argc, char *argv[])
 {
@@ -30,21 +31,16 @@ int main(int argc, char *argv[])
     SDL_SetTextureBlendMode(background, SDL_BLENDMODE_BLEND);
     ButtonContainer container = button_container_menu_create(renderer);
     button_container_center(container, camera.width);
-    srand(69420);
     int mouse_x, mouse_y;
 
     while (running)
     {
         if (state.game_running == 1)
         {
-            game(renderer, &camera);
-            // To avoid a memory leak
-            SDL_DestroyRenderer(renderer);
-            SDL_DestroyWindow(window);
-            if (sdl_init(camera, &window, &renderer))
-            {
-                return 1;
-            }
+            // Game creates a new window to avoid a memory leak from not destroying renderer
+            SDL_HideWindow(window);
+            game(&camera);
+            SDL_ShowWindow(window);
             state.game_running = 0;
         }
         else

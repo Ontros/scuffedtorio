@@ -9,7 +9,9 @@ void input_handler(KeyStates *keyStates, int *running, int *type_in_hand, Tile *
     {
         if (event.type == SDL_QUIT)
         {
+            printf("Exit game\n");
             *running = 0;
+            return;
         }
         else if (event.type == SDL_KEYDOWN)
         {
@@ -124,7 +126,13 @@ void input_handler(KeyStates *keyStates, int *running, int *type_in_hand, Tile *
         }
         else if (event.type == SDL_WINDOWEVENT)
         {
-            if (event.window.type == SDL_WINDOWEVENT_SIZE_CHANGED || event.window.event == SDL_WINDOWEVENT_RESIZED)
+            if (event.window.event == SDL_WINDOWEVENT_CLOSE)
+            {
+                printf("Exit game\n");
+                *running = 0;
+                return;
+            }
+            else if (event.window.type == SDL_WINDOWEVENT_SIZE_CHANGED || event.window.event == SDL_WINDOWEVENT_RESIZED)
             {
                 camera->width = event.window.data1;
                 camera->height = event.window.data2;

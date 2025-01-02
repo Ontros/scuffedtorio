@@ -8,7 +8,10 @@
         "string.h": "c",
         "camera.h": "c",
         "tile.h": "c",
-        "entity.h": "c"
+        "entity.h": "c",
+        "game.h": "c",
+        "turret.h": "c",
+        "button.h": "c"
     },
     "C_Cpp.default.configurationProvider": "ms-vscode.makefile-tools"
 }
