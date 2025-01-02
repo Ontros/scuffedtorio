@@ -31,8 +31,9 @@ void turret_tick(Tile *tiles, TileType *types, int updates, BulletList **bullet_
                             }
                         }
                     }
-                    if (closest)
+                    if (closest && state->inventory[0].count)
                     {
+                        state->inventory[0].count--;
                         closest->health -= 1.0f;
                         tiles[i].flags = (unsigned char)(atan2c((float)tiles[i].y - closest->y, closest->x - (float)tiles[i].x) * 128);
                         // Put new line at start
@@ -68,9 +69,10 @@ void turret_tick(Tile *tiles, TileType *types, int updates, BulletList **bullet_
                         }
                     }
                 }
-                if (closest)
+                if (closest && state->inventory[4].count)
                 {
                     closest->health -= 1.0f;
+                    state->inventory[4].count--;
                     tiles[i].flags = (unsigned char)(atan2c((float)tiles[i].y - closest->y, closest->x - (float)tiles[i].x) * 64);
                     // Put new line at start
                     BulletList *new_list = (BulletList *)(malloc(sizeof(BulletList)));
@@ -106,9 +108,10 @@ void turret_tick(Tile *tiles, TileType *types, int updates, BulletList **bullet_
                             }
                         }
                     }
-                    if (closest)
+                    if (closest && state->inventory[2].count)
                     {
                         closest->health -= 1.0f;
+                        state->inventory[2].count--;
                         tiles[i].flags = (unsigned char)(atan2c(((float)tiles[i].y - closest->y), -(closest->x - (float)tiles[i].x)) * 64);
                         // Put new line at start
                         FlameList *new_list = (FlameList *)(malloc(sizeof(FlameList)));

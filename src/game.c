@@ -34,7 +34,7 @@ int game(Camera *camera, MenuState menu_state)
 
     GameState state = {
         .concrete_radius = 6,
-        .concrete_upgrade_cost = 100,
+        .concrete_upgrade_cost = 10,
         .inventory = inventory,
         .tiles = tiles,
         .types = types,

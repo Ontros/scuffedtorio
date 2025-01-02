@@ -26,8 +26,8 @@ InventorySlot inventory_slot_create(SDL_Renderer *renderer, const char *file, co
 InventorySlot *inventory_init(SDL_Renderer *renderer)
 {
     InventorySlot *inventory = (InventorySlot *)(malloc(sizeof(InventorySlot) * inventory_slots));
-    inventory[0] = inventory_slot_create(renderer, "./data/base/graphics/icons/iron-plate.png", "Iron", 20, 0);
-    inventory[1] = inventory_slot_create(renderer, "./data/base/graphics/icons/copper-plate.png", "Copper", 20, 1);
+    inventory[0] = inventory_slot_create(renderer, "./data/base/graphics/icons/iron-plate.png", "Iron", 243, 0);
+    inventory[1] = inventory_slot_create(renderer, "./data/base/graphics/icons/copper-plate.png", "Copper", 243, 1);
     inventory[2] = inventory_slot_create(renderer, "./data/base/graphics/icons/coal.png", "Coal", 0, 2);
     inventory[3] = inventory_slot_create(renderer, "./data/base/graphics/icons/stone.png", "Stone", 0, 3);
     inventory[4] = inventory_slot_create(renderer, "./data/base/graphics/icons/uranium-235.png", "Uranium", 0, 4);
