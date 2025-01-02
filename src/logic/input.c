@@ -1,5 +1,10 @@
 #include "input.h"
 
+char can_build(GameState *game_state)
+{
+    return (!game_state->is_wave_running) || game_state->can_build_mid_wave;
+}
+
 void input_handler(KeyStates *keyStates, int *running, int *type_in_hand, Tile *mouse_tile, Camera *camera, double deltaTime,
                    InventorySlot *inventory, SDL_Renderer *renderer, GameState *state, ButtonContainer buttons, int mouse_x, int mouse_y,
                    Tile *tiles, TileType *types, Text *missing_materials_text, int *missing_materials_duration)
@@ -159,7 +164,7 @@ void input_handler(KeyStates *keyStates, int *running, int *type_in_hand, Tile *
     if (keyStates->mouse_left)
     {
         // Place
-        if (mouse_tile && (*type_in_hand != -1) && types[*type_in_hand].cost_count)
+        if (can_build(state) && mouse_tile && (*type_in_hand != -1) && types[*type_in_hand].cost_count)
         {
             TileType *t = types + (*type_in_hand);
             char can_be_placed = 1;
@@ -196,7 +201,7 @@ void input_handler(KeyStates *keyStates, int *running, int *type_in_hand, Tile *
     {
         // Remove
         Tile tile = tiles[get_mouse_id(mouse_x, mouse_y, *camera, -1, types)];
-        if (mouse_tile && tile.base_tile && (tile.base_tile->type != -1) && types[tile.base_tile->type].cost_count)
+        if (can_build(state) && mouse_tile && tile.base_tile && (tile.base_tile->type != -1) && types[tile.base_tile->type].cost_count)
         {
             TileType *destroyed_type = tile_destroy(tiles, tile.base_tile, types);
             // Add resources

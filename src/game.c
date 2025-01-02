@@ -1,6 +1,6 @@
 #include "game.h"
 
-int game(Camera *camera)
+int game(Camera *camera, MenuState menu_state)
 {
     srand(69420);
     SDL_Window *window = NULL;
@@ -38,8 +38,8 @@ int game(Camera *camera)
         .inventory = inventory,
         .tiles = tiles,
         .types = types,
-        .is_infinite = 0,
-        .can_build_mid_wave = 0,
+        .is_infinite = menu_state.mode,
+        .can_build_mid_wave = menu_state.wave_build,
         .wave_current = 0,
         .entity_types = entity_types_init(renderer),
         .is_wave_running = 0,

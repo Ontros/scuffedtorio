@@ -39,7 +39,7 @@ int main(int argc, char *argv[])
         {
             // Game creates a new window to avoid a memory leak from not destroying renderer
             SDL_HideWindow(window);
-            game(&camera);
+            game(&camera, state);
             SDL_ShowWindow(window);
             state.game_running = 0;
         }

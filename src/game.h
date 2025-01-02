@@ -13,4 +13,4 @@
 #include "logic/turret.h"
 #include "game.c"
 
-int game(Camera *camera);
+int game(Camera *camera, MenuState menu_state);
