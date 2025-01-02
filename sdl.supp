@@ -628,3 +628,46 @@
    fun:text_create
    ...
 }
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Cond
+   fun:_IO_str_init_static_internal
+   fun:__vsprintf_internal
+   fun:sprintf
+   fun:score_load
+   fun:main
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Cond
+   ...
+   fun:sprintf
+   fun:score_load
+   fun:main
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Value8
+   fun:_IO_str_overflow
+   fun:_IO_default_xsputn
+   fun:_IO_default_xsputn
+   fun:outstring_func
+   fun:__vfprintf_internal
+   fun:__vsprintf_internal
+   fun:sprintf
+   fun:score_load
+   fun:main
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Addr1
+   fun:_IO_str_overflow
+   fun:_IO_default_xsputn
+   fun:_IO_default_xsputn
+   fun:outstring_func
+   fun:__vfprintf_internal
+   fun:__vsprintf_internal
+   fun:sprintf
+   fun:score_load
+   fun:main
+}

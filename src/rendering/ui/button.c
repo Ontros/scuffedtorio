@@ -96,7 +96,7 @@ ButtonContainer button_container_in_game_create(SDL_Renderer *renderer)
     ButtonContainer buttons = (ButtonContainer){
         .buttons = (Button *)(malloc(sizeof(Button) * button_count)),
         .count = button_count};
-    buttons.buttons[0] = button_init(renderer, "Expand concrete (100 coins)", 24, (SDL_Rect){200, 0, 350, 50}, button_expand_concrete_click);
+    buttons.buttons[0] = button_init(renderer, "Expand concrete (10 coins)", 24, (SDL_Rect){200, 0, 350, 50}, button_expand_concrete_click);
     buttons.buttons[1] = button_init(renderer, "Start Wave", 24, (SDL_Rect){600, 0, 150, 50}, button_next_wave_click);
     return buttons;
 }

@@ -11,6 +11,7 @@
 #include "logic/linked_list.h"
 #include "logic/input.h"
 #include "logic/turret.h"
+#include "logic/score.h"
 #include "game.c"
 
 int game(Camera *camera, MenuState menu_state);

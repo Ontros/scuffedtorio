@@ -33,6 +33,8 @@ int main(int argc, char *argv[])
     button_container_center(container, camera.width);
     int mouse_x, mouse_y;
 
+    ScoreContainer score_container = score_load(renderer);
+
     while (running)
     {
         if (state.game_running == 1)
@@ -79,6 +81,7 @@ int main(int argc, char *argv[])
             SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
             SDL_RenderClear(renderer);
             SDL_RenderCopy(renderer, background, NULL, &(SDL_Rect){0, 0, camera.width, camera.height});
+            score_render(renderer, score_container);
             SDL_RenderCopy(renderer, scufftorio_logo, NULL, &(SDL_Rect){(camera.width - 972) / 2, 0, 972, 133});
             button_container_render(renderer, container, mouse_x, mouse_y);
             SDL_RenderPresent(renderer);

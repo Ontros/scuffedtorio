@@ -92,9 +92,9 @@ void input_handler(KeyStates *keyStates, int *running, int *type_in_hand, Tile *
         else if (event.type == SDL_MOUSEWHEEL)
         {
             camera->size += (float)event.wheel.y * (camera->scroll_factor);
-            if (camera->size < 1)
+            if (camera->size < 5)
             {
-                camera->size = 1;
+                camera->size = 5;
             }
         }
         else if (event.type == SDL_MOUSEBUTTONDOWN)

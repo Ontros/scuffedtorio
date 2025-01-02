@@ -228,3 +228,16 @@ typedef struct ButtonContainer
     Button *buttons;
     int count;
 } ButtonContainer;
+
+typedef struct HighScore
+{
+    int pokus;
+    int score;
+} HighScore;
+
+typedef struct ScoreContainer
+{
+    HighScore *scores;
+    Text *texts;
+    int amount;
+} ScoreContainer;
