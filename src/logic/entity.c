@@ -544,10 +544,22 @@ void entity_move(Entity *entity, EntityType *types, Tile *tiles, TileType *tile_
     }
 }
 
+void entity_texture_free(EntityTexture *texture)
+{
+    free(texture->animation_rects);
+    for (int i = 0; i < 4; i++)
+    {
+        SDL_DestroyTexture(texture->texture[i]);
+    }
+    free(texture->texture);
+}
+
 void entity_type_free(EntityType *types)
 {
-    free(types->texture_attack);
-    free(types->texture_running);
+    printf("Entity start\n");
+    // entity_texture_free(types->texture_attack);
+    // entity_texture_free(types->texture_running);
+    printf("Entity sukces %s\n", SDL_GetError());
     free(types);
 }
 

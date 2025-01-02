@@ -1,10 +1,9 @@
 Vyresit logic data OK
 pripravit tily s placeholder texturama OK
 inventar OK
-vyresit klikani mimo herni pole 
 entity OK
 ui + logika OK
 free all mallocs OK
-entity size doesnt matter
 main menu
-text_free font causes seg fault
+vyresit klikani mimo herni pole 
+entity type free causes mem leak 1.5MB
