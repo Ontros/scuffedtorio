@@ -270,7 +270,7 @@ int game(SDL_Renderer *renderer, Camera *camera)
         SDL_RenderPresent(renderer);
     }
 
-    tile_free(tiles);
+    printf("freeing\n");
     text_free(fps_text);
     text_free(wave_text);
 
@@ -281,6 +281,7 @@ int game(SDL_Renderer *renderer, Camera *camera)
     button_container_free(buttons);
 
     spawner_free(state.spawner_container);
+    tile_free(tiles);
     entity_type_free(state.entity_types);
     entity_container_free(state.entity_container);
 

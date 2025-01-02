@@ -52,7 +52,7 @@ TileType type_add_animation(TileType *type, SDL_Renderer *renderer, const char *
     }
     else
     {
-        type->animation_rects = (SDL_Rect *)(malloc(sizeof(SDL_Rect) * ((int)type->animation_modulo + 1)));
+        type->animation_rects = (SDL_Rect *)(malloc(sizeof(SDL_Rect) * ((int)type->animation_modulo + 2)));
         for (int i = 0; i <= type->animation_modulo; i++)
         {
             type->animation_rects[i] = get_animation_rect_general(i, *type);
@@ -82,7 +82,7 @@ TileType type_add_gun_animation(TileType *type, SDL_Renderer *renderer, int tile
     }
     else
     {
-        type->animation_rects = (SDL_Rect *)(malloc(sizeof(SDL_Rect) * ((int)type->animation_modulo + 1)));
+        type->animation_rects = (SDL_Rect *)(malloc(sizeof(SDL_Rect) * ((int)type->animation_modulo + 2)));
         for (int i = 0; i <= type->animation_modulo; i += 2)
         {
             type->animation_rects[i] = get_animation_rect_general(i, *type);

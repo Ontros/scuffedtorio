@@ -35,7 +35,6 @@ void text_create_with_pos(SDL_Renderer *renderer, Text *text, int x, int y)
     text->rect = (SDL_Rect){x, y, text->rect.w, text->rect.h};
 }
 
-// TODO: inline
 void text_render(SDL_Renderer *renderer, Text text)
 {
     if (text.texture)
