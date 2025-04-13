@@ -161,7 +161,7 @@ GameResult game(Camera *camera, MenuState menu_state)
             running = 0;
             break;
         }
-        else if (!state.is_infinite && state.wave_current == 3)
+        else if (!state.is_infinite && state.wave_current == 4)
         {
             won = 1;
             running = 0;

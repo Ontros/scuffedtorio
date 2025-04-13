@@ -58,13 +58,15 @@ void button_next_wave_click(void *v0, void *v1, void *v2)
     }
     else
     {
-        state->wave = (Wave[3]){{10, 0, 5}, {100, 1, 50}, {500, 2, 250}}[state->wave_current - 1];
+        state->wave = (Wave[3]){{10, 2, 5}, {100, 1, 50}, {500, 2, 250}}[state->wave_current - 1];
     }
+    spawner_free(state->spawner_container);
+    entity_container_free(state->entity_container);
     state->spawner_container = spawner_spawn(state->tiles, *state, state->types[5]);
     state->entity_container = entity_container_create(state->wave.enemies_count);
     for (int i = 0; i < state->wave.enemies_count; i++)
     {
-        entity_spawn(state->entity_container.entities + i, state->tiles, state->spawner_container, state->wave.evolution_factor, state->entity_types + state->wave.evolution_factor, *state);
+        entity_spawn(state->entity_container.entities + i, state->tiles, state->spawner_container, state->wave.evolution_factor, state->entity_types, *state);
     }
 }
 

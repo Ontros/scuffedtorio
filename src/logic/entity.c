@@ -116,9 +116,10 @@ EntityType *entity_types_init(SDL_Renderer *renderer)
     EntityType *types = (EntityType *)(malloc(sizeof(EntityType) * entity_type_count));
     EntityTexture *run = entity_texture_create_run(renderer);
     EntityTexture *attack = entity_texture_create_attack(renderer);
-    types[0] = entity_type_init(run, attack, 1, 10, 1.0f, 0.0f);
-    types[1] = entity_type_init(run, attack, 5, 50, 2.0f, 0.5f);
-    types[2] = entity_type_init(run, attack, 10, 100, 3.0f, 1.0f);
+    types[0] = entity_type_init(run, attack, 1.0f, 10.0f, 1.0f, 0.0f);
+    types[1] = entity_type_init(run, attack, 5.0f, 50.0f, 2.0f, 0.5f);
+    types[2] = entity_type_init(run, attack, 10.0f, 100.0f, 3.0f, 1.0f);
+    printf("%f %f %f\n", types[0].max_health, types[1].max_health, types[2].max_health);
     return types;
 }
 
@@ -158,6 +159,7 @@ void entity_spawn(Entity *entity, Tile *tiles, SpawnerContainer container, char 
 {
     Tile *spawner = tiles + container.spawner_indecies[rand() % container.amount];
     entity->health = types[type].max_health;
+    printf("%f %d %f %f\n", entity->health, type, types[type].max_health, types[2].max_health);
     entity->x = spawner->x - 1;
     entity->y = spawner->y - 1;
     entity->type = type;
